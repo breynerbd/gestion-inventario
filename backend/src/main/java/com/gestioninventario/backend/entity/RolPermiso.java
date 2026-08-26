@@ -79,7 +79,7 @@ public class RolPermiso {
     private Rol rol;
 
     @ManyToOne
-    @MapsId("id_permuso")
+    @MapsId("id_permiso")
     @JoinColumn(name = "id_permiso", nullable = false)
     private Permiso permiso;
 
