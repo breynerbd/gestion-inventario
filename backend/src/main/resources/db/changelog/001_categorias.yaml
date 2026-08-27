@@ -1,0 +1,62 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1787852569580-1
+      author: hogar
+      changes:
+        - createTable:
+            tableName: categorias
+            columns:
+              - column:
+                  name: id_categoria
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: categorias_pkey
+
+              - column:
+                  name: codigo_categoria
+                  type: VARCHAR(10)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: nombre_categoria
+                  type: VARCHAR(60)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: descripcion
+                  type: VARCHAR(250)
+
+              - column:
+                  name: estado
+                  type: VARCHAR(10)
+                  defaultValue: ACTIVO
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: fecha_creacion
+                  type: TIMESTAMP WITHOUT TIME ZONE
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: fecha_modificacion
+                  type: TIMESTAMP WITHOUT TIME ZONE
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: 1787852569580-9
+      author: hogar  
+      changes:
+        - addUniqueConstraint:
+            columnNames: codigo_categoria
+            constraintName: categorias_codigo_categoria_key
+            tableName: categorias
