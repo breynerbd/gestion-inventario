@@ -31,7 +31,7 @@ public class RolController {
         return ResponseEntity.ok(service.listarRoles());
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{id_rol}")
     public ResponseEntity<Rol> listarRolPorId(@PathVariable("id_rol") Long id_rol){
         return ResponseEntity.ok(service.obtenerRol(id_rol));
     }
@@ -41,13 +41,13 @@ public class RolController {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.crearRol(rol));
     }
 
-    @PutMapping
+    @PutMapping("/{id_rol}")
     public ResponseEntity<Rol> actualizarRol(@PathVariable("id_rol") Long id_rol, @RequestBody Rol rolActualizado){
         return ResponseEntity.ok(service.actualizarRol(id_rol, rolActualizado));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Rol> eliminarRol(@PathVariable("id_rol") Long id_rol){
+    @DeleteMapping("/{id_rol}")
+    public ResponseEntity<Void> eliminarRol(@PathVariable("id_rol") Long id_rol){
         service.eliminarRol(id_rol);
         return ResponseEntity.noContent().build();
     }

@@ -31,7 +31,7 @@ public class ProveedorController {
         return ResponseEntity.ok(service.listarProveedores());
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{id_proveedor}")
     public ResponseEntity<Proveedor> listarProveedorPorId(@PathVariable("id_proveedor") Long id_proveedor){
         return ResponseEntity.ok(service.obtenerProveedor(id_proveedor));
     }
@@ -41,13 +41,13 @@ public class ProveedorController {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.crearProveedor(proveedor));
     }
 
-    @PutMapping
+    @PutMapping("/{id_proveedor}")
     public ResponseEntity<Proveedor> actualizarProveedor(@PathVariable("id_proveedor") Long id_proveedor, @RequestBody Proveedor proveedorActualizado){
         return ResponseEntity.ok(service.actualizarProveedor(id_proveedor, proveedorActualizado));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Proveedor> eliminarProveedor(@PathVariable("id_proveedor") Long id_proveedor){
+    @DeleteMapping("/{id_proveedor}")
+    public ResponseEntity<Void> eliminarProveedor(@PathVariable("id_proveedor") Long id_proveedor){
         service.eliminarProveedor(id_proveedor);
         return ResponseEntity.noContent().build();
     }
