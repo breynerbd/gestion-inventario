@@ -1,0 +1,17 @@
+databaseChangeLog:
+  - include:
+      file: src/main/resources/db/changelog/001_categorias.yaml
+  - include:
+      file: src/main/resources/db/changelog/002_proveedores.yaml
+  - include:
+      file: src/main/resources/db/changelog/003_roles.yaml
+  - include:
+      file: src/main/resources/db/changelog/004_permisos.yaml
+  - include:
+      file: src/main/resources/db/changelog/005_usuarios.yaml
+  - include:
+      file: src/main/resources/db/changelog/006_productos.yaml
+  - include:
+      file: src/main/resources/db/changelog/007_movimientos_stock.yaml
+  - include:
+      file: src/main/resources/db/changelog/008_rol_permiso.yaml
