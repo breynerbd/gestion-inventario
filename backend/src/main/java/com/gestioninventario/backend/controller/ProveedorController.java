@@ -1,0 +1,54 @@
+package com.gestioninventario.backend.controller;
+
+import java.util.List;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.gestioninventario.backend.entity.Proveedor;
+import com.gestioninventario.backend.service.ProveedorService;
+
+@Controller
+@RequestMapping("/api/proveedores")
+public class ProveedorController {
+
+    private final ProveedorService service;
+
+    public ProveedorController(ProveedorService service){
+        this.service = service;
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Proveedor>> listarProveedores(){
+        return ResponseEntity.ok(service.listarProveedores());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Proveedor> listarProveedorPorId(@PathVariable("id_proveedor") Long id_proveedor){
+        return ResponseEntity.ok(service.obtenerProveedor(id_proveedor));
+    }
+
+    @PostMapping
+    public ResponseEntity<Proveedor> crearProveedor(@RequestBody Proveedor proveedor){
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.crearProveedor(proveedor));
+    }
+
+    @PutMapping
+    public ResponseEntity<Proveedor> actualizarProveedor(@PathVariable("id_proveedor") Long id_proveedor, @RequestBody Proveedor proveedorActualizado){
+        return ResponseEntity.ok(service.actualizarProveedor(id_proveedor, proveedorActualizado));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Proveedor> eliminarProveedor(@PathVariable("id_proveedor") Long id_proveedor){
+        service.eliminarProveedor(id_proveedor);
+        return ResponseEntity.noContent().build();
+    }
+}
