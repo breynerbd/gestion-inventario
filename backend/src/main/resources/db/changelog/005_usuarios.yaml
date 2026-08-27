@@ -84,3 +84,17 @@ databaseChangeLog:
             columnNames: nombre_usuario
             constraintName: usuarios_nombre_usuario_key
             tableName: usuarios
+  
+  - changeSet:
+      id: 1787852569580-24
+      author: hogar
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: id_rol
+            baseTableName: usuarios
+            constraintName: fk_usuarios_roles
+            referencedColumnNames: id_rol
+            referencedTableName: roles
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            validate: true
