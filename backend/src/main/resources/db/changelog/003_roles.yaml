@@ -1,0 +1,42 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1787852569580-3
+      author: hogar
+      changes:
+        - createTable:
+            tableName: roles
+            columns:
+              - column:
+                  name: id_rol
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: roles_pkey
+
+              - column:
+                  name: nombre_rol
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: descripcion
+                  type: VARCHAR(200)
+
+              - column:
+                  name: estado
+                  type: VARCHAR(10)
+                  defaultValue: ACTIVO
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: 1787852569580-13
+      author: hogar  
+      changes:
+        - addUniqueConstraint:
+            columnNames: nombre_rol
+            constraintName: roles_nombre_rol_key
+            tableName: roles
