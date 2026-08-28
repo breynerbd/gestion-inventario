@@ -13,8 +13,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.gestioninventario.backend.entity.Permiso;
+import com.gestioninventario.backend.dto.permiso.PermisoCreateDTO;
+import com.gestioninventario.backend.dto.permiso.PermisoResponseDTO;
+import com.gestioninventario.backend.dto.permiso.PermisoUpdateDTO;
 import com.gestioninventario.backend.service.PermisoService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/permisos")
@@ -27,22 +31,22 @@ public class PermisoController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Permiso>> listarPermisos(){
+    public ResponseEntity<List<PermisoResponseDTO>> listarPermisos(){
         return ResponseEntity.ok(service.listarPermisos());
     }
 
     @GetMapping("/{id_permiso}")
-    public ResponseEntity<Permiso> listarPermisoPorId(@PathVariable("id_permiso") Long id_permiso){
+    public ResponseEntity<PermisoResponseDTO> listarPermisoPorId(@PathVariable("id_permiso") Long id_permiso){
         return ResponseEntity.ok(service.obtenerPermiso(id_permiso));
     }
 
     @PostMapping
-    public ResponseEntity<Permiso> crearPermiso(@RequestBody Permiso permiso){
+    public ResponseEntity<PermisoResponseDTO> crearPermiso(@Valid @RequestBody PermisoCreateDTO permiso){
         return ResponseEntity.status(HttpStatus.CREATED).body(service.crearPermiso(permiso));
     }
 
     @PutMapping("/{id_permiso}")
-    public ResponseEntity<Permiso> actualizarPermiso(@PathVariable("id_permiso") Long id_permiso, @RequestBody Permiso permisoActualizado){
+    public ResponseEntity<PermisoResponseDTO> actualizarPermiso(@PathVariable("id_permiso") Long id_permiso, @Valid @RequestBody PermisoUpdateDTO permisoActualizado){
         return ResponseEntity.ok(service.actualizarPermiso(id_permiso, permisoActualizado));
     }
 
