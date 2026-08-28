@@ -1,12 +1,19 @@
 package com.gestioninventario.backend.service;
 
+import com.gestioninventario.backend.dto.movimiento.MovimientoStockCreateDTO;
+import com.gestioninventario.backend.dto.movimiento.MovimientoStockResponseDTO;
+import com.gestioninventario.backend.dto.movimiento.MovimientoStockUpdateDTO;
 import com.gestioninventario.backend.entity.MovimientoStock;
 import com.gestioninventario.backend.entity.Producto;
+import com.gestioninventario.backend.entity.Usuario;
 import com.gestioninventario.backend.exception.RecursoNoEncontradoException;
 import com.gestioninventario.backend.repository.MovimientoStockRepository;
 import com.gestioninventario.backend.repository.ProductoRepository;
+import com.gestioninventario.backend.repository.UsuarioRepository;
+
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -14,43 +21,42 @@ public class MovimientoStockService {
 
     private final MovimientoStockRepository movimientoRepository;
     private final ProductoRepository productoRepository;
+    private final UsuarioRepository usuarioRepository;
 
-    public MovimientoStockService(
-            MovimientoStockRepository movimientoRepository,
-            ProductoRepository productoRepository) {
-
+    public MovimientoStockService(MovimientoStockRepository movimientoRepository, ProductoRepository productoRepository, UsuarioRepository usuarioRepository) {
         this.movimientoRepository = movimientoRepository;
         this.productoRepository = productoRepository;
+        this.usuarioRepository = usuarioRepository;
     }
 
-    public List<MovimientoStock> listarMovimientos() {
-        return movimientoRepository.findAll();
+    public List<MovimientoStockResponseDTO> listarMovimientos() {
+        return movimientoRepository.findAll().stream().map(this::movimientoResponse).toList();
     }
 
-    public MovimientoStock obtenerMovimiento(Long id_movimiento) {
+    public MovimientoStockResponseDTO obtenerMovimiento(Long id_movimiento) {
 
-        return movimientoRepository.findById(id_movimiento)
+        MovimientoStock movimiento = movimientoRepository.findById(id_movimiento)
             .orElseThrow(() -> new RecursoNoEncontradoException("El movimiento " + id_movimiento + " no existe"));
+
+        return movimientoResponse(movimiento);
     }
 
-    public MovimientoStock registrarMovimiento(
-            MovimientoStock movimiento) {
+    public MovimientoStockResponseDTO registrarMovimiento(MovimientoStockCreateDTO movimientoDto) {
 
-        Producto producto = productoRepository.findById(movimiento.getProducto().getId_producto())
-            .orElseThrow(() -> new RecursoNoEncontradoException("El producto no existe"));
+        Producto producto = productoRepository.findById(movimientoDto.getId_producto())
+            .orElseThrow(() -> new RecursoNoEncontradoException("El producto " + movimientoDto.getId_producto() + " no existe"));
 
-        if (movimiento.getCantidad() <= 0) {
-            throw new IllegalArgumentException("La cantidad debe ser mayor que cero");
-        }
+        Usuario usuario = usuarioRepository.findById(movimientoDto.getId_usuario())
+            .orElseThrow(() -> new RecursoNoEncontradoException("El usuario " + movimientoDto.getId_usuario() + " no existe"));
 
-        if (movimiento.getTipo_movimiento() == MovimientoStock.TipoMovimiento.ENTRADA) {
 
-            producto.setStock_actual(producto.getStock_actual() + movimiento.getCantidad()
-            );
+        if (movimientoDto.getTipo_movimiento() == MovimientoStock.TipoMovimiento.ENTRADA) {
 
-        } else if (movimiento.getTipo_movimiento() == MovimientoStock.TipoMovimiento.SALIDA) {
+            producto.setStock_actual(producto.getStock_actual() + movimientoDto.getCantidad());
 
-            int nuevoStock = producto.getStock_actual() - movimiento.getCantidad();
+        } else if (movimientoDto.getTipo_movimiento() == MovimientoStock.TipoMovimiento.SALIDA) {
+
+            int nuevoStock = producto.getStock_actual() - movimientoDto.getCantidad();
 
             if (nuevoStock < 0) {
                 throw new IllegalArgumentException("No hay suficiente stock para realizar la salida");
@@ -59,23 +65,45 @@ public class MovimientoStockService {
             producto.setStock_actual(nuevoStock);
         }
 
+
         productoRepository.save(producto);
-        return movimientoRepository.save(movimiento);
+
+        MovimientoStock movimiento = new MovimientoStock();
+
+        movimiento.setTipo_movimiento(movimientoDto.getTipo_movimiento());
+        movimiento.setProducto(producto);
+        movimiento.setCantidad(movimientoDto.getCantidad());
+        movimiento.setDocumento_referencia(movimientoDto.getDocumento_referencia());
+        movimiento.setMotivo(movimientoDto.getMotivo());
+        movimiento.setUsuario(usuario);
+        movimiento.setFecha_movimiento(LocalDateTime.now());
+
+        MovimientoStock movimientoGuardado = movimientoRepository.save(movimiento);
+
+        return movimientoResponse(movimientoGuardado);
     }
 
-    public MovimientoStock actualizarMovimiento(Long id_movimiento, MovimientoStock movimientoActualizado) {
+    public MovimientoStockResponseDTO actualizarMovimiento(Long id_movimiento, MovimientoStockUpdateDTO movimientoDto) {
 
         MovimientoStock movimiento = movimientoRepository.findById(id_movimiento)
             .orElseThrow(() -> new RecursoNoEncontradoException("El movimiento " + id_movimiento + " no existe"));
 
-        movimiento.setTipo_movimiento(movimientoActualizado.getTipo_movimiento());
-        movimiento.setCantidad(movimientoActualizado.getCantidad());
-        movimiento.setDocumento_referencia(movimientoActualizado.getDocumento_referencia());
-        movimiento.setMotivo(movimientoActualizado.getMotivo());
-        movimiento.setProducto(movimientoActualizado.getProducto());
-        movimiento.setUsuario(movimientoActualizado.getUsuario());
+        Producto producto = productoRepository.findById(movimientoDto.getId_producto())
+            .orElseThrow(() -> new RecursoNoEncontradoException("El producto " + movimientoDto.getId_producto() + " no existe"));
 
-        return movimientoRepository.save(movimiento);
+        Usuario usuario = usuarioRepository.findById(movimientoDto.getId_usuario())
+            .orElseThrow(() -> new RecursoNoEncontradoException("El usuario " + movimientoDto.getId_usuario() + " no existe"));
+
+        movimiento.setTipo_movimiento(movimientoDto.getTipo_movimiento());
+        movimiento.setProducto(producto);
+        movimiento.setCantidad(movimientoDto.getCantidad());
+        movimiento.setDocumento_referencia(movimientoDto.getDocumento_referencia());
+        movimiento.setMotivo(movimientoDto.getMotivo());
+        movimiento.setUsuario(usuario);
+
+        MovimientoStock movimientoActualizado = movimientoRepository.save(movimiento);
+
+        return movimientoResponse(movimientoActualizado);
     }
 
     public void eliminarMovimiento(Long id_movimiento) {
@@ -84,5 +112,45 @@ public class MovimientoStockService {
             .orElseThrow(() -> new RecursoNoEncontradoException("El movimiento " + id_movimiento + " no existe"));
 
         movimientoRepository.delete(movimiento);
+    }
+
+    private MovimientoStockResponseDTO movimientoResponse(MovimientoStock movimiento) {
+
+        MovimientoStockResponseDTO dto = new MovimientoStockResponseDTO();
+
+        dto.setId_movimiento(movimiento.getId_movimiento());
+        dto.setTipo_movimiento(movimiento.getTipo_movimiento());
+
+        if (movimiento.getProducto() != null) {
+            dto.setId_producto(
+                    movimiento.getProducto().getId_producto()
+            );
+
+            dto.setNombre_producto(
+                    movimiento.getProducto().getNombre_producto()
+            );
+        }
+
+        dto.setCantidad(movimiento.getCantidad());
+        dto.setDocumento_referencia(
+                movimiento.getDocumento_referencia()
+        );
+        dto.setMotivo(movimiento.getMotivo());
+
+        if (movimiento.getUsuario() != null) {
+            dto.setId_usuario(
+                    movimiento.getUsuario().getId_usuario()
+            );
+
+            dto.setNombre_usuario(
+                    movimiento.getUsuario().getNombre_usuario()
+            );
+        }
+
+        dto.setFecha_movimiento(
+                movimiento.getFecha_movimiento()
+        );
+
+        return dto;
     }
 }

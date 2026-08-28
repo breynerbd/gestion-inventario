@@ -1,7 +1,11 @@
 package com.gestioninventario.backend.controller;
 
-import com.gestioninventario.backend.entity.MovimientoStock;
+import com.gestioninventario.backend.dto.movimiento.MovimientoStockCreateDTO;
+import com.gestioninventario.backend.dto.movimiento.MovimientoStockResponseDTO;
+import com.gestioninventario.backend.dto.movimiento.MovimientoStockUpdateDTO;
 import com.gestioninventario.backend.service.MovimientoStockService;
+
+import jakarta.validation.Valid;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,23 +24,23 @@ public class MovimientoStockController {
     }
 
     @GetMapping
-    public ResponseEntity<List<MovimientoStock>> listarMovimientos() {
+    public ResponseEntity<List<MovimientoStockResponseDTO>> listarMovimientos() {
         return ResponseEntity.ok(service.listarMovimientos());
     }
 
     @GetMapping("/{id_movimiento}")
-    public ResponseEntity<MovimientoStock> obtenerMovimientoPorId(@PathVariable("id_movimiento") Long id_movimiento) {
+    public ResponseEntity<MovimientoStockResponseDTO> obtenerMovimientoPorId(@PathVariable("id_movimiento") Long id_movimiento) {
 
         return ResponseEntity.ok(service.obtenerMovimiento(id_movimiento));
     }
 
     @PostMapping
-    public ResponseEntity<MovimientoStock> registrarMovimiento(@RequestBody MovimientoStock movimiento) {
+    public ResponseEntity<MovimientoStockResponseDTO> registrarMovimiento(@Valid @RequestBody MovimientoStockCreateDTO movimiento) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.registrarMovimiento(movimiento));
     }
 
     @PutMapping("/{id_movimiento}")
-    public ResponseEntity<MovimientoStock> actualizarMovimiento(@PathVariable("id_movimiento") Long id_movimiento, @RequestBody MovimientoStock movimientoActualizado) {
+    public ResponseEntity<MovimientoStockResponseDTO> actualizarMovimiento(@PathVariable("id_movimiento") Long id_movimiento, @Valid @RequestBody MovimientoStockUpdateDTO movimientoActualizado) {
         return ResponseEntity.ok(service.actualizarMovimiento(id_movimiento, movimientoActualizado));
     }
 
