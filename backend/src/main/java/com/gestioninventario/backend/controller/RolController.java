@@ -13,8 +13,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.gestioninventario.backend.entity.Rol;
+import com.gestioninventario.backend.dto.rol.RolCreateDTO;
+import com.gestioninventario.backend.dto.rol.RolResponseDTO;
+import com.gestioninventario.backend.dto.rol.RolUpdateDTO;
 import com.gestioninventario.backend.service.RolService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/roles")
@@ -27,22 +31,22 @@ public class RolController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Rol>> listarRoles(){
+    public ResponseEntity<List<RolResponseDTO>> listarRoles(){
         return ResponseEntity.ok(service.listarRoles());
     }
 
     @GetMapping("/{id_rol}")
-    public ResponseEntity<Rol> listarRolPorId(@PathVariable("id_rol") Long id_rol){
+    public ResponseEntity<RolResponseDTO> listarRolPorId(@PathVariable("id_rol") Long id_rol){
         return ResponseEntity.ok(service.obtenerRol(id_rol));
     }
 
     @PostMapping
-    public ResponseEntity<Rol> crearRol(@RequestBody Rol rol){
+    public ResponseEntity<RolResponseDTO> crearRol(@Valid @RequestBody RolCreateDTO rol){
         return ResponseEntity.status(HttpStatus.CREATED).body(service.crearRol(rol));
     }
 
     @PutMapping("/{id_rol}")
-    public ResponseEntity<Rol> actualizarRol(@PathVariable("id_rol") Long id_rol, @RequestBody Rol rolActualizado){
+    public ResponseEntity<RolResponseDTO> actualizarRol(@PathVariable("id_rol") Long id_rol, @Valid @RequestBody RolUpdateDTO rolActualizado){
         return ResponseEntity.ok(service.actualizarRol(id_rol, rolActualizado));
     }
 
