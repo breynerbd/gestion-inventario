@@ -13,8 +13,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.gestioninventario.backend.entity.Proveedor;
+import com.gestioninventario.backend.dto.proveedor.ProveedorCreateDTO;
+import com.gestioninventario.backend.dto.proveedor.ProveedorResponseDTO;
+import com.gestioninventario.backend.dto.proveedor.ProveedorUpdateDTO;
 import com.gestioninventario.backend.service.ProveedorService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/proveedores")
@@ -27,22 +31,22 @@ public class ProveedorController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Proveedor>> listarProveedores(){
+    public ResponseEntity<List<ProveedorResponseDTO>> listarProveedores(){
         return ResponseEntity.ok(service.listarProveedores());
     }
 
     @GetMapping("/{id_proveedor}")
-    public ResponseEntity<Proveedor> listarProveedorPorId(@PathVariable("id_proveedor") Long id_proveedor){
+    public ResponseEntity<ProveedorResponseDTO> listarProveedorPorId(@PathVariable("id_proveedor") Long id_proveedor){
         return ResponseEntity.ok(service.obtenerProveedor(id_proveedor));
     }
 
     @PostMapping
-    public ResponseEntity<Proveedor> crearProveedor(@RequestBody Proveedor proveedor){
+    public ResponseEntity<ProveedorResponseDTO> crearProveedor(@Valid @RequestBody ProveedorCreateDTO proveedor){
         return ResponseEntity.status(HttpStatus.CREATED).body(service.crearProveedor(proveedor));
     }
 
     @PutMapping("/{id_proveedor}")
-    public ResponseEntity<Proveedor> actualizarProveedor(@PathVariable("id_proveedor") Long id_proveedor, @RequestBody Proveedor proveedorActualizado){
+    public ResponseEntity<ProveedorResponseDTO> actualizarProveedor(@PathVariable("id_proveedor") Long id_proveedor, @Valid @RequestBody ProveedorUpdateDTO proveedorActualizado){
         return ResponseEntity.ok(service.actualizarProveedor(id_proveedor, proveedorActualizado));
     }
 
