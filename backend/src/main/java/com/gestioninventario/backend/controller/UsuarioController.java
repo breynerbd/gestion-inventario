@@ -13,8 +13,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.gestioninventario.backend.entity.Usuario;
+import com.gestioninventario.backend.dto.usuario.UsuarioCreateDTO;
+import com.gestioninventario.backend.dto.usuario.UsuarioResponseDTO;
+import com.gestioninventario.backend.dto.usuario.UsuarioUpdateDTO;
 import com.gestioninventario.backend.service.UsuarioService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/usuarios")
@@ -27,22 +31,22 @@ public class UsuarioController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Usuario>> listarUsuarios(){
+    public ResponseEntity<List<UsuarioResponseDTO>> listarUsuarios(){
         return ResponseEntity.ok(service.listarUsuarios());
     }
 
     @GetMapping("/{id_usuario}")
-    public ResponseEntity<Usuario> listarUsuarioPorId(@PathVariable("id_usuario") Long id_usuario){
+    public ResponseEntity<UsuarioResponseDTO> listarUsuarioPorId(@PathVariable("id_usuario") Long id_usuario){
         return ResponseEntity.ok(service.obtenerUsuario(id_usuario));
     }
 
     @PostMapping
-    public ResponseEntity<Usuario> crearUsuario(@RequestBody Usuario usuario){
+    public ResponseEntity<UsuarioResponseDTO> crearUsuario(@Valid @RequestBody UsuarioCreateDTO usuario){
         return ResponseEntity.status(HttpStatus.CREATED).body(service.crearUsuario(usuario));
     }
 
     @PutMapping("/{id_usuario}")
-    public ResponseEntity<Usuario> actualizarUsuario(@PathVariable("id_usuario") Long id_usuario, @RequestBody Usuario usuarioActualizado){
+    public ResponseEntity<UsuarioResponseDTO> actualizarUsuario(@PathVariable("id_usuario") Long id_usuario, @Valid @RequestBody UsuarioUpdateDTO usuarioActualizado){
         return ResponseEntity.ok(service.actualizarUsuario(id_usuario, usuarioActualizado));
     }
 
