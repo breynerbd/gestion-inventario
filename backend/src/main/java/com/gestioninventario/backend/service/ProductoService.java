@@ -7,6 +7,7 @@ import com.gestioninventario.backend.entity.Categoria;
 import com.gestioninventario.backend.entity.Producto;
 import com.gestioninventario.backend.entity.Proveedor;
 import com.gestioninventario.backend.exception.RecursoNoEncontradoException;
+import com.gestioninventario.backend.mapper.ProductoMapper;
 import com.gestioninventario.backend.repository.CategoriaRepository;
 import com.gestioninventario.backend.repository.ProductoRepository;
 import com.gestioninventario.backend.repository.ProveedorRepository;
@@ -21,22 +22,24 @@ public class ProductoService {
     private final ProductoRepository repository;
     private final CategoriaRepository categoriaRepository;
     private final ProveedorRepository proveedorRepository;
+    private final ProductoMapper mapper;
 
-    public ProductoService(ProductoRepository repository, CategoriaRepository categoriaRepository, ProveedorRepository proveedorRepository) {
+    public ProductoService(ProductoRepository repository, CategoriaRepository categoriaRepository, ProveedorRepository proveedorRepository, ProductoMapper mapper) {
         this.repository = repository;
         this.categoriaRepository = categoriaRepository;
         this.proveedorRepository = proveedorRepository;
+        this.mapper = mapper;
     }
 
     public List<ProductoResponseDTO> listarProductos() {
-        return repository.findAll().stream().map(this::productoResponse).toList();
+        return repository.findAll().stream().map(mapper::toResponseDTO).toList();
     }
 
     public ProductoResponseDTO obtenerProducto(Long id_producto) {
         Producto producto = repository.findById(id_producto)
             .orElseThrow(() -> new RecursoNoEncontradoException("El producto " + id_producto + " no existe"));
 
-        return productoResponse(producto);
+        return mapper.toResponseDTO(producto);
     }
 
     public ProductoResponseDTO crearProducto(ProductoCreateDTO productoDto) {
@@ -47,24 +50,11 @@ public class ProductoService {
         Proveedor proveedor = proveedorRepository.findById(productoDto.getId_proveedor()) 
             .orElseThrow(() -> new RecursoNoEncontradoException( "El proveedor " + productoDto.getId_proveedor() + " no existe" ));
 
-        Producto producto = new Producto(); 
-        
-        producto.setCodigo_producto(productoDto.getCodigo_producto()); 
-        producto.setNombre_producto(productoDto.getNombre_producto()); 
-        producto.setDescripcion(productoDto.getDescripcion()); 
-        producto.setCategoria(categoria); 
-        producto.setProveedor(proveedor); 
-        producto.setUnidad_medida(productoDto.getUnidad_medida()); 
-        producto.setPrecio_compra(productoDto.getPrecio_compra());
-         producto.setPrecio_venta(productoDto.getPrecio_venta()); 
-         producto.setStock_actual(0); 
-         producto.setStock_minimo(productoDto.getStock_minimo()); 
-         producto.setStock_maximo(productoDto.getStock_maximo()); 
-         producto.setEstado(Producto.Estado.ACTIVO); 
+        Producto producto = mapper.toEntity(productoDto, categoria, proveedor);
          
-         Producto productoGuardado = repository.save(producto); 
+        Producto productoGuardado = repository.save(producto); 
          
-         return productoResponse(productoGuardado);
+        return mapper.toResponseDTO(productoGuardado);
     }
 
     public ProductoResponseDTO actualizarProducto(Long id_producto, ProductoUpdateDTO productoDto) {
@@ -78,19 +68,11 @@ public class ProductoService {
         Proveedor proveedor = proveedorRepository.findById(productoDto.getId_proveedor()) 
             .orElseThrow(() -> new RecursoNoEncontradoException( "El proveedor " + productoDto.getId_proveedor() + " no existe" ));
 
-        producto.setNombre_producto(productoDto.getNombre_producto()); 
-        producto.setDescripcion(productoDto.getDescripcion()); 
-        producto.setCategoria(categoria); 
-        producto.setProveedor(proveedor); 
-        producto.setUnidad_medida(productoDto.getUnidad_medida()); 
-        producto.setPrecio_compra(productoDto.getPrecio_compra()); 
-        producto.setPrecio_venta(productoDto.getPrecio_venta()); 
-        producto.setStock_minimo(productoDto.getStock_minimo()); 
-        producto.setStock_maximo(productoDto.getStock_maximo()); 
+        mapper.updateEntity(productoDto, producto, categoria, proveedor);
         
         Producto productoActualizado = repository.save(producto); 
         
-        return productoResponse(productoActualizado);
+        return mapper.toResponseDTO(productoActualizado);
     }
 
     public void eliminarProducto(Long id_producto) {
@@ -100,23 +82,4 @@ public class ProductoService {
 
         repository.delete(producto);
     }
-
-    private ProductoResponseDTO productoResponse(Producto producto) { 
-        ProductoResponseDTO dto = new ProductoResponseDTO(); 
-        
-        dto.setId_producto(producto.getId_producto()); 
-        dto.setCodigo_producto(producto.getCodigo_producto()); 
-        dto.setNombre_producto(producto.getNombre_producto()); 
-        dto.setDescripcion(producto.getDescripcion());
-        dto.setId_categoria(producto.getCategoria().getId_categoria()); 
-        dto.setId_proveedor(producto.getProveedor().getId_proveedor()); 
-        dto.setUnidad_medida(producto.getUnidad_medida()); 
-        dto.setPrecio_compra(producto.getPrecio_compra()); 
-        dto.setPrecio_venta(producto.getPrecio_venta()); 
-        dto.setStock_actual(producto.getStock_actual()); 
-        dto.setStock_minimo(producto.getStock_minimo()); 
-        dto.setStock_maximo(producto.getStock_maximo()); 
-        dto.setEstado(producto.getEstado()); 
-         
-        return dto; }
 }
