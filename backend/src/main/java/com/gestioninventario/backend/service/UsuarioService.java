@@ -6,6 +6,7 @@ import com.gestioninventario.backend.dto.usuario.UsuarioUpdateDTO;
 import com.gestioninventario.backend.entity.Rol;
 import com.gestioninventario.backend.entity.Usuario;
 import com.gestioninventario.backend.exception.RecursoNoEncontradoException;
+import com.gestioninventario.backend.mapper.UsuarioMapper;
 import com.gestioninventario.backend.repository.RolRepository;
 import com.gestioninventario.backend.repository.UsuarioRepository;
 import org.springframework.stereotype.Service;
@@ -17,15 +18,17 @@ public class UsuarioService {
 
     private final UsuarioRepository repository;
     private final RolRepository rolRepository;
+    private final UsuarioMapper mapper;
 
-    public UsuarioService(UsuarioRepository repository, RolRepository rolRepository) {
+    public UsuarioService(UsuarioRepository repository, RolRepository rolRepository, UsuarioMapper mapper) {
         this.repository = repository;
         this.rolRepository = rolRepository;
+        this.mapper = mapper;
     }
 
     public List<UsuarioResponseDTO> listarUsuarios() {
 
-        return repository.findAll().stream().map(this::usuarioResponse).toList();
+        return repository.findAll().stream().map(mapper::toResponseDTO).toList();
     }
 
     public UsuarioResponseDTO obtenerUsuario(Long id_usuario) {
@@ -33,28 +36,18 @@ public class UsuarioService {
         Usuario usuario = repository.findById(id_usuario)
             .orElseThrow(() -> new RecursoNoEncontradoException("El usuario " + id_usuario + " no existe"));
 
-        return usuarioResponse(usuario);
+        return mapper.toResponseDTO(usuario);
     }
 
     public UsuarioResponseDTO crearUsuario(UsuarioCreateDTO usuarioDto) {
         Rol rol = rolRepository.findById(usuarioDto.getId_rol())
             .orElseThrow(() -> new RecursoNoEncontradoException("El rol " + usuarioDto.getId_rol() + " no existe"));
 
-        Usuario usuario = new Usuario();
-
-        usuario.setNombre_usuario(usuarioDto.getNombre_usuario());
-        usuario.setContrasena(usuarioDto.getContrasena());
-        usuario.setNombres(usuarioDto.getNombres());
-        usuario.setApellidos(usuarioDto.getApellidos());
-        usuario.setCorreo_electronico(usuarioDto.getCorreo_electronico());
-        usuario.setTelefono(usuarioDto.getTelefono());
-        usuario.setRol(rol);
-        usuario.setEstado(Usuario.Estado.ACTIVO);
-        usuario.setIntentos_fallidos(0);
+        Usuario usuario = mapper.toEntity(usuarioDto, rol);
 
         Usuario usuarioGuardado = repository.save(usuario);
 
-        return usuarioResponse(usuarioGuardado);
+        return mapper.toResponseDTO(usuarioGuardado);
     }
 
     public UsuarioResponseDTO actualizarUsuario(Long id_usuario, UsuarioUpdateDTO usuarioDto) {
@@ -64,16 +57,11 @@ public class UsuarioService {
         Rol rol = rolRepository.findById(usuarioDto.getId_rol())
             .orElseThrow(() -> new RecursoNoEncontradoException("El rol " + usuarioDto.getId_rol() + " no existe"));
 
-        usuario.setNombres(usuarioDto.getNombres());
-        usuario.setApellidos(usuarioDto.getApellidos());
-        usuario.setCorreo_electronico(usuarioDto.getCorreo_electronico());
-        usuario.setTelefono(usuarioDto.getTelefono());
-        usuario.setRol(rol);
-        usuario.setEstado(usuarioDto.getEstado());
+        mapper.updateEntity(usuarioDto, usuario, rol);
 
         Usuario usuarioActualizado = repository.save(usuario);
 
-        return usuarioResponse(usuarioActualizado);
+        return mapper.toResponseDTO(usuarioActualizado);
     }
 
     public void eliminarUsuario(Long id_usuario) {
@@ -82,26 +70,5 @@ public class UsuarioService {
             .orElseThrow(() -> new RecursoNoEncontradoException("El usuario " + id_usuario + " no existe"));
 
         repository.delete(usuario);
-    }
-
-    private UsuarioResponseDTO usuarioResponse(Usuario usuario) {
-        UsuarioResponseDTO dto = new UsuarioResponseDTO();
-
-        dto.setId_usuario(usuario.getId_usuario());
-        dto.setNombre_usuario(usuario.getNombre_usuario());
-        dto.setNombres(usuario.getNombres());
-        dto.setApellidos(usuario.getApellidos());
-        dto.setCorreo_electronico(usuario.getCorreo_electronico());
-        dto.setTelefono(usuario.getTelefono());
-
-        if (usuario.getRol() != null) {
-            dto.setId_rol(usuario.getRol().getId_rol());
-            dto.setNombre_rol(usuario.getRol().getNombre_rol());
-        }
-
-        dto.setEstado(usuario.getEstado());
-        dto.setIntentos_fallidos(usuario.getIntentos_fallidos());
-
-        return dto;
     }
 }
