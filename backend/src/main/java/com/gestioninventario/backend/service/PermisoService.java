@@ -5,6 +5,7 @@ import com.gestioninventario.backend.dto.permiso.PermisoResponseDTO;
 import com.gestioninventario.backend.dto.permiso.PermisoUpdateDTO;
 import com.gestioninventario.backend.entity.Permiso;
 import com.gestioninventario.backend.exception.RecursoNoEncontradoException;
+import com.gestioninventario.backend.mapper.PermisoMapper;
 import com.gestioninventario.backend.repository.PermisoRepository;
 
 import org.springframework.stereotype.Service;
@@ -15,34 +16,31 @@ import java.util.List;
 public class PermisoService {
 
     private final PermisoRepository repository;
+    private final PermisoMapper mapper;
 
-    public PermisoService(PermisoRepository repository) {
+    public PermisoService(PermisoRepository repository, PermisoMapper mapper) {
         this.repository = repository;
+        this.mapper = mapper;
     }
 
     public List<PermisoResponseDTO> listarPermisos() {
-        return repository.findAll().stream().map(this::permisoResponse).toList();
+        return repository.findAll().stream().map(mapper::toResponseDTO).toList();
     }
 
     public PermisoResponseDTO obtenerPermiso(Long id_permiso) {
         Permiso permiso = repository.findById(id_permiso)
             .orElseThrow(() -> new RecursoNoEncontradoException("El permiso " + id_permiso + " no existe"));
 
-        return permisoResponse(permiso);
+        return mapper.toResponseDTO(permiso);
     }
 
     public PermisoResponseDTO crearPermiso(PermisoCreateDTO permisoDto) {
 
-        Permiso permiso = new Permiso();
-
-        permiso.setCodigo_permiso(permisoDto.getCodigo_permiso());
-        permiso.setNombre_permiso(permisoDto.getNombre_permiso());
-        permiso.setModulo(permisoDto.getModulo());
-        permiso.setDescripcion(permisoDto.getDescripcion());
+        Permiso permiso = mapper.toEntity(permisoDto);
 
         Permiso permisoGuardado = repository.save(permiso);
 
-        return permisoResponse(permisoGuardado);
+        return mapper.toResponseDTO(permisoGuardado);
     }
 
     public PermisoResponseDTO actualizarPermiso(Long id_permiso, PermisoUpdateDTO permisoDto) {
@@ -50,13 +48,11 @@ public class PermisoService {
         Permiso permiso = repository.findById(id_permiso)
             .orElseThrow(() -> new RecursoNoEncontradoException("El permiso " + id_permiso + " no existe"));
 
-        permiso.setNombre_permiso(permisoDto.getNombre_permiso());
-        permiso.setModulo(permisoDto.getModulo());
-        permiso.setDescripcion(permisoDto.getDescripcion());
+        mapper.updateEntity(permisoDto, permiso);
 
         Permiso permisoActualizado = repository.save(permiso);
 
-        return permisoResponse(permisoActualizado);
+        return mapper.toResponseDTO(permisoActualizado);
     }
 
     public void eliminarPermiso(Long id_permiso) {
@@ -64,17 +60,5 @@ public class PermisoService {
             .orElseThrow(() -> new RecursoNoEncontradoException("El permiso " + id_permiso + " no existe"));
 
         repository.delete(permiso);
-    }
-
-    private PermisoResponseDTO permisoResponse(Permiso permiso) {
-        PermisoResponseDTO dto = new PermisoResponseDTO();
-
-        dto.setId_permiso(permiso.getId_permiso());
-        dto.setCodigo_permiso(permiso.getCodigo_permiso());
-        dto.setNombre_permiso(permiso.getNombre_permiso());
-        dto.setModulo(permiso.getModulo());
-        dto.setDescripcion(permiso.getDescripcion());
-
-        return dto;
     }
 }
