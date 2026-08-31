@@ -5,6 +5,7 @@ import com.gestioninventario.backend.dto.rol.RolResponseDTO;
 import com.gestioninventario.backend.dto.rol.RolUpdateDTO;
 import com.gestioninventario.backend.entity.Rol;
 import com.gestioninventario.backend.exception.RecursoNoEncontradoException;
+import com.gestioninventario.backend.mapper.RolMapper;
 import com.gestioninventario.backend.repository.RolRepository;
 import org.springframework.stereotype.Service;
 
@@ -14,13 +15,15 @@ import java.util.List;
 public class RolService {
 
     private final RolRepository repository;
+    private final RolMapper mapper;
 
-    public RolService(RolRepository repository) {
+    public RolService(RolRepository repository, RolMapper mapper) {
         this.repository = repository;
+        this.mapper = mapper;
     }
 
     public List<RolResponseDTO> listarRoles() {
-        return repository.findAll().stream().map(this::rolResponse).toList();
+        return repository.findAll().stream().map(mapper::toResponseDTO).toList();
     }
 
     public RolResponseDTO obtenerRol(Long id_rol) {
@@ -28,19 +31,15 @@ public class RolService {
         Rol rol = repository.findById(id_rol)
             .orElseThrow(() -> new RecursoNoEncontradoException("El rol " + id_rol + " no existe"));
 
-        return rolResponse(rol);
+        return mapper.toResponseDTO(rol);
     }
 
     public RolResponseDTO crearRol(RolCreateDTO rolDto) {
-        Rol rol = new Rol();
-
-        rol.setNombre_rol(rolDto.getNombre_rol());
-        rol.setDescripcion(rolDto.getDescripcion());
-        rol.setEstado(Rol.Estado.ACTIVO);
+        Rol rol = mapper.toEntity(rolDto);
 
         Rol rolGuardado = repository.save(rol);
 
-        return rolResponse(rolGuardado);
+        return mapper.toResponseDTO(rolGuardado);
     }
 
     public RolResponseDTO actualizarRol(Long id_rol, RolUpdateDTO rolDto) {
@@ -48,13 +47,11 @@ public class RolService {
         Rol rol = repository.findById(id_rol)
             .orElseThrow(() -> new RecursoNoEncontradoException("El rol " + id_rol + " no existe"));
 
-        rol.setNombre_rol(rolDto.getNombre_rol());
-        rol.setDescripcion(rolDto.getDescripcion());
-        rol.setEstado(rolDto.getEstado());
+        mapper.updateEntity(rolDto, rol);
 
         Rol rolActualizado = repository.save(rol);
 
-        return rolResponse(rolActualizado);
+        return mapper.toResponseDTO(rolActualizado);
     }
 
     public void eliminarRol(Long id_rol) {
@@ -63,17 +60,5 @@ public class RolService {
             .orElseThrow(() -> new RecursoNoEncontradoException("El rol " + id_rol + " no existe"));
 
         repository.delete(rol);
-    }
-
-     private RolResponseDTO rolResponse(Rol rol) {
-
-        RolResponseDTO dto = new RolResponseDTO();
-
-        dto.setId_rol(rol.getId_rol());
-        dto.setNombre_rol(rol.getNombre_rol());
-        dto.setDescripcion(rol.getDescripcion());
-        dto.setEstado(rol.getEstado());
-
-        return dto;
     }
 }
