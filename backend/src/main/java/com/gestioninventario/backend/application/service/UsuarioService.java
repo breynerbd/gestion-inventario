@@ -9,6 +9,8 @@ import com.gestioninventario.backend.domain.exception.RecursoNoEncontradoExcepti
 import com.gestioninventario.backend.application.mapper.UsuarioMapper;
 import com.gestioninventario.backend.infrastructure.persistence.repository.RolRepository;
 import com.gestioninventario.backend.infrastructure.persistence.repository.UsuarioRepository;
+
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,11 +21,13 @@ public class UsuarioService {
     private final UsuarioRepository repository;
     private final RolRepository rolRepository;
     private final UsuarioMapper mapper;
+    private final PasswordEncoder passwordEncoder;
 
-    public UsuarioService(UsuarioRepository repository, RolRepository rolRepository, UsuarioMapper mapper) {
+    public UsuarioService(UsuarioRepository repository, RolRepository rolRepository, UsuarioMapper mapper, PasswordEncoder passwordEncoder) {
         this.repository = repository;
         this.rolRepository = rolRepository;
         this.mapper = mapper;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public List<UsuarioResponseDTO> listarUsuarios() {
@@ -44,6 +48,8 @@ public class UsuarioService {
             .orElseThrow(() -> new RecursoNoEncontradoException("El rol " + usuarioDto.getId_rol() + " no existe"));
 
         Usuario usuario = mapper.toEntity(usuarioDto, rol);
+
+        usuario.setContrasena(passwordEncoder.encode(usuarioDto.getContrasena()));
 
         Usuario usuarioGuardado = repository.save(usuario);
 
