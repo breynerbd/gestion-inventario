@@ -4,6 +4,7 @@ import com.gestioninventario.backend.application.dto.proveedor.ProveedorCreateDT
 import com.gestioninventario.backend.application.dto.proveedor.ProveedorResponseDTO;
 import com.gestioninventario.backend.application.dto.proveedor.ProveedorUpdateDTO;
 import com.gestioninventario.backend.domain.entity.Proveedor;
+import com.gestioninventario.backend.domain.exception.EstadoSinCambiosException;
 import com.gestioninventario.backend.domain.exception.RecursoNoEncontradoException;
 import com.gestioninventario.backend.application.mapper.ProveedorMapper;
 import com.gestioninventario.backend.infrastructure.persistence.repository.ProveedorRepository;
@@ -54,11 +55,24 @@ public class ProveedorService {
         return mapper.toResponseDTO(proveedorActualizado);
     }
 
-    public void eliminarProveedor(Long id_proveedor) {
+    public ProveedorResponseDTO cambiarEstado(Long id_proveedor, Proveedor.Estado estado) {
 
         Proveedor proveedor = repository.findById(id_proveedor)
-            .orElseThrow(() -> new RecursoNoEncontradoException("El proveedor " + id_proveedor + " no existe"));
+            .orElseThrow(() ->new RecursoNoEncontradoException("El proveedor " + id_proveedor + " no existe"));
 
-        repository.delete(proveedor);
+        if (proveedor.getEstado() == estado) {
+            String mensaje = switch (estado) {
+                case ACTIVO -> "El proveedor ya esta activo";
+                case INACTIVO -> "El proveedor ya esta inactivo";
+            };
+
+            throw new EstadoSinCambiosException(mensaje);
+        }
+
+        proveedor.setEstado(estado);
+
+        Proveedor proveedorActualizado = repository.save(proveedor);
+
+        return mapper.toResponseDTO(proveedorActualizado);
     }
 }
