@@ -1,6 +1,5 @@
 package com.gestioninventario.backend.application.dto.permiso;
 
-import com.gestioninventario.backend.domain.entity.Categoria;
 import com.gestioninventario.backend.domain.entity.Permiso;
 import com.gestioninventario.backend.domain.entity.Permiso.Estado;
 import com.gestioninventario.backend.domain.entity.Permiso.Modulo;
