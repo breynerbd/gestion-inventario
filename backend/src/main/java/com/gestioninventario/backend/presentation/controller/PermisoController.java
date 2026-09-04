@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.gestioninventario.backend.application.dto.permiso.PermisoCreateDTO;
+import com.gestioninventario.backend.application.dto.permiso.PermisoEstadoDTO;
 import com.gestioninventario.backend.application.dto.permiso.PermisoResponseDTO;
 import com.gestioninventario.backend.application.dto.permiso.PermisoUpdateDTO;
 import com.gestioninventario.backend.application.service.PermisoService;
@@ -50,9 +51,8 @@ public class PermisoController {
         return ResponseEntity.ok(service.actualizarPermiso(id_permiso, permisoActualizado));
     }
 
-    @DeleteMapping("/{id_permiso}")
-    public ResponseEntity<Void> eliminarPermiso(@PathVariable("id_permiso") Long id_permiso){
-        service.eliminarPermiso(id_permiso);
-        return ResponseEntity.noContent().build();
+    @PatchMapping("/{id_permiso}/estado")
+    public ResponseEntity<PermisoResponseDTO> cambiarEstado(@PathVariable("id_permiso") Long id_permiso, @Valid @RequestBody PermisoEstadoDTO estadoDto) {
+        return ResponseEntity.ok(service.cambiarEstado(id_permiso, estadoDto.getEstado()));
     }
 }

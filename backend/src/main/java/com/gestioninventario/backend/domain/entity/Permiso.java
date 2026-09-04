@@ -13,6 +13,11 @@ import jakarta.persistence.Table;
 @Table(name = "permisos")
 public class Permiso {
 
+    public enum Estado {
+        ACTIVO,
+        INACTIVO
+    }
+
     public enum Modulo {
         PRODUCTOS,
         CATEGORIAS,
@@ -40,6 +45,10 @@ public class Permiso {
 
     @Column(name = "descripcion", length = 200)
     private String descripcion;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "estado", nullable = false, length = 10)
+    private Estado estado = Estado.ACTIVO;
 
     public Permiso() {
     }
@@ -82,5 +91,13 @@ public class Permiso {
 
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
+    }
+
+    public Estado getEstado() {
+        return estado;
+    }
+
+    public void setEstado(Estado estado) {
+        this.estado = estado;
     }
 }

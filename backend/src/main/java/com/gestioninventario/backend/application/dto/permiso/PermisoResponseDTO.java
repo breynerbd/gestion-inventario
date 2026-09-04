@@ -1,5 +1,8 @@
 package com.gestioninventario.backend.application.dto.permiso;
 
+import com.gestioninventario.backend.domain.entity.Categoria;
+import com.gestioninventario.backend.domain.entity.Permiso;
+import com.gestioninventario.backend.domain.entity.Permiso.Estado;
 import com.gestioninventario.backend.domain.entity.Permiso.Modulo;
 
 public class PermisoResponseDTO {
@@ -13,6 +16,8 @@ public class PermisoResponseDTO {
     private Modulo modulo;
 
     private String descripcion;
+
+    private Estado estado;
 
     public PermisoResponseDTO() {
     }
@@ -55,5 +60,13 @@ public class PermisoResponseDTO {
 
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
+    }
+
+    public Permiso.Estado getEstado() {
+        return estado;
+    }
+
+    public void setEstado(Permiso.Estado estado) {
+        this.estado = estado;
     }
 }

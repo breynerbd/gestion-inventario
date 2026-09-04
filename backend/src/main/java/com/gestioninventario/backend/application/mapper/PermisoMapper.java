@@ -18,6 +18,7 @@ public class PermisoMapper {
         permiso.setNombre_permiso(dto.getNombre_permiso());
         permiso.setModulo(dto.getModulo());
         permiso.setDescripcion(dto.getDescripcion());
+        permiso.setEstado(Permiso.Estado.ACTIVO);
 
         return permiso;
     }
@@ -38,6 +39,7 @@ public class PermisoMapper {
         dto.setNombre_permiso(permiso.getNombre_permiso());
         dto.setModulo(permiso.getModulo());
         dto.setDescripcion(permiso.getDescripcion());
+        dto.setEstado(permiso.getEstado());
 
         return dto;
     }

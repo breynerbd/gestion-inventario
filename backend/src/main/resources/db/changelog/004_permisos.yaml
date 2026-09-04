@@ -37,6 +37,13 @@ databaseChangeLog:
                   name: descripcion
                   type: VARCHAR(200)
 
+              - column:
+                  name: estado
+                  type: VARCHAR(10)
+                  defaultValue: ACTIVO
+                  constraints:
+                    nullable: false
+
   - changeSet:
       id: 1787852569580-17
       author: hogar  

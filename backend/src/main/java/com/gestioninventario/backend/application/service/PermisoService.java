@@ -4,6 +4,7 @@ import com.gestioninventario.backend.application.dto.permiso.PermisoCreateDTO;
 import com.gestioninventario.backend.application.dto.permiso.PermisoResponseDTO;
 import com.gestioninventario.backend.application.dto.permiso.PermisoUpdateDTO;
 import com.gestioninventario.backend.domain.entity.Permiso;
+import com.gestioninventario.backend.domain.exception.EstadoSinCambiosException;
 import com.gestioninventario.backend.domain.exception.RecursoNoEncontradoException;
 import com.gestioninventario.backend.application.mapper.PermisoMapper;
 import com.gestioninventario.backend.infrastructure.persistence.repository.PermisoRepository;
@@ -55,10 +56,23 @@ public class PermisoService {
         return mapper.toResponseDTO(permisoActualizado);
     }
 
-    public void eliminarPermiso(Long id_permiso) {
+    public PermisoResponseDTO cambiarEstado(Long id_permiso, Permiso.Estado estado) {
         Permiso permiso = repository.findById(id_permiso)
             .orElseThrow(() -> new RecursoNoEncontradoException("El permiso " + id_permiso + " no existe"));
 
-        repository.delete(permiso);
+        if (permiso.getEstado() == estado) {
+            String mensaje = switch (estado) {
+                case ACTIVO -> "El permiso ya esta activo";
+                case INACTIVO -> "El permiso ya esta inactivo";
+            };
+
+            throw new EstadoSinCambiosException(mensaje);
+        }
+
+        permiso.setEstado(estado);
+
+        Permiso permisoActualizado = repository.save(permiso);
+
+        return mapper.toResponseDTO(permisoActualizado);
     }
 }
