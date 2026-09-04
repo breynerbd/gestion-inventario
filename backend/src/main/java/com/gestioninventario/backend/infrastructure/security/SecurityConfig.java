@@ -1,6 +1,5 @@
 package com.gestioninventario.backend.infrastructure.security;
 
-import static org.springframework.http.HttpMethod.DELETE;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.PATCH;
 import static org.springframework.http.HttpMethod.POST;
@@ -8,13 +7,10 @@ import static org.springframework.http.HttpMethod.PUT;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -84,12 +80,6 @@ public class SecurityConfig {
                     "SUPERVISOR"
                 )
 
-                .requestMatchers(DELETE, "/api/categorias/**")
-                .hasAnyRole(
-                    "ADMINISTRADOR",
-                    "SUPERVISOR"
-                )
-
                 .requestMatchers(GET, "/api/proveedores/**")
                 .hasAnyRole(
                     "ADMINISTRADOR",
@@ -110,12 +100,6 @@ public class SecurityConfig {
                 )
 
                 .requestMatchers(PATCH, "/api/proveedores/**")
-                .hasAnyRole(
-                    "ADMINISTRADOR",
-                    "SUPERVISOR"
-                )
-
-                .requestMatchers(DELETE, "/api/proveedores/**")
                 .hasAnyRole(
                     "ADMINISTRADOR",
                     "SUPERVISOR"
@@ -146,12 +130,6 @@ public class SecurityConfig {
                     "SUPERVISOR"
                 )
 
-                .requestMatchers(DELETE, "/api/productos/**")
-                .hasAnyRole(
-                    "ADMINISTRADOR",
-                    "SUPERVISOR"
-                )
-
                 .requestMatchers(GET, "/api/movimientos/**")
                 .hasAnyRole(
                     "ADMINISTRADOR",
@@ -169,9 +147,6 @@ public class SecurityConfig {
                 .hasRole("ADMINISTRADOR")
 
                 .requestMatchers(PATCH, "/api/movimientos/**")
-                .hasRole("ADMINISTRADOR")
-
-                .requestMatchers(DELETE, "/api/movimientos/**")
                 .hasRole("ADMINISTRADOR")
 
                 .anyRequest()
