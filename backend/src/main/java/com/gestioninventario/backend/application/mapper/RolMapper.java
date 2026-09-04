@@ -25,7 +25,6 @@ public class RolMapper {
 
         rol.setNombre_rol(dto.getNombre_rol());
         rol.setDescripcion(dto.getDescripcion());
-        rol.setEstado(dto.getEstado());
     }
 
     public RolResponseDTO toResponseDTO(Rol rol) {

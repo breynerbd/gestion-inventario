@@ -1,9 +1,6 @@
 package com.gestioninventario.backend.application.dto.rol;
 
-import com.gestioninventario.backend.domain.entity.Rol.Estado;
-
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 public class RolUpdateDTO {
@@ -14,9 +11,6 @@ public class RolUpdateDTO {
 
     @Size(max = 200, message = "La descripción no puede superar los 200 caracteres")
     private String descripcion;
-
-    @NotNull(message = "El estado es obligatorio")
-    private Estado estado;
 
     public RolUpdateDTO() {
     }
@@ -35,13 +29,5 @@ public class RolUpdateDTO {
 
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
-    }
-
-    public Estado getEstado() {
-        return estado;
-    }
-
-    public void setEstado(Estado estado) {
-        this.estado = estado;
     }
 }

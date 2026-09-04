@@ -4,6 +4,7 @@ import com.gestioninventario.backend.application.dto.rol.RolCreateDTO;
 import com.gestioninventario.backend.application.dto.rol.RolResponseDTO;
 import com.gestioninventario.backend.application.dto.rol.RolUpdateDTO;
 import com.gestioninventario.backend.domain.entity.Rol;
+import com.gestioninventario.backend.domain.exception.EstadoSinCambiosException;
 import com.gestioninventario.backend.domain.exception.RecursoNoEncontradoException;
 import com.gestioninventario.backend.application.mapper.RolMapper;
 import com.gestioninventario.backend.infrastructure.persistence.repository.RolRepository;
@@ -54,11 +55,23 @@ public class RolService {
         return mapper.toResponseDTO(rolActualizado);
     }
 
-    public void eliminarRol(Long id_rol) {
-
+    public RolResponseDTO cambiarEstado(Long id_rol, Rol.Estado estado) {
         Rol rol = repository.findById(id_rol)
             .orElseThrow(() -> new RecursoNoEncontradoException("El rol " + id_rol + " no existe"));
 
-        repository.delete(rol);
+        if (rol.getEstado() == estado) {
+            String mensaje = switch (estado) {
+                case ACTIVO -> "El rol ya esta activo";
+                case INACTIVO -> "El rol ya esta inactivo";
+            };
+
+            throw new EstadoSinCambiosException(mensaje);
+        }
+
+        rol.setEstado(estado);
+
+        Rol rolActualizado = repository.save(rol);
+
+        return mapper.toResponseDTO(rolActualizado);
     }
 }
