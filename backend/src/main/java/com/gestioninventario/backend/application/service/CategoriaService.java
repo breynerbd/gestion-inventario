@@ -9,6 +9,7 @@ import com.gestioninventario.backend.application.dto.categoria.CategoriaResponse
 import com.gestioninventario.backend.application.dto.categoria.CategoriaUpdateDTO;
 import com.gestioninventario.backend.domain.entity.Categoria;
 import com.gestioninventario.backend.domain.exception.RecursoNoEncontradoException;
+import com.gestioninventario.backend.domain.exception.EstadoSinCambiosException;
 import com.gestioninventario.backend.application.mapper.CategoriaMapper;
 import com.gestioninventario.backend.infrastructure.persistence.repository.CategoriaRepository;;
 
@@ -52,11 +53,24 @@ public class CategoriaService {
         return mapper.toResponseDTO(categoriaActualizada);
     }
 
-    public void eliminarCategoria(Long id_categoria) {
+    public CategoriaResponseDTO cambiarEstado(Long id_categoria,Categoria.Estado estado) {
 
-        Categoria categoria = repository.findById(id_categoria)
-            .orElseThrow(() -> new RecursoNoEncontradoException("La categoria " + id_categoria + " no existe"));
+    Categoria categoria = repository.findById(id_categoria)
+        .orElseThrow(() -> new RecursoNoEncontradoException("La categoria " + id_categoria + " no existe"));
 
-        repository.delete(categoria);
+    if (categoria.getEstado() == estado) {
+        String mensaje = switch (estado) {
+            case ACTIVO -> "La categoria ya esta activa";
+            case INACTIVO -> "La categoria ya esta inactiva";
+        };
+
+        throw new EstadoSinCambiosException(mensaje);
     }
+
+    categoria.setEstado(estado);
+
+    Categoria categoriaActualizada = repository.save(categoria);
+
+    return mapper.toResponseDTO(categoriaActualizada);
+}
 }

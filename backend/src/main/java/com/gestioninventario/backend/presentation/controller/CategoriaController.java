@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.gestioninventario.backend.application.dto.categoria.CategoriaCreateDTO;
+import com.gestioninventario.backend.application.dto.categoria.CategoriaEstadoDTO;
 import com.gestioninventario.backend.application.dto.categoria.CategoriaResponseDTO;
 import com.gestioninventario.backend.application.dto.categoria.CategoriaUpdateDTO;
 import com.gestioninventario.backend.application.service.CategoriaService;
@@ -14,7 +15,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -52,9 +53,8 @@ public class CategoriaController {
         return ResponseEntity.ok(service.actualizarCategoria(id_categoria, categoriaActualizada));
     }
 
-    @DeleteMapping("/{id_categoria}")
-    public ResponseEntity<Void> eliminarCategoria(@PathVariable("id_categoria") Long id_categoria){
-        service.eliminarCategoria(id_categoria);
-        return ResponseEntity.noContent().build();
+    @PatchMapping("/{id_categoria}/estado")
+    public ResponseEntity<CategoriaResponseDTO> cambiarEstado(@PathVariable("id_categoria") Long id_categoria, @Valid @RequestBody CategoriaEstadoDTO estadoDto) {
+        return ResponseEntity.ok(service.cambiarEstado(id_categoria,estadoDto.getEstado()));
     }
 }
