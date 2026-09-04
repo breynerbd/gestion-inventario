@@ -25,6 +25,7 @@ public class MovimientoStockMapper {
         movimiento.setProducto(producto);
         movimiento.setUsuario(usuario);
         movimiento.setFecha_movimiento(LocalDateTime.now());
+        movimiento.setEstado(MovimientoStock.Estado.ACTIVO);
 
         return movimiento;
     }
@@ -50,6 +51,7 @@ public class MovimientoStockMapper {
         dto.setDocumento_referencia(movimiento.getDocumento_referencia());
         dto.setMotivo(movimiento.getMotivo());
         dto.setFecha_movimiento(movimiento.getFecha_movimiento());
+        dto.setEstado(movimiento.getEstado());
 
         if (movimiento.getProducto() != null) {
             dto.setId_producto(

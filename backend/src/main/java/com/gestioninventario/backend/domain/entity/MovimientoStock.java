@@ -17,6 +17,11 @@ import jakarta.persistence.Table;
 @Table(name = "movimientos_stock")
 public class MovimientoStock {
 
+    public enum Estado {
+        ACTIVO,
+        INACTIVO
+    }
+
     public enum TipoMovimiento {
         ENTRADA,
         SALIDA,
@@ -52,6 +57,10 @@ public class MovimientoStock {
 
     @Column(name = "fecha_movimiento", nullable = false)
     private LocalDateTime fecha_movimiento;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "estado", nullable = false, length = 10)
+    private Estado estado = Estado.ACTIVO;
 
     public MovimientoStock() {
     }
@@ -120,4 +129,11 @@ public class MovimientoStock {
         this.fecha_movimiento = fecha_movimiento;
     }
 
+    public Estado getEstado() {
+        return estado;
+    }
+
+    public void setEstado(Estado estado) {
+        this.estado = estado;
+    }
 }

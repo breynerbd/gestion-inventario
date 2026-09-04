@@ -3,6 +3,7 @@ package com.gestioninventario.backend.application.dto.movimiento;
 import java.time.LocalDateTime;
 
 import com.gestioninventario.backend.domain.entity.MovimientoStock.TipoMovimiento;
+import com.gestioninventario.backend.domain.entity.MovimientoStock.Estado;
 
 public class MovimientoStockResponseDTO {
 
@@ -22,6 +23,7 @@ public class MovimientoStockResponseDTO {
     private String nombre_usuario;
 
     private LocalDateTime fecha_movimiento;
+    private Estado estado;
 
     public MovimientoStockResponseDTO() {
     }
@@ -104,5 +106,13 @@ public class MovimientoStockResponseDTO {
 
     public void setFecha_movimiento(LocalDateTime fecha_movimiento) {
         this.fecha_movimiento = fecha_movimiento;
+    }
+
+    public Estado getEstado() {
+        return estado;
+    }
+
+    public void setEstado(Estado estado) {
+        this.estado = estado;
     }
 }

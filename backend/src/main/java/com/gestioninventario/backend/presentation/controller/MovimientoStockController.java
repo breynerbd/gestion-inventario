@@ -1,6 +1,7 @@
 package com.gestioninventario.backend.presentation.controller;
 
 import com.gestioninventario.backend.application.dto.movimiento.MovimientoStockCreateDTO;
+import com.gestioninventario.backend.application.dto.movimiento.MovimientoStockEstadoDTO;
 import com.gestioninventario.backend.application.dto.movimiento.MovimientoStockResponseDTO;
 import com.gestioninventario.backend.application.dto.movimiento.MovimientoStockUpdateDTO;
 import com.gestioninventario.backend.application.service.MovimientoStockService;
@@ -44,9 +45,8 @@ public class MovimientoStockController {
         return ResponseEntity.ok(service.actualizarMovimiento(id_movimiento, movimientoActualizado));
     }
 
-    @DeleteMapping("/{id_movimiento}")
-    public ResponseEntity<Void> eliminarMovimiento(@PathVariable("id_movimiento") Long id_movimiento) {
-        service.eliminarMovimiento(id_movimiento);
-        return ResponseEntity.noContent().build();
+    @PatchMapping("/{id_movimiento}/estado")
+    public ResponseEntity<MovimientoStockResponseDTO> cambiarEstado(@PathVariable("id_movimiento") Long id_movimiento, @Valid @RequestBody MovimientoStockEstadoDTO estadoDto) {
+        return ResponseEntity.ok(service.cambiarEstado(id_movimiento,estadoDto.getEstado()));
     }
 }
