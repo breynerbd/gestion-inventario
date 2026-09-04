@@ -5,12 +5,14 @@ import com.gestioninventario.backend.domain.entity.Proveedor;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 public class ProveedorCreateDTO {
 
     @NotBlank(message = "El código del proveedor es obligatorio")
     @Size(max = 10, message = "El código del proveedor no puede superar los 10 caracteres")
+    @Pattern(regexp = "^[A-Za-z0-9_-]+$", message = "El código del proveedor solo puede tener letras, números, guiones y guiones bajos (PROV001)")
     private String codigo_proveedor;
 
     @NotNull(message = "El tipo de documento es obligatorio")
@@ -29,6 +31,7 @@ public class ProveedorCreateDTO {
 
     @NotBlank(message = "El teléfono es obligatorio")
     @Size(max = 15, message = "El teléfono no puede superar los 15 caracteres")
+    @Pattern(regexp = "^[0-9+\\- ]+$", message = "El teléfono solo puede tener números, espacios, signo + y guiones")
     private String telefono;
 
     @NotBlank(message = "El correo electrónico es obligatorio")

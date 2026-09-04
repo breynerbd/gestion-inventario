@@ -3,16 +3,20 @@ package com.gestioninventario.backend.application.dto.usuario;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 
 public class UsuarioUpdateDTO {
 
     @NotBlank(message = "Los nombres son obligatorios")
     @Size(max = 60, message = "Los nombres no pueden superar los 60 caracteres")
+    @Pattern(regexp = "^[A-Za-zÁÉÍÓÚáéíóúÑñÜü ]+$", message = "Los nombres solo pueden tener letras y espacios")
     private String nombres;
 
     @NotBlank(message = "Los apellidos son obligatorios")
     @Size(max = 60, message = "Los apellidos no pueden superar los 60 caracteres")
+    @Pattern(regexp = "^[A-Za-zÁÉÍÓÚáéíóúÑñÜü ]+$", message = "Los apellidos solo pueden tener letras y espacios")
     private String apellidos;
 
     @NotBlank(message = "El correo electrónico es obligatorio")
@@ -21,9 +25,11 @@ public class UsuarioUpdateDTO {
     private String correo_electronico;
 
     @Size(max = 15, message = "El teléfono no puede superar los 15 caracteres")
+    @Pattern(regexp = "^[0-9+\\- ]*$", message = "El teléfono solo puede tener números, espacios, signo + y guiones")
     private String telefono;
 
     @NotNull(message = "El rol es obligatorio")
+    @Positive(message = "El identificador del rol debe ser mayor que 0")
     private Long id_rol;
 
     public UsuarioUpdateDTO() {

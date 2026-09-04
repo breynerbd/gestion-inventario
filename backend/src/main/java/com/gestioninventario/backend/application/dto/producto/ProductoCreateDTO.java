@@ -8,12 +8,15 @@ import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 
 public class ProductoCreateDTO {
 
     @NotBlank(message = "El código del producto es obligatorio")
     @Size(max = 20, message = "El código del producto no puede superar los 20 caracteres")
+    @Pattern (regexp = "^[A-Za-z0-9_-]+$", message = "El código del producto solo puede tener letras, números, guiones y guiones bajos (PROD001)")
     private String codigo_producto;
 
     @NotBlank(message = "El nombre del producto es obligatorio")
@@ -24,9 +27,11 @@ public class ProductoCreateDTO {
     private String descripcion;
 
     @NotNull(message = "La categoría es obligatoria")
+    @Positive(message = "El identificador de la categoría debe ser mayor que 0")
     private Long id_categoria;
 
     @NotNull(message = "El proveedor es obligatorio")
+    @Positive(message = "El identificador del proveedor debe ser mayor que 0")
     private Long id_proveedor;
 
     @NotNull(message = "La unidad de medida es obligatoria")

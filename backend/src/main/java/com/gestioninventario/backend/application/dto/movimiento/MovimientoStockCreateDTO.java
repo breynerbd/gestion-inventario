@@ -4,6 +4,7 @@ import com.gestioninventario.backend.domain.entity.MovimientoStock.TipoMovimient
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 
 public class MovimientoStockCreateDTO {
@@ -12,6 +13,7 @@ public class MovimientoStockCreateDTO {
     private TipoMovimiento tipo_movimiento;
 
     @NotNull(message = "El producto es obligatorio")
+    @Positive(message = "El identificador del producto debe ser mayor que 0")
     private Long id_producto;
 
     @NotNull(message = "La cantidad es obligatoria")
@@ -25,6 +27,7 @@ public class MovimientoStockCreateDTO {
     private String motivo;
 
     @NotNull(message = "El usuario es obligatorio")
+    @Positive(message = "El identificador del usuario debe ser mayor que 0")
     private Long id_usuario;
 
     public MovimientoStockCreateDTO() {

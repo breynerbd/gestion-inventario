@@ -4,12 +4,14 @@ import com.gestioninventario.backend.domain.entity.Permiso.Modulo;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 public class PermisoCreateDTO {
 
     @NotBlank(message = "El código del permiso es obligatorio")
     @Size(max = 60, message = "El código del permiso no puede superar los 60 caracteres")
+    @Pattern(regexp = "^[A-Z0-9_]+$", message = "El código del permiso solo puede tener letras mayúsculas, números y guiones bajos (USUARIOS_CREAR)")
     private String codigo_permiso;
 
     @NotBlank(message = "El nombre del permiso es obligatorio")
