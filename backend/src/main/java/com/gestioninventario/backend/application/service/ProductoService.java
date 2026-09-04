@@ -6,6 +6,7 @@ import com.gestioninventario.backend.application.dto.producto.ProductoUpdateDTO;
 import com.gestioninventario.backend.domain.entity.Categoria;
 import com.gestioninventario.backend.domain.entity.Producto;
 import com.gestioninventario.backend.domain.entity.Proveedor;
+import com.gestioninventario.backend.domain.exception.EstadoSinCambiosException;
 import com.gestioninventario.backend.domain.exception.RecursoNoEncontradoException;
 import com.gestioninventario.backend.application.mapper.ProductoMapper;
 import com.gestioninventario.backend.infrastructure.persistence.repository.CategoriaRepository;
@@ -75,11 +76,24 @@ public class ProductoService {
         return mapper.toResponseDTO(productoActualizado);
     }
 
-    public void eliminarProducto(Long id_producto) {
+    public ProductoResponseDTO cambiarEstado(Long id_producto,Producto.Estado estado) {
 
-        Producto producto = repository.findById(id_producto)
-            .orElseThrow(() -> new RecursoNoEncontradoException("El producto " + id_producto + " no existe"));
+    Producto producto = repository.findById(id_producto)
+        .orElseThrow(() ->new RecursoNoEncontradoException("El producto " + id_producto + " no existe"));
 
-        repository.delete(producto);
+    if (producto.getEstado() == estado) {
+        String mensaje = switch (estado) {
+            case ACTIVO -> "El producto ya esta activo";
+            case INACTIVO -> "El producto ya esta inactivo";
+        };
+
+        throw new EstadoSinCambiosException(mensaje);
     }
+
+    producto.setEstado(estado);
+
+    Producto productoActualizado = repository.save(producto);
+
+    return mapper.toResponseDTO(productoActualizado);
+}
 }

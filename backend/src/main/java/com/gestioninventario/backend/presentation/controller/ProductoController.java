@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.gestioninventario.backend.application.dto.producto.ProductoCreateDTO;
+import com.gestioninventario.backend.application.dto.producto.ProductoEstadoDTO;
 import com.gestioninventario.backend.application.dto.producto.ProductoResponseDTO;
 import com.gestioninventario.backend.application.dto.producto.ProductoUpdateDTO;
 import com.gestioninventario.backend.application.service.ProductoService;
@@ -50,9 +51,8 @@ public class ProductoController {
         return ResponseEntity.ok(service.actualizarProducto(id_producto, productoActualizado));
     }
 
-    @DeleteMapping("/{id_producto}")
-    public ResponseEntity<Void> eliminarProducto(@PathVariable("id_producto") Long id_producto){
-        service.eliminarProducto(id_producto);
-        return ResponseEntity.noContent().build();
+    @PatchMapping("/{id_producto}/estado")
+    public ResponseEntity<ProductoResponseDTO> cambiarEstado(@PathVariable("id_producto") Long id_producto, @Valid @RequestBody ProductoEstadoDTO estadoDto) {
+        return ResponseEntity.ok(service.cambiarEstado(id_producto,estadoDto.getEstado()));
     }
 }
