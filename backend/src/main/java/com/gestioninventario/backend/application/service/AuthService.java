@@ -36,24 +36,45 @@ public class AuthService {
         this.jwtService = jwtService;
     }
 
+    private void validarDatosExistentes(RegistroRequestDTO registroRequest) {
+        if (usuarioRepository.existsByCorreoElectronico(registroRequest.getCorreo_electronico())) {
+            throw new RecursoDuplicadoException("El correo electrónico ya está registrado");
+        }
+
+        if (usuarioRepository.existsByNombreUsuario(registroRequest.getNombre_usuario())) {
+            throw new RecursoDuplicadoException("El nombre de usuario ya está registrado");
+        }
+
+        if (usuarioRepository.existsByTelefono(registroRequest.getTelefono())) {
+            throw new RecursoDuplicadoException("El teléfono ya está registrado");
+        }
+    }
+
+    private void validarEstadoUsuario(Usuario usuario) {
+        if (usuario.getEstado() == Usuario.Estado.BLOQUEADO) {
+
+            throw new UsuarioBloqueadoException("El usuario se encuentra bloqueado");
+        }
+
+        if (usuario.getEstado() == Usuario.Estado.INACTIVO) {
+
+            throw new UsuarioInactivoException("El usuario se encuentra inactivo");
+        }
+    }
+
+    private void validarRolActivo(Rol rol) {
+        if (rol.getEstado() == Rol.Estado.INACTIVO) {
+            throw new IllegalArgumentException("No te puedes registrar en este momento");
+        }
+    }
+
     public LoginResponseDTO registrarUsuario(RegistroRequestDTO registroRequest) {
-
-        if (usuarioRepository.existsByCorreoElectronico(
-                registroRequest.getCorreo_electronico())) {
-
-            throw new RecursoDuplicadoException(
-                    "El correo electrónico ya está registrado");
-        }
-
-        if (usuarioRepository.existsByNombreUsuario(
-                registroRequest.getNombre_usuario())) {
-
-            throw new RecursoDuplicadoException(
-                    "El nombre de usuario ya está registrado");
-        }
+        validarDatosExistentes(registroRequest);
 
         Rol rol = rolRepository.findByNombreRol(ROL_REGISTRO)
             .orElseThrow(() -> new RecursoNoEncontradoException("El rol " + ROL_REGISTRO + " no existe"));
+
+        validarRolActivo(rol);
 
         Usuario usuario = new Usuario();
 
@@ -94,15 +115,7 @@ public class AuthService {
             .findByNombreUsuario(loginRequest.getNombre_usuario())
                 .orElseThrow(() -> new CredencialesInvalidasException("Credenciales inválidas"));
 
-        if (usuario.getEstado() == Usuario.Estado.BLOQUEADO) {
-
-            throw new UsuarioBloqueadoException("El usuario se encuentra bloqueado");
-        }
-
-        if (usuario.getEstado() == Usuario.Estado.INACTIVO) {
-
-            throw new UsuarioInactivoException("El usuario se encuentra inactivo");
-        }
+        validarEstadoUsuario(usuario);
 
         boolean contrasenaCorrecta = passwordEncoder.matches(loginRequest.getContrasena(),usuario.getContrasena());
 
@@ -174,15 +187,7 @@ public class AuthService {
             throw new IllegalArgumentException("El refresh token es inválido o ha expirado");
         }
 
-        if (usuario.getEstado() == Usuario.Estado.BLOQUEADO) {
-
-            throw new IllegalArgumentException("El usuario se encuentra bloqueado");
-        }
-
-        if (usuario.getEstado() == Usuario.Estado.INACTIVO) {
-
-            throw new IllegalArgumentException("El usuario se encuentra inactivo");
-        }
+        validarEstadoUsuario(usuario);
 
         String nuevoAccessToken = jwtService.generateAccessToken(usuario);
 

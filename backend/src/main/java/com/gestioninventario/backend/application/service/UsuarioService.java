@@ -10,6 +10,7 @@ import com.gestioninventario.backend.application.mapper.UsuarioMapper;
 import com.gestioninventario.backend.infrastructure.persistence.repository.RolRepository;
 import com.gestioninventario.backend.infrastructure.persistence.repository.UsuarioRepository;
 import com.gestioninventario.backend.domain.exception.EstadoSinCambiosException;
+import com.gestioninventario.backend.domain.exception.RecursoDuplicadoException;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -31,6 +32,26 @@ public class UsuarioService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    private void validarRolActivo(Rol rol) {
+        if (rol.getEstado() == Rol.Estado.INACTIVO) {
+            throw new IllegalArgumentException("No se puede crear un usuario con un rol inactivo");
+        }
+    }
+
+    private void validarDatosExistentes(UsuarioCreateDTO usuarioDto) {
+        if (repository.existsByNombreUsuario(usuarioDto.getNombre_usuario())) {
+            throw new RecursoDuplicadoException("El nombre de usuario ya esta en uso");
+        }
+
+        if (repository.existsByCorreoElectronico(usuarioDto.getCorreo_electronico())) {
+            throw new RecursoDuplicadoException("El correo electronico ya esta en uso");
+        }
+
+        if (repository.existsByTelefono(usuarioDto.getTelefono())) {
+            throw new RecursoDuplicadoException("El teléfono ya está registrado");
+        }
+    }
+
     public List<UsuarioResponseDTO> listarUsuarios() {
 
         return repository.findAll().stream().map(mapper::toResponseDTO).toList();
@@ -45,8 +66,12 @@ public class UsuarioService {
     }
 
     public UsuarioResponseDTO crearUsuario(UsuarioCreateDTO usuarioDto) {
+        validarDatosExistentes(usuarioDto);
+
         Rol rol = rolRepository.findById(usuarioDto.getId_rol())
             .orElseThrow(() -> new RecursoNoEncontradoException("El rol " + usuarioDto.getId_rol() + " no existe"));
+        
+        validarRolActivo(rol);
 
         Usuario usuario = mapper.toEntity(usuarioDto, rol);
 
@@ -63,6 +88,8 @@ public class UsuarioService {
 
         Rol rol = rolRepository.findById(usuarioDto.getId_rol())
             .orElseThrow(() -> new RecursoNoEncontradoException("El rol " + usuarioDto.getId_rol() + " no existe"));
+        
+        validarRolActivo(rol);
 
         mapper.updateEntity(usuarioDto, usuario, rol);
 
@@ -83,6 +110,10 @@ public class UsuarioService {
                 case BLOQUEADO -> "El usuario ya esta bloqueado";
             };
             throw new EstadoSinCambiosException(mensaje);
+        }
+
+        if (estado == Usuario.Estado.ACTIVO) {
+            validarRolActivo(usuario.getRol());
         }
 
         usuario.setEstado(estado);
