@@ -1,17 +1,37 @@
 databaseChangeLog:
+
   - include:
-      file: src/main/resources/db/changelog/001_categorias.yaml
+      file: 001_categorias.yaml
+      relativeToChangelogFile: true
+
   - include:
-      file: src/main/resources/db/changelog/002_proveedores.yaml
+      file: 002_proveedores.yaml
+      relativeToChangelogFile: true
+
   - include:
-      file: src/main/resources/db/changelog/003_roles.yaml
+      file: 003_roles.yaml
+      relativeToChangelogFile: true
+
   - include:
-      file: src/main/resources/db/changelog/004_permisos.yaml
+      file: 004_permisos.yaml
+      relativeToChangelogFile: true
+
   - include:
-      file: src/main/resources/db/changelog/005_usuarios.yaml
+      file: 005_usuarios.yaml
+      relativeToChangelogFile: true
+
   - include:
-      file: src/main/resources/db/changelog/006_productos.yaml
+      file: 006_productos.yaml
+      relativeToChangelogFile: true
+
   - include:
-      file: src/main/resources/db/changelog/007_movimientos_stock.yaml
+      file: 007_movimientos_stock.yaml
+      relativeToChangelogFile: true
+
   - include:
-      file: src/main/resources/db/changelog/008_rol_permiso.yaml
+      file: 008_rol_permiso.yaml
+      relativeToChangelogFile: true
+
+  - include:
+      file: 009_datos_iniciales_roles_permisos.yaml
+      relativeToChangelogFile: true
