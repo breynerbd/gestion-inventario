@@ -32,6 +32,16 @@ public class ProductoService {
         this.mapper = mapper;
     }
 
+    private void validarReglasProducto(java.math.BigDecimal precioCompra, java.math.BigDecimal precioVenta, Integer stockMinimo, Integer stockMaximo) {
+        if (precioVenta.compareTo(precioCompra) < 0) {
+            throw new IllegalArgumentException("El precio de venta no puede ser menor que el precio de compra");
+        }
+
+        if (stockMaximo != null && stockMaximo <= stockMinimo) {
+            throw new IllegalArgumentException("El stock máximo debe ser mayor que el stock mínimo");
+        }
+    }
+
     public List<ProductoResponseDTO> listarProductos() {
         return repository.findAll().stream().map(mapper::toResponseDTO).toList();
     }
@@ -44,6 +54,12 @@ public class ProductoService {
     }
 
     public ProductoResponseDTO crearProducto(ProductoCreateDTO productoDto) {
+        validarReglasProducto(
+            productoDto.getPrecio_compra(),
+            productoDto.getPrecio_venta(),
+            productoDto.getStock_minimo(),
+            productoDto.getStock_maximo()
+        );
 
         Categoria categoria = categoriaRepository.findById(productoDto.getId_categoria()) 
             .orElseThrow(() -> new RecursoNoEncontradoException( "La categoria " + productoDto.getId_categoria() + " no existe" ));
@@ -59,6 +75,12 @@ public class ProductoService {
     }
 
     public ProductoResponseDTO actualizarProducto(Long id_producto, ProductoUpdateDTO productoDto) {
+        validarReglasProducto(
+            productoDto.getPrecio_compra(),
+            productoDto.getPrecio_venta(),
+            productoDto.getStock_minimo(),
+            productoDto.getStock_maximo()
+        );
 
         Producto producto = repository.findById(id_producto) 
             .orElseThrow(() -> new RecursoNoEncontradoException( "El producto " + id_producto + " no existe" )); 
