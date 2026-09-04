@@ -44,6 +44,20 @@ public class MovimientoStockService {
         }
     }
 
+    private void validarEntidadesActivas(Producto producto, Usuario usuario) {
+        if (producto.getEstado() == Producto.Estado.INACTIVO) {
+            throw new IllegalArgumentException("No se puede realizar el movimiento con un producto inactivo");
+        }
+
+        if (usuario.getEstado() == Usuario.Estado.INACTIVO) {
+            throw new IllegalArgumentException("No se puede realizar el movimiento con un usuario inactivo");
+        }
+
+        if (usuario.getEstado() == Usuario.Estado.BLOQUEADO) {
+            throw new IllegalArgumentException("No se puede realizar el movimiento con un usuario bloqueado");
+        }
+    }
+
     public List<MovimientoStockResponseDTO> listarMovimientos() {
         return movimientoRepository.findAll().stream().map(mapper::toResponseDTO).toList();
     }
@@ -65,6 +79,8 @@ public class MovimientoStockService {
 
         Usuario usuario = usuarioRepository.findById(movimientoDto.getId_usuario())
             .orElseThrow(() -> new RecursoNoEncontradoException("El usuario " + movimientoDto.getId_usuario() + " no existe"));
+        
+        validarEntidadesActivas(producto, usuario);
 
         MovimientoStock movimiento = mapper.toEntity(movimientoDto, producto, usuario);
 
@@ -91,6 +107,8 @@ public class MovimientoStockService {
 
         Usuario usuario = usuarioRepository.findById(movimientoDto.getId_usuario())
             .orElseThrow(() -> new RecursoNoEncontradoException("El usuario " + movimientoDto.getId_usuario() + " no existe"));
+
+        validarEntidadesActivas(nuevoProducto, usuario);
 
         if (movimiento.getEstado() == MovimientoStock.Estado.ACTIVO) {
 
@@ -180,6 +198,7 @@ public class MovimientoStockService {
         if (estado == MovimientoStock.Estado.INACTIVO) {
             revertirMovimiento(movimiento, producto);
         } else {
+            validarEntidadesActivas(producto, movimiento.getUsuario());
             aplicarMovimiento(movimiento, producto);
         }
 
