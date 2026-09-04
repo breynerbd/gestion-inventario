@@ -15,6 +15,7 @@ import com.gestioninventario.backend.infrastructure.persistence.repository.Prove
 
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -32,7 +33,17 @@ public class ProductoService {
         this.mapper = mapper;
     }
 
-    private void validarReglasProducto(java.math.BigDecimal precioCompra, java.math.BigDecimal precioVenta, Integer stockMinimo, Integer stockMaximo) {
+    private void validarEntidadesActivas(Categoria categoria, Proveedor proveedor) {
+        if (categoria.getEstado() == Categoria.Estado.INACTIVO) {
+            throw new IllegalArgumentException("No se puede asociar el producto a una categoria inactiva");
+        }
+
+        if (proveedor.getEstado() == Proveedor.Estado.INACTIVO) {
+            throw new IllegalArgumentException("No se puede asociar el producto a un proveedor inactivo");
+        }
+    }
+
+    private void validarReglasProducto(BigDecimal precioCompra, BigDecimal precioVenta, Integer stockMinimo, Integer stockMaximo) {
         if (precioVenta.compareTo(precioCompra) < 0) {
             throw new IllegalArgumentException("El precio de venta no puede ser menor que el precio de compra");
         }
@@ -66,6 +77,8 @@ public class ProductoService {
 
         Proveedor proveedor = proveedorRepository.findById(productoDto.getId_proveedor()) 
             .orElseThrow(() -> new RecursoNoEncontradoException( "El proveedor " + productoDto.getId_proveedor() + " no existe" ));
+        
+        validarEntidadesActivas(categoria, proveedor);
 
         Producto producto = mapper.toEntity(productoDto, categoria, proveedor);
          
@@ -90,6 +103,8 @@ public class ProductoService {
             
         Proveedor proveedor = proveedorRepository.findById(productoDto.getId_proveedor()) 
             .orElseThrow(() -> new RecursoNoEncontradoException( "El proveedor " + productoDto.getId_proveedor() + " no existe" ));
+        
+        validarEntidadesActivas(categoria, proveedor);
 
         mapper.updateEntity(productoDto, producto, categoria, proveedor);
         
