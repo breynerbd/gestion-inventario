@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.gestioninventario.backend.domain.exception.CredencialesInvalidasException;
+import com.gestioninventario.backend.domain.exception.EstadoSinCambiosException;
 import com.gestioninventario.backend.domain.exception.RecursoDuplicadoException;
 import com.gestioninventario.backend.domain.exception.RecursoNoEncontradoException;
 import com.gestioninventario.backend.domain.exception.UsuarioBloqueadoException;
@@ -80,5 +81,25 @@ public class GlobalExceptionHandler {
         respuesta.put("error", exception.getMessage());
 
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(respuesta);
+    }
+
+    @ExceptionHandler(EstadoSinCambiosException.class)
+    public ResponseEntity<Map<String, String>> manejarEstadoSinCambios(EstadoSinCambiosException exception) {
+
+        Map<String, String> respuesta = new HashMap<>();
+
+        respuesta.put("error", exception.getMessage());
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(respuesta);
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<Map<String, String>> manejarArgumentoInvalido(IllegalArgumentException exception) {
+
+        Map<String, String> respuesta = new HashMap<>();
+
+        respuesta.put("error", exception.getMessage());
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(respuesta);
     }
 }
