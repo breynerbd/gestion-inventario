@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.gestioninventario.backend.application.dto.usuario.UsuarioCreateDTO;
+import com.gestioninventario.backend.application.dto.usuario.UsuarioEstadoDTO;
 import com.gestioninventario.backend.application.dto.usuario.UsuarioResponseDTO;
 import com.gestioninventario.backend.application.dto.usuario.UsuarioUpdateDTO;
 import com.gestioninventario.backend.application.service.UsuarioService;
@@ -50,9 +51,8 @@ public class UsuarioController {
         return ResponseEntity.ok(service.actualizarUsuario(id_usuario, usuarioActualizado));
     }
 
-    @DeleteMapping("/{id_usuario}")
-    public ResponseEntity<Void> eliminarUsuario(@PathVariable("id_usuario") Long id_usuario){
-        service.eliminarUsuario(id_usuario);
-        return ResponseEntity.noContent().build();
+    @PatchMapping("/{id_usuario}/estado")
+    public ResponseEntity<UsuarioResponseDTO> cambiarEstado(@PathVariable("id_usuario") Long id_usuario, @Valid @RequestBody UsuarioEstadoDTO estadoDto) {
+        return ResponseEntity.ok(service.cambiarEstado(id_usuario,estadoDto.getEstado()));
     }
 }

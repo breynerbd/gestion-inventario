@@ -1,7 +1,5 @@
 package com.gestioninventario.backend.application.dto.usuario;
 
-import com.gestioninventario.backend.domain.entity.Usuario.Estado;
-
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -27,9 +25,6 @@ public class UsuarioUpdateDTO {
 
     @NotNull(message = "El rol es obligatorio")
     private Long id_rol;
-
-    @NotNull(message = "El estado es obligatorio")
-    private Estado estado;
 
     public UsuarioUpdateDTO() {
     }
@@ -72,13 +67,5 @@ public class UsuarioUpdateDTO {
 
     public void setId_rol(Long id_rol) {
         this.id_rol = id_rol;
-    }
-
-    public Estado getEstado() {
-        return estado;
-    }
-
-    public void setEstado(Estado estado) {
-        this.estado = estado;
     }
 }

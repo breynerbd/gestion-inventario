@@ -9,6 +9,7 @@ import com.gestioninventario.backend.domain.exception.RecursoNoEncontradoExcepti
 import com.gestioninventario.backend.application.mapper.UsuarioMapper;
 import com.gestioninventario.backend.infrastructure.persistence.repository.RolRepository;
 import com.gestioninventario.backend.infrastructure.persistence.repository.UsuarioRepository;
+import com.gestioninventario.backend.domain.exception.EstadoSinCambiosException;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -70,11 +71,24 @@ public class UsuarioService {
         return mapper.toResponseDTO(usuarioActualizado);
     }
 
-    public void eliminarUsuario(Long id_usuario) {
+    public UsuarioResponseDTO cambiarEstado(Long id_usuario, Usuario.Estado estado) {
 
         Usuario usuario = repository.findById(id_usuario)
             .orElseThrow(() -> new RecursoNoEncontradoException("El usuario " + id_usuario + " no existe"));
 
-        repository.delete(usuario);
+        if (usuario.getEstado() == estado){
+            String mensaje = switch(estado){
+                case ACTIVO -> "El usuario ya esta activo";
+                case INACTIVO -> "El usuario ya esta inactivo";
+                case BLOQUEADO -> "El usuario ya esta bloqueado";
+            };
+            throw new EstadoSinCambiosException(mensaje);
+        }
+
+        usuario.setEstado(estado);
+
+        Usuario usuarioActualizado = repository.save(usuario);
+
+        return mapper.toResponseDTO(usuarioActualizado);
     }
 }

@@ -35,7 +35,6 @@ public class UsuarioMapper {
         usuario.setCorreo_electronico(dto.getCorreo_electronico());
         usuario.setTelefono(dto.getTelefono());
         usuario.setRol(rol);
-        usuario.setEstado(dto.getEstado());
     }
 
     public UsuarioResponseDTO toResponseDTO(Usuario usuario) {
