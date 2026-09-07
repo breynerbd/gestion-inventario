@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -36,8 +37,8 @@ public class MovimientoStockController {
     }
 
     @PostMapping
-    public ResponseEntity<MovimientoStockResponseDTO> registrarMovimiento(@Valid @RequestBody MovimientoStockCreateDTO movimiento) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(service.registrarMovimiento(movimiento));
+    public ResponseEntity<MovimientoStockResponseDTO> registrarMovimiento(@Valid @RequestBody MovimientoStockCreateDTO movimiento, Authentication authentication) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.registrarMovimiento(movimiento, authentication.getName()));
     }
 
     @PutMapping("/{id_movimiento}")

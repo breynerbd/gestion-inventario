@@ -26,10 +26,6 @@ public class MovimientoStockCreateDTO {
     @Size(max = 250, message = "El motivo no puede superar los 250 caracteres")
     private String motivo;
 
-    @NotNull(message = "El usuario es obligatorio")
-    @Positive(message = "El identificador del usuario debe ser mayor que 0")
-    private Long id_usuario;
-
     public MovimientoStockCreateDTO() {
     }
 
@@ -71,13 +67,5 @@ public class MovimientoStockCreateDTO {
 
     public void setMotivo(String motivo) {
         this.motivo = motivo;
-    }
-
-    public Long getId_usuario() {
-        return id_usuario;
-    }
-
-    public void setId_usuario(Long id_usuario) {
-        this.id_usuario = id_usuario;
     }
 }

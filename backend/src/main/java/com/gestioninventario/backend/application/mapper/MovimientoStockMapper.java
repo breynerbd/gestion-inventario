@@ -30,14 +30,13 @@ public class MovimientoStockMapper {
         return movimiento;
     }
 
-    public void updateEntity(MovimientoStockUpdateDTO dto, MovimientoStock movimiento, Producto producto, Usuario usuario) {
+    public void updateEntity(MovimientoStockUpdateDTO dto, MovimientoStock movimiento, Producto producto) {
 
         movimiento.setTipo_movimiento(dto.getTipo_movimiento());
         movimiento.setCantidad(dto.getCantidad());
         movimiento.setDocumento_referencia(dto.getDocumento_referencia());
         movimiento.setMotivo(dto.getMotivo());     
         movimiento.setProducto(producto);
-        movimiento.setUsuario(usuario);
     }
 
     public MovimientoStockResponseDTO toResponseDTO(

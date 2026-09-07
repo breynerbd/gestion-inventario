@@ -71,14 +71,14 @@ public class MovimientoStockService {
     }
 
     @Transactional
-    public MovimientoStockResponseDTO registrarMovimiento(MovimientoStockCreateDTO movimientoDto) {
+    public MovimientoStockResponseDTO registrarMovimiento(MovimientoStockCreateDTO movimientoDto, String correoUsuario) {
         validarMotivo(movimientoDto.getTipo_movimiento(), movimientoDto.getMotivo());
 
         Producto producto = productoRepository.findById(movimientoDto.getId_producto())
             .orElseThrow(() -> new RecursoNoEncontradoException("El producto " + movimientoDto.getId_producto() + " no existe"));
 
-        Usuario usuario = usuarioRepository.findById(movimientoDto.getId_usuario())
-            .orElseThrow(() -> new RecursoNoEncontradoException("El usuario " + movimientoDto.getId_usuario() + " no existe"));
+        Usuario usuario = usuarioRepository.findByCorreoElectronico(correoUsuario)
+            .orElseThrow(() -> new RecursoNoEncontradoException("El usuario logueado no existe"));
         
         validarEntidadesActivas(producto, usuario);
 
@@ -105,10 +105,7 @@ public class MovimientoStockService {
         Producto nuevoProducto = productoRepository.findById(movimientoDto.getId_producto())
             .orElseThrow(() -> new RecursoNoEncontradoException("El producto " + movimientoDto.getId_producto() + " no existe"));
 
-        Usuario usuario = usuarioRepository.findById(movimientoDto.getId_usuario())
-            .orElseThrow(() -> new RecursoNoEncontradoException("El usuario " + movimientoDto.getId_usuario() + " no existe"));
-
-        validarEntidadesActivas(nuevoProducto, usuario);
+        validarEntidadesActivas(nuevoProducto, movimiento.getUsuario());
 
         if (movimiento.getEstado() == MovimientoStock.Estado.ACTIVO) {
 
@@ -133,7 +130,7 @@ public class MovimientoStockService {
             }
         }
 
-        mapper.updateEntity(movimientoDto, movimiento, nuevoProducto, usuario);
+        mapper.updateEntity(movimientoDto, movimiento, nuevoProducto);
 
         MovimientoStock movimientoActualizado = movimientoRepository.save(movimiento);
 
