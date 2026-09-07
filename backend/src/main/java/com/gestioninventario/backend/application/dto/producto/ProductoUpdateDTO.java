@@ -8,12 +8,14 @@ import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 public class ProductoUpdateDTO {
 
     @NotBlank(message = "El nombre del producto es obligatorio")
     @Size(max = 120, message = "El nombre del producto no puede superar los 120 caracteres")
+    @Pattern(regexp = "^[A-Za-zÁÉÍÓÚÑáéíóúñ0-9\\s]+$", message = "El nombre del producto solo puede tener letras, números y espacios")
     private String nombre_producto;
 
     @Size(max = 500, message = "La descripción no puede superar los 500 caracteres")
