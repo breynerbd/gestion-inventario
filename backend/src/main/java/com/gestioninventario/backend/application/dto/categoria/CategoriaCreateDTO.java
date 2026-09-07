@@ -13,6 +13,7 @@ public class CategoriaCreateDTO {
 
     @NotBlank(message = "El nombre de la categoría es obligatorio")
     @Size(max = 60, message = "El nombre de la categoría no puede superar los 60 caracteres")
+    @Pattern (regexp = "^[A-Za-zÁÉÍÓÚÑáéíóúñ\\s]+$", message = "El nombre de la categoría solo puede tener letras y espacios")
     private String nombre_categoria;
 
     @Size(max = 250, message = "La descripción no puede superar los 250 caracteres")
