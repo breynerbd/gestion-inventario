@@ -13,10 +13,12 @@ import com.gestioninventario.backend.infrastructure.persistence.repository.Categ
 import com.gestioninventario.backend.infrastructure.persistence.repository.ProductoRepository;
 import com.gestioninventario.backend.infrastructure.persistence.repository.ProveedorRepository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 @Service
 public class ProductoService {
@@ -53,8 +55,37 @@ public class ProductoService {
         }
     }
 
-    public List<ProductoResponseDTO> listarProductos() {
-        return repository.findAll().stream().map(mapper::toResponseDTO).toList();
+    public Page<ProductoResponseDTO> listarProductos(String codigo, String nombre, Long idCategoria, Long idProveedor, Producto.Estado estado, Pageable pageable) {
+        Specification<Producto> specification = Specification.unrestricted();
+        if(codigo != null && !codigo.isBlank()) {
+            specification = specification.and((root, query, criteriaBuilder) 
+                -> criteriaBuilder.like(criteriaBuilder.lower(root.get("codigo_producto")),
+                                                                                                    "%" + codigo.toLowerCase() + "%"));
+        }
+
+        if(nombre != null && !nombre.isBlank()) {
+            specification = specification.and((root, query, criteriaBuilder) 
+                -> criteriaBuilder.like(criteriaBuilder.lower(root.get("nombre_producto")),
+                                                                                                    "%" + nombre.toLowerCase() + "%"));
+        }
+
+        if (idCategoria != null) {
+            specification = specification.and((root, query, criteriaBuilder) 
+                -> criteriaBuilder.equal(root.get("categoria").get("id_categoria"),idCategoria));
+        }
+
+        if (idProveedor != null) {
+            specification = specification.and((root, query, criteriaBuilder) ->
+                criteriaBuilder.equal(root.get("proveedor").get("id_proveedor"),idProveedor));
+        }
+
+        if (estado != null) {
+            specification = specification.and(
+                (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("estado"), estado));
+        }
+
+        return repository.findAll(specification, pageable)
+            .map(mapper::toResponseDTO);
     }
 
     public ProductoResponseDTO obtenerProducto(Long id_producto) {
