@@ -6,6 +6,7 @@ import com.gestioninventario.backend.application.dto.auth.RefreshTokenRequestDTO
 import com.gestioninventario.backend.application.dto.auth.RegistroRequestDTO;
 import com.gestioninventario.backend.application.service.AuthService;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
 import org.springframework.http.HttpStatus;
@@ -31,8 +32,9 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponseDTO> login(@Valid @RequestBody LoginRequestDTO request) {
-        return ResponseEntity.ok(service.login(request));
+    public ResponseEntity<LoginResponseDTO> login(@Valid @RequestBody LoginRequestDTO request, HttpServletRequest httpRequest) {
+        String direccionIp = httpRequest.getRemoteAddr();
+        return ResponseEntity.ok(service.login(request, direccionIp));
     }
 
     @PostMapping("/refresh")

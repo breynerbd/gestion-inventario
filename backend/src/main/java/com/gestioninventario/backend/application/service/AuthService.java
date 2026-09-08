@@ -6,6 +6,7 @@ import com.gestioninventario.backend.application.dto.auth.RefreshTokenRequestDTO
 import com.gestioninventario.backend.application.dto.auth.RegistroRequestDTO;
 import com.gestioninventario.backend.domain.entity.Rol;
 import com.gestioninventario.backend.domain.entity.Usuario;
+import com.gestioninventario.backend.domain.entity.Bitacora;
 import com.gestioninventario.backend.domain.exception.CredencialesInvalidasException;
 import com.gestioninventario.backend.domain.exception.RecursoDuplicadoException;
 import com.gestioninventario.backend.domain.exception.RecursoNoEncontradoException;
@@ -27,13 +28,15 @@ public class AuthService {
     private final RolRepository rolRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+    private final BitacoraService bitacora;
 
-    public AuthService(UsuarioRepository usuarioRepository, RolRepository rolRepository, PasswordEncoder passwordEncoder, JwtService jwtService) {
+    public AuthService(UsuarioRepository usuarioRepository, RolRepository rolRepository, PasswordEncoder passwordEncoder, JwtService jwtService, BitacoraService bitacora) {
 
         this.usuarioRepository = usuarioRepository;
         this.rolRepository = rolRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
+        this.bitacora = bitacora;
     }
 
     private void validarDatosExistentes(RegistroRequestDTO registroRequest) {
@@ -109,11 +112,16 @@ public class AuthService {
         return response;
     }
 
-    public LoginResponseDTO login(LoginRequestDTO loginRequest) {
+    public LoginResponseDTO login(LoginRequestDTO loginRequest, String direccionIp) {
 
         Usuario usuario = usuarioRepository
-            .findByNombreUsuario(loginRequest.getNombre_usuario())
-                .orElseThrow(() -> new CredencialesInvalidasException("Credenciales inválidas"));
+            .findByNombreUsuario(loginRequest.getNombre_usuario()).orElse(null);
+
+        if(usuario == null){
+            bitacora.registrar(loginRequest.getNombre_usuario(), direccionIp, Bitacora.Resultado.FALLIDO);
+
+            throw new CredencialesInvalidasException("Credenciales Invalidas");
+        }
 
         validarEstadoUsuario(usuario);
 
@@ -137,12 +145,14 @@ public class AuthService {
 
             usuarioRepository.save(usuario);
 
+            bitacora.registrar(usuario.getNombre_usuario(), direccionIp, Bitacora.Resultado.FALLIDO);
+
             throw new CredencialesInvalidasException("Credenciales inválidas");
         }
 
-        usuario.setIntentos_fallidos(0);
-
         usuarioRepository.save(usuario);
+
+        bitacora.registrar(usuario.getNombre_usuario(), direccionIp, Bitacora.Resultado.EXITOSO);
 
         String accessToken = jwtService.generateAccessToken(usuario);
 
