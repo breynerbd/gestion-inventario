@@ -5,15 +5,20 @@ import com.gestioninventario.backend.application.dto.movimiento.MovimientoStockE
 import com.gestioninventario.backend.application.dto.movimiento.MovimientoStockResponseDTO;
 import com.gestioninventario.backend.application.dto.movimiento.MovimientoStockUpdateDTO;
 import com.gestioninventario.backend.application.service.MovimientoStockService;
+import com.gestioninventario.backend.domain.entity.MovimientoStock;
 
 import jakarta.validation.Valid;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/api/movimientos")
@@ -26,8 +31,17 @@ public class MovimientoStockController {
     }
 
     @GetMapping
-    public ResponseEntity<List<MovimientoStockResponseDTO>> listarMovimientos() {
-        return ResponseEntity.ok(service.listarMovimientos());
+    public ResponseEntity<Page<MovimientoStockResponseDTO>> listarMovimientos(
+            @RequestParam(name = "id_producto", required = false) Long idProducto,
+            @RequestParam(name = "tipo_movimiento", required = false) MovimientoStock.TipoMovimiento tipoMovimiento,
+            @RequestParam(name = "fecha_inicio", required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaInicio,
+            @RequestParam(name = "fecha_fin", required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaFin,
+            @RequestParam(name = "id_usuario", required = false) Long idUsuario,
+            @PageableDefault(size = 10) Pageable pageable) {
+
+        return ResponseEntity.ok(service.listarMovimientos(idProducto, tipoMovimiento, fechaInicio, fechaFin, idUsuario,pageable));
     }
 
     @GetMapping("/{id_movimiento}")

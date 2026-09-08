@@ -13,10 +13,13 @@ import com.gestioninventario.backend.infrastructure.persistence.repository.Movim
 import com.gestioninventario.backend.infrastructure.persistence.repository.ProductoRepository;
 import com.gestioninventario.backend.infrastructure.persistence.repository.UsuarioRepository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import java.time.LocalDate;
 
 @Service
 public class MovimientoStockService {
@@ -58,8 +61,44 @@ public class MovimientoStockService {
         }
     }
 
-    public List<MovimientoStockResponseDTO> listarMovimientos() {
-        return movimientoRepository.findAll().stream().map(mapper::toResponseDTO).toList();
+    private void validarRangoFechas(LocalDate fechaInicio, LocalDate fechaFin) {
+        if (fechaInicio != null && fechaFin != null && fechaInicio.isAfter(fechaFin)) {
+            throw new IllegalArgumentException("La fecha de inicio no puede ser posterior a la fecha final");
+        }
+    }
+
+    public Page<MovimientoStockResponseDTO> listarMovimientos(Long idProducto, MovimientoStock.TipoMovimiento tipoMovimiento, LocalDate fechaInicio, 
+            LocalDate fechaFin, Long idUsuario, Pageable pageable) {
+
+        validarRangoFechas(fechaInicio, fechaFin);
+
+        Specification<MovimientoStock> specification = Specification.unrestricted();
+
+        if (idProducto != null) {
+            specification = specification.and((root, query, cb) -> 
+                cb.equal(root.get("producto").get("id_producto"), idProducto));
+        }
+
+        if (tipoMovimiento != null) {
+            specification = specification.and((root, query, cb) -> cb.equal(root.get("tipo_movimiento"),tipoMovimiento));
+        }
+
+        if (fechaInicio != null) {
+            specification = specification.and((root, query, cb) -> 
+                cb.greaterThanOrEqualTo(root.get("fecha_movimiento"),fechaInicio.atStartOfDay()));
+        }
+
+        if (fechaFin != null) {
+            specification = specification.and((root, query, cb) ->
+                cb.lessThan(root.get("fecha_movimiento"),fechaFin.plusDays(1).atStartOfDay()));
+        }
+
+        if (idUsuario != null) {
+            specification = specification.and((root, query, cb) ->
+                cb.equal(root.get("usuario").get("id_usuario"),idUsuario));
+        }
+
+        return movimientoRepository.findAll(specification, pageable).map(mapper::toResponseDTO);
     }
 
     public MovimientoStockResponseDTO obtenerMovimiento(Long id_movimiento) {
