@@ -8,9 +8,10 @@ import com.gestioninventario.backend.domain.exception.EstadoSinCambiosException;
 import com.gestioninventario.backend.domain.exception.RecursoNoEncontradoException;
 import com.gestioninventario.backend.application.mapper.ProveedorMapper;
 import com.gestioninventario.backend.infrastructure.persistence.repository.ProveedorRepository;
-import org.springframework.stereotype.Service;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 
 @Service
 public class ProveedorService {
@@ -23,8 +24,8 @@ public class ProveedorService {
         this.mapper = mapper;
     }
 
-    public List<ProveedorResponseDTO> listarProveedores() {
-        return repository.findAll().stream().map(mapper::toResponseDTO).toList();
+    public Page<ProveedorResponseDTO> listarProveedores(Pageable pageable) {
+        return repository.findAll(pageable).map(mapper::toResponseDTO);
     }
 
     public ProveedorResponseDTO obtenerProveedor(Long id_proveedor) {

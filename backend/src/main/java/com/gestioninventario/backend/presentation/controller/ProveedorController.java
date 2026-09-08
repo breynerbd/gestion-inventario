@@ -1,7 +1,8 @@
 package com.gestioninventario.backend.presentation.controller;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -32,8 +33,8 @@ public class ProveedorController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ProveedorResponseDTO>> listarProveedores(){
-        return ResponseEntity.ok(service.listarProveedores());
+    public ResponseEntity<Page<ProveedorResponseDTO>> listarProveedores(@PageableDefault(size = 10) Pageable pageable){
+        return ResponseEntity.ok(service.listarProveedores(pageable));
     }
 
     @GetMapping("/{id_proveedor}")
