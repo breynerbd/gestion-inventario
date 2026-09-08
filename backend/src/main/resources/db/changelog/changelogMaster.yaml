@@ -1,37 +1,40 @@
 databaseChangeLog:
+    - include:
+        file: 001_categorias.yaml
+        relativeToChangelogFile: true
 
-  - include:
-      file: 001_categorias.yaml
-      relativeToChangelogFile: true
+    - include:
+        file: 002_proveedores.yaml
+        relativeToChangelogFile: true
 
-  - include:
-      file: 002_proveedores.yaml
-      relativeToChangelogFile: true
+    - include:
+        file: 003_roles.yaml
+        relativeToChangelogFile: true
 
-  - include:
-      file: 003_roles.yaml
-      relativeToChangelogFile: true
+    - include:
+        file: 004_permisos.yaml
+        relativeToChangelogFile: true
 
-  - include:
-      file: 004_permisos.yaml
-      relativeToChangelogFile: true
+    - include:
+        file: 005_usuarios.yaml
+        relativeToChangelogFile: true
 
-  - include:
-      file: 005_usuarios.yaml
-      relativeToChangelogFile: true
+    - include:
+        file: 006_productos.yaml
+        relativeToChangelogFile: true
 
-  - include:
-      file: 006_productos.yaml
-      relativeToChangelogFile: true
+    - include:
+        file: 007_movimientos_stock.yaml
+        relativeToChangelogFile: true
 
-  - include:
-      file: 007_movimientos_stock.yaml
-      relativeToChangelogFile: true
+    - include:
+        file: 008_rol_permiso.yaml
+        relativeToChangelogFile: true
 
-  - include:
-      file: 008_rol_permiso.yaml
-      relativeToChangelogFile: true
+    - include:
+        file: 009_datos_iniciales_roles_permisos.yaml
+        relativeToChangelogFile: true
 
-  - include:
-      file: 009_datos_iniciales_roles_permisos.yaml
-      relativeToChangelogFile: true
+    - include:
+        file: 010_bitacora.yaml
+        relativeToChangelogFile: true
