@@ -1,7 +1,7 @@
 package com.gestioninventario.backend.application.service;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.gestioninventario.backend.application.dto.categoria.CategoriaCreateDTO;
@@ -24,8 +24,8 @@ public class CategoriaService {
         this.mapper = mapper;
     }
 
-    public List<CategoriaResponseDTO> listarCategorias(){
-        return repository.findAll().stream().map(mapper::toResponseDTO).toList();
+    public Page<CategoriaResponseDTO> listarCategorias(Pageable pageable){
+        return repository.findAll(pageable).map(mapper::toResponseDTO);
     }
 
     public CategoriaResponseDTO listarCategoriaPorId(Long id_categoria){

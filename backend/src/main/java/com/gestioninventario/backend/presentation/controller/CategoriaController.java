@@ -11,8 +11,9 @@ import com.gestioninventario.backend.application.service.CategoriaService;
 
 import jakarta.validation.Valid;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -34,8 +35,8 @@ public class CategoriaController {
     }
 
     @GetMapping
-    public ResponseEntity<List<CategoriaResponseDTO>> listarCategorias() {
-        return ResponseEntity.ok(service.listarCategorias());
+    public ResponseEntity<Page<CategoriaResponseDTO>> listarCategorias(@PageableDefault(size = 10) Pageable pageable) {
+        return ResponseEntity.ok(service.listarCategorias(pageable));
     }
 
     @GetMapping("/{id_categoria}")
