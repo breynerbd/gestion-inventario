@@ -1,7 +1,10 @@
 package com.gestioninventario.backend.application.service;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.JpaSort;
 import org.springframework.stereotype.Service;
 
 import com.gestioninventario.backend.application.dto.categoria.CategoriaCreateDTO;
@@ -24,8 +27,28 @@ public class CategoriaService {
         this.mapper = mapper;
     }
 
+    private Pageable prepararPageable(Pageable pageable) {
+
+        if (pageable.getSort().isUnsorted()) {
+            return pageable;
+        }
+
+        Sort sort = Sort.unsorted();
+
+        for (Sort.Order order : pageable.getSort()) {
+
+            Sort nuevoOrden = JpaSort.unsafe(order.getDirection(), order.getProperty());
+
+            sort = sort.and(nuevoOrden);
+        }
+
+        return PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
+    }
+
     public Page<CategoriaResponseDTO> listarCategorias(Pageable pageable){
-        return repository.findAll(pageable).map(mapper::toResponseDTO);
+        Pageable pageableSeguro = prepararPageable(pageable);
+        
+        return repository.findAll(pageableSeguro).map(mapper::toResponseDTO);
     }
 
     public CategoriaResponseDTO listarCategoriaPorId(Long id_categoria){
