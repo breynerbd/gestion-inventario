@@ -14,7 +14,10 @@ import com.gestioninventario.backend.infrastructure.persistence.repository.Produ
 import com.gestioninventario.backend.infrastructure.persistence.repository.ProveedorRepository;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.JpaSort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -55,18 +58,34 @@ public class ProductoService {
         }
     }
 
+    private Pageable prepararPageable(Pageable pageable) {
+
+        if (pageable.getSort().isUnsorted()) {
+            return pageable;
+        }
+
+        Sort sort = Sort.unsorted();
+
+        for (Sort.Order order : pageable.getSort()) {
+
+            Sort nuevoOrden = JpaSort.unsafe(order.getDirection(), order.getProperty());
+
+            sort = sort.and(nuevoOrden);
+        }
+
+        return PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
+    }
+
     public Page<ProductoResponseDTO> listarProductos(String codigo, String nombre, Long idCategoria, Long idProveedor, Producto.Estado estado, Pageable pageable) {
         Specification<Producto> specification = Specification.unrestricted();
         if(codigo != null && !codigo.isBlank()) {
             specification = specification.and((root, query, criteriaBuilder) 
-                -> criteriaBuilder.like(criteriaBuilder.lower(root.get("codigo_producto")),
-                                                                                                    "%" + codigo.toLowerCase() + "%"));
+                -> criteriaBuilder.like(criteriaBuilder.lower(root.get("codigo_producto")), "%" + codigo.toLowerCase() + "%"));
         }
 
         if(nombre != null && !nombre.isBlank()) {
             specification = specification.and((root, query, criteriaBuilder) 
-                -> criteriaBuilder.like(criteriaBuilder.lower(root.get("nombre_producto")),
-                                                                                                    "%" + nombre.toLowerCase() + "%"));
+                -> criteriaBuilder.like(criteriaBuilder.lower(root.get("nombre_producto")), "%" + nombre.toLowerCase() + "%"));
         }
 
         if (idCategoria != null) {
@@ -84,8 +103,9 @@ public class ProductoService {
                 (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("estado"), estado));
         }
 
-        return repository.findAll(specification, pageable)
-            .map(mapper::toResponseDTO);
+        Pageable pageableSeguro = prepararPageable(pageable);
+
+        return repository.findAll(specification, pageableSeguro).map(mapper::toResponseDTO);
     }
 
     public ProductoResponseDTO obtenerProducto(Long id_producto) {

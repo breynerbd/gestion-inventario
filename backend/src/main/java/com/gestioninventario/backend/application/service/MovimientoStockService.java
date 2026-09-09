@@ -14,7 +14,10 @@ import com.gestioninventario.backend.infrastructure.persistence.repository.Produ
 import com.gestioninventario.backend.infrastructure.persistence.repository.UsuarioRepository;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.JpaSort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -67,6 +70,24 @@ public class MovimientoStockService {
         }
     }
 
+    private Pageable prepararPageable(Pageable pageable) {
+
+        if (pageable.getSort().isUnsorted()) {
+            return pageable;
+        }
+
+        Sort sort = Sort.unsorted();
+
+        for (Sort.Order order : pageable.getSort()) {
+
+            Sort nuevoOrden = JpaSort.unsafe(order.getDirection(), order.getProperty());
+
+            sort = sort.and(nuevoOrden);
+        }
+
+        return PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
+    }
+
     public Page<MovimientoStockResponseDTO> listarMovimientos(Long idProducto, MovimientoStock.TipoMovimiento tipoMovimiento, LocalDate fechaInicio, 
             LocalDate fechaFin, Long idUsuario, Pageable pageable) {
 
@@ -98,7 +119,9 @@ public class MovimientoStockService {
                 cb.equal(root.get("usuario").get("id_usuario"),idUsuario));
         }
 
-        return movimientoRepository.findAll(specification, pageable).map(mapper::toResponseDTO);
+        Pageable pageableSeguro = prepararPageable(pageable);
+
+        return movimientoRepository.findAll(specification, pageableSeguro).map(mapper::toResponseDTO);
     }
 
     public MovimientoStockResponseDTO obtenerMovimiento(Long id_movimiento) {

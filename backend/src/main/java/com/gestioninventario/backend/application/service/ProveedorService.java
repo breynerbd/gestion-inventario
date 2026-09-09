@@ -10,7 +10,10 @@ import com.gestioninventario.backend.application.mapper.ProveedorMapper;
 import com.gestioninventario.backend.infrastructure.persistence.repository.ProveedorRepository;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.JpaSort;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -24,8 +27,28 @@ public class ProveedorService {
         this.mapper = mapper;
     }
 
+    private Pageable prepararPageable(Pageable pageable) {
+
+        if (pageable.getSort().isUnsorted()) {
+            return pageable;
+        }
+
+        Sort sort = Sort.unsorted();
+
+        for (Sort.Order order : pageable.getSort()) {
+
+            Sort nuevoOrden = JpaSort.unsafe(order.getDirection(), order.getProperty());
+
+            sort = sort.and(nuevoOrden);
+        }
+
+        return PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
+    }
+
     public Page<ProveedorResponseDTO> listarProveedores(Pageable pageable) {
-        return repository.findAll(pageable).map(mapper::toResponseDTO);
+        Pageable pageableSeguro = prepararPageable(pageable);
+
+        return repository.findAll(pageableSeguro).map(mapper::toResponseDTO);
     }
 
     public ProveedorResponseDTO obtenerProveedor(Long id_proveedor) {
