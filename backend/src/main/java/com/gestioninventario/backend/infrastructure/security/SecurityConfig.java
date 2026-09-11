@@ -18,6 +18,13 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final JwtFilter jwtFilter;
+    private static final String ADMINISTRADOR = "ADMINISTRADOR";
+    private static final String SUPERVISOR = "SUPERVISOR";
+    private static final String OPERADOR = "OPERADOR";
+    private static final String CATEGORIES_PATH = "/api/categories/**";
+    private static final String SUPPLIERS_PATH = "/api/suppliers/**";
+    private static final String PRODUCTS_PATH = "/api/products/**";
+    private static final String MOVEMENTS_PATH = "/api/movements/**";
 
     public SecurityConfig(JwtFilter jwtFilter) {
         this.jwtFilter = jwtFilter;
@@ -29,12 +36,10 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http)
-            throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http){
 
         return http
             .csrf(csrf -> csrf.disable())
-
             .sessionManagement(session ->
                 session.sessionCreationPolicy(
                     SessionCreationPolicy.STATELESS
@@ -46,108 +51,108 @@ public class SecurityConfig {
                 .requestMatchers("/api/auth/**")
                 .permitAll()
 
-                .requestMatchers("/api/usuarios/**")
-                .hasRole("ADMINISTRADOR")
+                .requestMatchers("/api/users/**")
+                .hasRole(ADMINISTRADOR)
 
                 .requestMatchers("/api/roles/**")
-                .hasRole("ADMINISTRADOR")
+                .hasRole(ADMINISTRADOR)
 
-                .requestMatchers("/api/permisos/**")
-                .hasRole("ADMINISTRADOR")
+                .requestMatchers("/api/permissions/**")
+                .hasRole(ADMINISTRADOR)
 
-                .requestMatchers(GET, "/api/categorias/**")
+                .requestMatchers(GET, CATEGORIES_PATH)
                 .hasAnyRole(
-                    "ADMINISTRADOR",
-                    "SUPERVISOR",
-                    "OPERADOR"
+                    ADMINISTRADOR,
+                    SUPERVISOR,
+                    OPERADOR
                 )
 
-                .requestMatchers(POST, "/api/categorias/**")
+                .requestMatchers(POST, CATEGORIES_PATH)
                 .hasAnyRole(
-                    "ADMINISTRADOR",
-                    "SUPERVISOR"
+                    ADMINISTRADOR,
+                    SUPERVISOR
                 )
 
-                .requestMatchers(PUT, "/api/categorias/**")
+                .requestMatchers(PUT, CATEGORIES_PATH)
                 .hasAnyRole(
-                    "ADMINISTRADOR",
-                    "SUPERVISOR"
+                    ADMINISTRADOR,
+                    SUPERVISOR
                 )
 
-                .requestMatchers(PATCH, "/api/categorias/**")
+                .requestMatchers(PATCH, CATEGORIES_PATH)
                 .hasAnyRole(
-                    "ADMINISTRADOR",
-                    "SUPERVISOR"
+                    ADMINISTRADOR,
+                    SUPERVISOR
                 )
 
-                .requestMatchers(GET, "/api/proveedores/**")
+                .requestMatchers(GET, SUPPLIERS_PATH)
                 .hasAnyRole(
-                    "ADMINISTRADOR",
-                    "SUPERVISOR",
-                    "OPERADOR"
+                    ADMINISTRADOR,
+                    SUPERVISOR,
+                    OPERADOR
                 )
 
-                .requestMatchers(POST, "/api/proveedores/**")
+                .requestMatchers(POST, SUPPLIERS_PATH)
                 .hasAnyRole(
-                    "ADMINISTRADOR",
-                    "SUPERVISOR"
+                    ADMINISTRADOR,
+                    SUPERVISOR
                 )
 
-                .requestMatchers(PUT, "/api/proveedores/**")
+                .requestMatchers(PUT, SUPPLIERS_PATH)
                 .hasAnyRole(
-                    "ADMINISTRADOR",
-                    "SUPERVISOR"
+                    ADMINISTRADOR,
+                    SUPERVISOR
                 )
 
-                .requestMatchers(PATCH, "/api/proveedores/**")
+                .requestMatchers(PATCH, SUPPLIERS_PATH)
                 .hasAnyRole(
-                    "ADMINISTRADOR",
-                    "SUPERVISOR"
+                    ADMINISTRADOR,
+                    SUPERVISOR
                 )
 
-                .requestMatchers(GET, "/api/productos/**")
+                .requestMatchers(GET, PRODUCTS_PATH)
                 .hasAnyRole(
-                    "ADMINISTRADOR",
-                    "SUPERVISOR",
-                    "OPERADOR"
+                    ADMINISTRADOR,
+                    SUPERVISOR,
+                    OPERADOR
                 )
 
-                .requestMatchers(POST, "/api/productos/**")
+                .requestMatchers(POST, PRODUCTS_PATH)
                 .hasAnyRole(
-                    "ADMINISTRADOR",
-                    "SUPERVISOR"
+                    ADMINISTRADOR,
+                    SUPERVISOR
                 )
 
-                .requestMatchers(PUT, "/api/productos/**")
+                .requestMatchers(PUT, PRODUCTS_PATH)
                 .hasAnyRole(
-                    "ADMINISTRADOR",
-                    "SUPERVISOR"
+                    ADMINISTRADOR,
+                    SUPERVISOR
                 )
 
-                .requestMatchers(PATCH, "/api/productos/**")
+                .requestMatchers(PATCH, PRODUCTS_PATH)
                 .hasAnyRole(
-                    "ADMINISTRADOR",
-                    "SUPERVISOR"
+                    ADMINISTRADOR,
+                    SUPERVISOR
                 )
 
-                .requestMatchers(GET, "/api/movimientos/**")
+                .requestMatchers(GET, MOVEMENTS_PATH)
                 .hasAnyRole(
-                    "ADMINISTRADOR",
-                    "SUPERVISOR",
-                    "OPERADOR"
+                    ADMINISTRADOR,
+                    SUPERVISOR,
+                    OPERADOR
                 )
 
-                .requestMatchers(POST, "/api/movimientos/**")
+                .requestMatchers(POST, MOVEMENTS_PATH)
                 .hasAnyRole(
-                    "ADMINISTRADOR",
-                    "OPERADOR"
+                    ADMINISTRADOR,
+                    OPERADOR
                 )
 
-                .requestMatchers(PUT, "/api/movimientos/**")
-                .hasRole("ADMINISTRADOR")
+                .requestMatchers(PUT, MOVEMENTS_PATH)
+                .hasRole(ADMINISTRADOR)
 
-                .requestMatchers(PATCH, "/api/movimientos/**")
-                .hasRole("ADMINISTRADOR")
+                .requestMatchers(PATCH, MOVEMENTS_PATH)
+                .hasRole(ADMINISTRADOR)
 
                 .anyRequest()
                 .authenticated()

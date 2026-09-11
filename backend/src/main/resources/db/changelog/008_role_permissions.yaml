@@ -1,0 +1,56 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1787852569580-7
+      author: hogar
+      changes:
+        - createTable:
+            tableName: role_permissions
+            columns:
+              - column:
+                  name: role_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: role_permissions_pkey
+
+              - column:
+                  name: permission_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: role_permissions_pkey
+
+              - column:
+                  name: assigned_at
+                  type: TIMESTAMP WITHOUT TIME ZONE
+                  defaultValueComputed: CURRENT_TIMESTAMP
+
+  - changeSet:
+      id: 1787852569580-22
+      author: hogar  
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: permission_id
+            baseTableName: role_permissions
+            constraintName: fk_role_permissions_permissions
+            referencedColumnNames: permission_id
+            referencedTableName: permissions
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            validate: true
+
+  - changeSet:
+      id: 1787852569580-23
+      author: hogar  
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: role_id
+            baseTableName: role_permissions
+            constraintName: fk_role_permissions_roles
+            referencedColumnNames: role_id
+            referencedTableName: roles
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            validate: true

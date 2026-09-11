@@ -1,0 +1,136 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1787852569580-30
+      author: hogar
+      comment: Datos maestros iniciales de roles, conforme a la seccion 3.2
+      changes:
+        - sql:
+            sql: |
+              insert into roles (role_id, role_name, description, status)
+              OVERRIDING SYSTEM VALUE VALUES
+              (1, 'ADMINISTRADOR', 'Acceso completo al sistema', 'ACTIVO'),
+              (2, 'SUPERVISOR', 'Gestiona catalogos y consulta reportes', 'ACTIVO'),
+              (3, 'OPERADOR', 'Registra movimientos de stock y consulta catalogo', 'ACTIVO');
+
+  - changeSet:
+      id: 1787852569580-31
+      author: hogar
+      comment: Catalogo de permisos inicial, conforme a la matriz de la seccion 3.3
+      changes:
+        - sql:
+            sql: |
+              insert into permissions (permission_id, permission_code, permission_name, module)
+              overriding system value values
+              (1, 'USUARIOS_CREAR', 'Crear usuarios', 'USUARIOS'),
+              (2, 'USUARIOS_LEER', 'Consultar usuarios', 'USUARIOS'),
+              (3, 'USUARIOS_EDITAR', 'Editar usuarios', 'USUARIOS'),
+              (4, 'USUARIOS_INACTIVAR', 'Inactivar usuarios', 'USUARIOS'),
+              (5, 'ROLES_CREAR', 'Crear roles', 'ROLES'),
+              (6, 'ROLES_LEER', 'Consultar roles', 'ROLES'),
+              (7, 'ROLES_EDITAR', 'Editar roles', 'ROLES'),
+              (8, 'ROLES_INACTIVAR', 'Inactivar roles', 'ROLES'),
+              (9, 'ROLES_ASIGNAR_PERMISOS', 'Asignar permisos a un rol', 'ROLES'),
+              (10, 'CATEGORIAS_CREAR', 'Crear categorias', 'CATEGORIAS'),
+              (11, 'CATEGORIAS_LEER', 'Consultar categorias', 'CATEGORIAS'),
+              (12, 'CATEGORIAS_EDITAR', 'Editar categorias', 'CATEGORIAS'),
+              (13, 'CATEGORIAS_INACTIVAR', 'Inactivar categorias', 'CATEGORIAS'),
+              (14, 'PROVEEDORES_CREAR', 'Crear proveedores', 'PROVEEDORES'),
+              (15, 'PROVEEDORES_LEER', 'Consultar proveedores', 'PROVEEDORES'),
+              (16, 'PROVEEDORES_EDITAR', 'Editar proveedores', 'PROVEEDORES'),
+              (17, 'PROVEEDORES_INACTIVAR', 'Inactivar proveedores', 'PROVEEDORES'),
+              (18, 'PRODUCTOS_CREAR', 'Crear productos', 'PRODUCTOS'),
+              (19, 'PRODUCTOS_LEER', 'Consultar productos', 'PRODUCTOS'),
+              (20, 'PRODUCTOS_EDITAR', 'Editar productos', 'PRODUCTOS'),
+              (21, 'PRODUCTOS_INACTIVAR', 'Inactivar productos', 'PRODUCTOS'),
+              (22, 'MOVIMIENTOS_CREAR', 'Registrar movimientos de stock', 'MOVIMIENTOS'),
+              (23, 'MOVIMIENTOS_LEER', 'Consultar movimientos de stock', 'MOVIMIENTOS'),
+              (24, 'MOVIMIENTOS_EDITAR', 'Editar movimientos de stock', 'MOVIMIENTOS'),
+              (25, 'REPORTES_LEER', 'Consultar tablero de control y reportes', 'REPORTES'),
+              (26, 'MOVIMIENTOS_INACTIVAR', 'Inactivar movimientos de stock', 'MOVIMIENTOS');
+
+  - changeSet:
+      id: 1787852569580-32
+      author: hogar
+      comment: Reajusta las secuencias de roles y permisos al insertar ids explicitos
+      changes:
+        - sql:
+            sql: |
+              select setval(pg_get_serial_sequence('roles','role_id'), (select max(role_id) from roles));
+        - sql:
+            sql: |
+              select setval(pg_get_serial_sequence('permissions','permission_id'), (select max(permission_id) from permissions));
+
+  - changeSet:
+      id: 1787852569580-33
+      author: hogar
+      comment: Asignacion inicial de permisos por rol, conforme a la matriz de la seccion 3.3
+      changes:
+        - sql:
+            sql: |
+              insert into role_permissions (role_id, permission_id, assigned_at)
+              values
+              (1, 1, CURRENT_TIMESTAMP),
+              (1, 2, CURRENT_TIMESTAMP),
+              (1, 3, CURRENT_TIMESTAMP),
+              (1, 4, CURRENT_TIMESTAMP),
+              (1, 5, CURRENT_TIMESTAMP),
+              (1, 6, CURRENT_TIMESTAMP),
+              (1, 7, CURRENT_TIMESTAMP),
+              (1, 8, CURRENT_TIMESTAMP),
+              (1, 9, CURRENT_TIMESTAMP),
+              (1, 10, CURRENT_TIMESTAMP),
+              (1, 11, CURRENT_TIMESTAMP),
+              (1, 12, CURRENT_TIMESTAMP),
+              (1, 13, CURRENT_TIMESTAMP),
+              (1, 14, CURRENT_TIMESTAMP),
+              (1, 15, CURRENT_TIMESTAMP),
+              (1, 16, CURRENT_TIMESTAMP),
+              (1, 17, CURRENT_TIMESTAMP),
+              (1, 18, CURRENT_TIMESTAMP),
+              (1, 19, CURRENT_TIMESTAMP),
+              (1, 20, CURRENT_TIMESTAMP),
+              (1, 21, CURRENT_TIMESTAMP),
+              (1, 22, CURRENT_TIMESTAMP),
+              (1, 23, CURRENT_TIMESTAMP),
+              (1, 24, CURRENT_TIMESTAMP),
+              (1, 25, CURRENT_TIMESTAMP),
+              (1, 26, CURRENT_TIMESTAMP),
+              (2, 10, CURRENT_TIMESTAMP),
+              (2, 11, CURRENT_TIMESTAMP),
+              (2, 12, CURRENT_TIMESTAMP),
+              (2, 13, CURRENT_TIMESTAMP),
+              (2, 14, CURRENT_TIMESTAMP),
+              (2, 15, CURRENT_TIMESTAMP),
+              (2, 16, CURRENT_TIMESTAMP),
+              (2, 17, CURRENT_TIMESTAMP),
+              (2, 18, CURRENT_TIMESTAMP),
+              (2, 19, CURRENT_TIMESTAMP),
+              (2, 20, CURRENT_TIMESTAMP),
+              (2, 21, CURRENT_TIMESTAMP),
+              (2, 23, CURRENT_TIMESTAMP),
+              (2, 25, CURRENT_TIMESTAMP),
+              (3, 11, CURRENT_TIMESTAMP),
+              (3, 15, CURRENT_TIMESTAMP),
+              (3, 19, CURRENT_TIMESTAMP),
+              (3, 22, CURRENT_TIMESTAMP),
+              (3, 23, CURRENT_TIMESTAMP),
+              (3, 25, CURRENT_TIMESTAMP);
+
+  - changeSet:
+      id: 1787852569580-34
+      author: hogar
+      comment: Usuario ADMINISTRADOR inicial para poder iniciar sesion por primera vez
+      changes:
+        - sql:
+            sql: |
+              INSERT INTO users (username, password, first_names, last_names, email, role_id, status, failed_attempts)
+              VALUES (
+                'admin',
+                '$2b$10$waHk/05WjBZvJXk/4DO0z.6cFE3zbyRIL0NiWRGDVVEoX0tZDd2iy',
+                'Administrador',
+                'Del Sistema',
+                'admin@gestion-inventario.local',
+                1,
+                'ACTIVO',
+                0
+              );

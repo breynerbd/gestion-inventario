@@ -3,172 +3,168 @@ package com.gestioninventario.backend.application.service;
 import com.gestioninventario.backend.application.dto.auth.LoginRequestDTO;
 import com.gestioninventario.backend.application.dto.auth.LoginResponseDTO;
 import com.gestioninventario.backend.application.dto.auth.RefreshTokenRequestDTO;
-import com.gestioninventario.backend.application.dto.auth.RegistroRequestDTO;
-import com.gestioninventario.backend.domain.entity.Rol;
-import com.gestioninventario.backend.domain.entity.Usuario;
-import com.gestioninventario.backend.domain.entity.Bitacora;
-import com.gestioninventario.backend.domain.exception.CredencialesInvalidasException;
-import com.gestioninventario.backend.domain.exception.RecursoDuplicadoException;
-import com.gestioninventario.backend.domain.exception.RecursoNoEncontradoException;
-import com.gestioninventario.backend.domain.exception.UsuarioBloqueadoException;
-import com.gestioninventario.backend.domain.exception.UsuarioInactivoException;
-import com.gestioninventario.backend.infrastructure.persistence.repository.RolRepository;
-import com.gestioninventario.backend.infrastructure.persistence.repository.UsuarioRepository;
+import com.gestioninventario.backend.application.dto.auth.RegisterRequestDTO;
+import com.gestioninventario.backend.domain.entity.Role;
+import com.gestioninventario.backend.domain.entity.User;
+import com.gestioninventario.backend.domain.entity.Binnacle;
+import com.gestioninventario.backend.domain.exception.InvalidCredentialsException;
+import com.gestioninventario.backend.domain.exception.DuplicateResourceException;
+import com.gestioninventario.backend.domain.exception.ResourceNotFoundException;
+import com.gestioninventario.backend.domain.exception.BlockedUserException;
+import com.gestioninventario.backend.domain.exception.InactiveUserException;
+import com.gestioninventario.backend.infrastructure.persistence.repository.RoleRepository;
+import com.gestioninventario.backend.infrastructure.persistence.repository.UserRepository;
 import com.gestioninventario.backend.infrastructure.security.JwtService;
+
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class AuthService {
 
     private static final int MAX_INTENTOS = 5;
     private static final String ROL_REGISTRO = "OPERADOR";
+    private static final String TOKEN_TYPE = "Bearer";
 
-    private final UsuarioRepository usuarioRepository;
-    private final RolRepository rolRepository;
+    private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
-    private final BitacoraService bitacora;
+    private final BinnacleService binnacleService;
 
-    public AuthService(UsuarioRepository usuarioRepository, RolRepository rolRepository, PasswordEncoder passwordEncoder, JwtService jwtService, BitacoraService bitacora) {
-
-        this.usuarioRepository = usuarioRepository;
-        this.rolRepository = rolRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.jwtService = jwtService;
-        this.bitacora = bitacora;
-    }
-
-    private void validarDatosExistentes(RegistroRequestDTO registroRequest) {
-        if (usuarioRepository.existsByCorreoElectronico(registroRequest.getCorreo_electronico())) {
-            throw new RecursoDuplicadoException("El correo electrónico ya está registrado");
+    private void validateExistingData(RegisterRequestDTO registroRequest) {
+        if (userRepository.existsByEmail(registroRequest.getEmail())) {
+            throw new DuplicateResourceException("El correo electrónico ya está registrado");
         }
 
-        if (usuarioRepository.existsByNombreUsuario(registroRequest.getNombre_usuario())) {
-            throw new RecursoDuplicadoException("El nombre de usuario ya está registrado");
+        if (userRepository.existsByUsername(registroRequest.getUsername())) {
+            throw new DuplicateResourceException("El nombre de usuario ya está registrado");
         }
 
-        if (usuarioRepository.existsByTelefono(registroRequest.getTelefono())) {
-            throw new RecursoDuplicadoException("El teléfono ya está registrado");
+        if (userRepository.existsByPhone(registroRequest.getPhone())) {
+            throw new DuplicateResourceException("El teléfono ya está registrado");
         }
     }
 
-    private void validarEstadoUsuario(Usuario usuario) {
-        if (usuario.getEstado() == Usuario.Estado.BLOQUEADO) {
+    private void validateUserStatus(User user) {
+        if (user.getStatus() == User.Status.BLOQUEADO) {
 
-            throw new UsuarioBloqueadoException("El usuario se encuentra bloqueado");
+            throw new BlockedUserException("El usuario se encuentra bloqueado");
         }
 
-        if (usuario.getEstado() == Usuario.Estado.INACTIVO) {
+        if (user.getStatus() == User.Status.INACTIVO) {
 
-            throw new UsuarioInactivoException("El usuario se encuentra inactivo");
+            throw new InactiveUserException("El usuario se encuentra INACTIVO");
         }
     }
 
-    private void validarRolActivo(Rol rol) {
-        if (rol.getEstado() == Rol.Estado.INACTIVO) {
+    private void validateACTIVORole(Role rol) {
+        if (rol.getStatus() == Role.Status.INACTIVO) {
             throw new IllegalArgumentException("No te puedes registrar en este momento");
         }
     }
 
-    public LoginResponseDTO registrarUsuario(RegistroRequestDTO registroRequest) {
-        validarDatosExistentes(registroRequest);
+    public LoginResponseDTO registerUser(RegisterRequestDTO registerRequest) {
+        validateExistingData(registerRequest);
 
-        Rol rol = rolRepository.findByNombreRol(ROL_REGISTRO)
-            .orElseThrow(() -> new RecursoNoEncontradoException("El rol " + ROL_REGISTRO + " no existe"));
+        Role role = roleRepository.findByRoleName(ROL_REGISTRO)
+            .orElseThrow(() -> new ResourceNotFoundException("El rol " + ROL_REGISTRO + " no existe"));
 
-        validarRolActivo(rol);
+        validateACTIVORole(role);
 
-        Usuario usuario = new Usuario();
+        User user = new User();
 
-        usuario.setNombre_usuario(registroRequest.getNombre_usuario());
-        usuario.setContrasena(passwordEncoder.encode(registroRequest.getContrasena()));
-        usuario.setNombres(registroRequest.getNombres());
-        usuario.setApellidos(registroRequest.getApellidos());
-        usuario.setCorreo_electronico(registroRequest.getCorreo_electronico());
-        usuario.setTelefono(registroRequest.getTelefono());
-        usuario.setRol(rol);
-        usuario.setEstado(Usuario.Estado.ACTIVO);
-        usuario.setIntentos_fallidos(0);
+        user.setUsername(registerRequest.getUsername());
+        user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
+        user.setFirstNames(registerRequest.getFirstNames());
+        user.setLastNames(registerRequest.getLastNames());
+        user.setEmail(registerRequest.getEmail());
+        user.setPhone(registerRequest.getPhone());
+        user.setRole(role);
+        user.setStatus(User.Status.ACTIVO);
+        user.setFailedAttempts(0);
 
-        Usuario usuarioGuardado = usuarioRepository.save(usuario);
+        User savedUser = userRepository.save(user);
 
-        String accessToken = jwtService.generateAccessToken(usuarioGuardado);
+        String accessToken = jwtService.generateAccessToken(savedUser);
 
-        String refreshToken = jwtService.generateRefreshToken(usuarioGuardado);
+        String refreshToken = jwtService.generateRefreshToken(savedUser);
 
         LoginResponseDTO response = new LoginResponseDTO();
 
-        response.setAccess_token(accessToken);
-        response.setRefresh_token(refreshToken);
-        response.setTipo_token("Bearer");
-        response.setId_usuario(usuarioGuardado.getId_usuario());
-        response.setNombre_usuario(usuarioGuardado.getNombre_usuario());
+        response.setAccessToken(accessToken);
+        response.setRefreshToken(refreshToken);
+        response.setTokenType(TOKEN_TYPE);
+        response.setUserId(savedUser.getUserId());
+        response.setUsername(savedUser.getUsername());
 
-        if (usuarioGuardado.getRol() != null) {
-            response.setNombre_rol(usuarioGuardado.getRol().getNombre_rol());
+        if (savedUser.getRole() != null) {
+            response.setRoleName(savedUser.getRole().getRoleName());
         }
 
         return response;
     }
 
-    public LoginResponseDTO login(LoginRequestDTO loginRequest, String direccionIp) {
+    public LoginResponseDTO login(LoginRequestDTO loginRequest, String ipAddress) {
 
-        Usuario usuario = usuarioRepository
-            .findByNombreUsuario(loginRequest.getNombre_usuario()).orElse(null);
+        User user = userRepository
+            .findByUsername(loginRequest.getUsername()).orElse(null);
 
-        if(usuario == null){
-            bitacora.registrar(loginRequest.getNombre_usuario(), direccionIp, Bitacora.Resultado.FALLIDO);
+        if(user == null){
+            binnacleService.register(loginRequest.getUsername(), ipAddress, Binnacle.Result.FAILED);
 
-            throw new CredencialesInvalidasException("Credenciales Invalidas");
+            throw new InvalidCredentialsException("Credenciales Invalidas");
         }
 
-        validarEstadoUsuario(usuario);
+        validateUserStatus(user);
 
-        boolean contrasenaCorrecta = passwordEncoder.matches(loginRequest.getContrasena(),usuario.getContrasena());
+        boolean correctPassword  = passwordEncoder.matches(loginRequest.getPassword(),user.getPassword());
 
-        if (!contrasenaCorrecta) {
+        if (!correctPassword ) {
 
-            int intentos =
-                    usuario.getIntentos_fallidos() == null
+            int attempts =
+                    user.getFailedAttempts() == null
                             ? 0
-                            : usuario.getIntentos_fallidos();
+                            : user.getFailedAttempts();
 
-            intentos++;
+            attempts++;
 
-            usuario.setIntentos_fallidos(intentos);
+            user.setFailedAttempts(attempts);
 
-            if (intentos >= MAX_INTENTOS) {
-                usuario.setEstado(
-                        Usuario.Estado.BLOQUEADO);
+            if (attempts >= MAX_INTENTOS) {
+                user.setStatus(
+                        User.Status.BLOQUEADO);
             }
 
-            usuarioRepository.save(usuario);
+            userRepository.save(user);
 
-            bitacora.registrar(usuario.getNombre_usuario(), direccionIp, Bitacora.Resultado.FALLIDO);
+            binnacleService.register(user.getUsername(), ipAddress, Binnacle.Result.FAILED);
 
-            throw new CredencialesInvalidasException("Credenciales inválidas");
+            throw new InvalidCredentialsException("Credenciales inválidas");
         }
 
-        usuarioRepository.save(usuario);
+        userRepository.save(user);
 
-        bitacora.registrar(usuario.getNombre_usuario(), direccionIp, Bitacora.Resultado.EXITOSO);
+        binnacleService.register(user.getUsername(), ipAddress, Binnacle.Result.SUCCESSFUL);
 
-        String accessToken = jwtService.generateAccessToken(usuario);
+        String accessToken = jwtService.generateAccessToken(user);
 
-        String refreshToken =jwtService.generateRefreshToken(usuario);
+        String refreshToken =jwtService.generateRefreshToken(user);
 
         LoginResponseDTO response = new LoginResponseDTO();
 
-        response.setAccess_token(accessToken);
-        response.setRefresh_token(refreshToken);
-        response.setTipo_token("Bearer");
-        response.setId_usuario(usuario.getId_usuario());
-        response.setNombre_usuario(usuario.getNombre_usuario());
+        response.setAccessToken(accessToken);
+        response.setRefreshToken(refreshToken);
+        response.setTokenType(TOKEN_TYPE);
+        response.setUserId(user.getUserId());
+        response.setUsername(user.getUsername());
 
-        if (usuario.getRol() != null) {
-            response.setNombre_rol(
-                    usuario.getRol().getNombre_rol());
+        if (user.getRole() != null) {
+            response.setRoleName(
+                    user.getRole().getRoleName());
         }
 
         return response;
@@ -176,44 +172,44 @@ public class AuthService {
 
     public LoginResponseDTO refreshToken(RefreshTokenRequestDTO refreshRequest) {
 
-        String refreshToken = refreshRequest.getRefresh_token();
+        String refreshToken = refreshRequest.getRefreshToken();
 
-        String correoElectronico;
+        String email;
 
         try {
-            correoElectronico = jwtService.extractUsername(refreshToken);
+            email = jwtService.extractUsername(refreshToken);
         } catch (Exception e) {
             throw new IllegalArgumentException("Refresh token inválido");
         }
 
-        Usuario usuario = usuarioRepository
-            .findByCorreoElectronico(correoElectronico)
-            .orElseThrow(() -> new RecursoNoEncontradoException("El usuario no existe"));
+        User user = userRepository
+            .findByEmail(email)
+            .orElseThrow(() -> new ResourceNotFoundException("El usuario no existe"));
 
         if (!jwtService.isRefreshTokenValid(
                 refreshToken,
-                usuario.getCorreo_electronico())) {
+                user.getEmail())) {
 
             throw new IllegalArgumentException("El refresh token es inválido o ha expirado");
         }
 
-        validarEstadoUsuario(usuario);
+        validateUserStatus(user);
 
-        String nuevoAccessToken = jwtService.generateAccessToken(usuario);
+        String newAccessToken = jwtService.generateAccessToken(user);
 
-        String nuevoRefreshToken = jwtService.generateRefreshToken(usuario);
+        String newRefreshToken = jwtService.generateRefreshToken(user);
 
         LoginResponseDTO response = new LoginResponseDTO();
 
-        response.setAccess_token(nuevoAccessToken);
-        response.setRefresh_token(nuevoRefreshToken);
-        response.setTipo_token("Bearer");
-        response.setId_usuario(usuario.getId_usuario());
-        response.setNombre_usuario(usuario.getNombre_usuario());
+        response.setAccessToken(newAccessToken);
+        response.setRefreshToken(newRefreshToken);
+        response.setTokenType(TOKEN_TYPE);
+        response.setUserId(user.getUserId());
+        response.setUsername(user.getUsername());
 
-        if (usuario.getRol() != null) {
+        if (user.getRole() != null) {
 
-            response.setNombre_rol(usuario.getRol().getNombre_rol());
+            response.setRoleName(user.getRole().getRoleName());
         }
 
         return response;

@@ -1,0 +1,54 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1787852569580-8
+      author: hogar
+      changes:
+        - createTable:
+            tableName: permissions
+            columns:
+              - column:
+                  name: permission_id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: permissions_pkey
+
+              - column:
+                  name: permission_code
+                  type: VARCHAR(60)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: permission_name
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: module
+                  type: VARCHAR(30)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: description
+                  type: VARCHAR(200)
+
+              - column:
+                  name: status
+                  type: VARCHAR(10)
+                  defaultValue: ACTIVO
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: 1787852569580-17
+      author: hogar  
+      changes:
+        - addUniqueConstraint:
+            columnNames: permission_code
+            constraintName: permissions_permission_code_key
+            tableName: permissions

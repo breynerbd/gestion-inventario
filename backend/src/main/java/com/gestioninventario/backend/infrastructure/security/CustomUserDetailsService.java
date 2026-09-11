@@ -1,36 +1,35 @@
 package com.gestioninventario.backend.infrastructure.security;
 
-import com.gestioninventario.backend.domain.entity.Usuario;
-import com.gestioninventario.backend.infrastructure.persistence.repository.UsuarioRepository;
+import com.gestioninventario.backend.domain.entity.User;
+import com.gestioninventario.backend.infrastructure.persistence.repository.UserRepository;
+
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+@RequiredArgsConstructor 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
-    private final UsuarioRepository usuarioRepository;
-
-    public CustomUserDetailsService(UsuarioRepository usuarioRepository) {
-        this.usuarioRepository = usuarioRepository;
-    }
+    private final UserRepository usuarioRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String correo) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 
-        Usuario usuario = usuarioRepository
-            .findByCorreoElectronico(correo)
-            .orElseThrow(() -> new UsernameNotFoundException("El usuario con correo " + correo + " no existe"));
+        User user = usuarioRepository
+            .findByEmail(email)
+            .orElseThrow(() -> new UsernameNotFoundException("El usuario con correo " + email + " no existe"));
 
-        return User.builder()
-            .username(usuario.getCorreo_electronico())
-            .password(usuario.getContrasena())
+        return org.springframework.security.core.userdetails.User.builder()
+            .username(user.getEmail())
+            .password(user.getPassword())
             .authorities(
                 new SimpleGrantedAuthority(
-                    "ROLE_" + usuario.getRol().getNombre_rol()
+                    "ROLE_" + user.getRole().getRoleName()
                 )
             )
             .build();

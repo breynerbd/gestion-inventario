@@ -1,142 +1,126 @@
 package com.gestioninventario.backend.infrastructure.security;
 
-import com.gestioninventario.backend.domain.entity.Usuario;
+import java.nio.charset.StandardCharsets;
+import java.time.Instant;
+import java.util.Date;
+import java.util.Map;
+
+import javax.crypto.SecretKey;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
+import com.gestioninventario.backend.domain.entity.User;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
-import javax.crypto.SecretKey;
-import java.nio.charset.StandardCharsets;
-import java.util.Date;
-import java.util.Map;
-import java.util.function.Function;
-
 @Service
 public class JwtService {
 
-    private final String secretKey;
-    private final long accessExpiration;
-    private final long refreshExpiration;
+        private final String secretKey;
+        private final long accessExpiration;
+        private final long refreshExpiration;
 
-    public JwtService(
-            @Value("${app.security.jwt.secret}") String secretKey,
-            @Value("${app.security.jwt.access-expiration}") long accessExpiration,
-            @Value("${app.security.jwt.refresh-expiration}") long refreshExpiration) {
+        public JwtService(
+                @Value("${app.security.jwt.secret}") String secretKey,
+                @Value("${app.security.jwt.access-expiration}") long accessExpiration,
+                @Value("${app.security.jwt.refresh-expiration}") long refreshExpiration) {
 
-        this.secretKey = secretKey;
-        this.accessExpiration = accessExpiration;
-        this.refreshExpiration = refreshExpiration;
-    }
+                this.secretKey = secretKey;
+                this.accessExpiration = accessExpiration;
+                this.refreshExpiration = refreshExpiration;
+        }
 
-    private SecretKey getSigningKey() {
-        return Keys.hmacShaKeyFor(
-                secretKey.getBytes(StandardCharsets.UTF_8)
-        );
-    }
+        private SecretKey getSigningKey() {
+                return Keys.hmacShaKeyFor(
+                        secretKey.getBytes(StandardCharsets.UTF_8)
+                );
+        }
 
-    public String generateAccessToken(Usuario usuario) {
+        public String generateAccessToken(User user) {
+                Map<String, Object> claims = Map.of(
+                        "type", "ACCESS",
+                        "role", user.getRole() != null
+                                ? user.getRole().getRoleName()
+                                : ""
+                );
 
-        Map<String, Object> claims = Map.of(
-                "tipo", "ACCESS",
-                "rol", usuario.getRol() != null
-                        ? usuario.getRol().getNombre_rol()
-                        : ""
-        );
+                Instant now = Instant.now();
+                Instant expiration = now.plusMillis(accessExpiration);
 
-        return Jwts.builder()
-                .claims(claims)
-                .subject(usuario.getCorreo_electronico())
-                .issuedAt(new Date())
-                .expiration(
-                        new Date(
-                                System.currentTimeMillis()
-                                        + accessExpiration
-                        )
-                )
-                .signWith(getSigningKey())
-                .compact();
-    }
+                return Jwts.builder()
+                        .claims(claims)
+                        .subject(user.getEmail())
+                        .issuedAt(Date.from(now))
+                        .expiration(Date.from(expiration))
+                        .signWith(getSigningKey())
+                        .compact();
+        }
 
-    public String generateRefreshToken(Usuario usuario) {
+        public String generateRefreshToken(User user) {
+                Map<String, Object> claims = Map.of(
+                        "type", "REFRESH"
+                );
 
-        Map<String, Object> claims = Map.of(
-                "tipo", "REFRESH"
-        );
+                Instant now = Instant.now();
+                Instant expiration = now.plusMillis(refreshExpiration);
 
-        return Jwts.builder()
-                .claims(claims)
-                .subject(usuario.getCorreo_electronico())
-                .issuedAt(new Date())
-                .expiration(
-                        new Date(
-                                System.currentTimeMillis()
-                                        + refreshExpiration
-                        )
-                )
-                .signWith(getSigningKey())
-                .compact();
-    }
+                return Jwts.builder()
+                        .claims(claims)
+                        .subject(user.getEmail())
+                        .issuedAt(Date.from(now))
+                        .expiration(Date.from(expiration))
+                        .signWith(getSigningKey())
+                        .compact();
+        }
 
-    public String extractUsername(String token) {
-        return extractClaim(token, claims -> claims.getSubject());
-    }
+        public String extractUsername(String token) {
+                return extractAllClaims(token).getSubject();
+        }
 
-    public String extractTipo(String token) {
-        return extractClaim(
-                token,
-                claims -> claims.get("tipo", String.class)
-        );
-    }
+        public String extractType(String token) {
+                return extractAllClaims(token)
+                        .get("type", String.class);
+        }
 
-    public boolean isRefreshTokenValid(
-            String token,
-            String correoElectronico) {
+        public boolean isRefreshTokenValid(
+                String token,
+                String email) {
 
-        String username = extractUsername(token);
+                String username = extractUsername(token);
 
-        return username.equals(correoElectronico)
-                && !isTokenExpired(token)
-                && "REFRESH".equals(extractTipo(token));
-    }
+                return username != null
+                        && username.equals(email)
+                        && !isTokenExpired(token)
+                        && "REFRESH".equals(extractType(token));
+        }
 
-    public boolean isTokenValid(
-            String token,
-            String correoElectronico) {
+        public boolean isTokenValid(
+                String token,
+                String email) {
 
-        String username = extractUsername(token);
+                String username = extractUsername(token);
 
-        return username.equals(correoElectronico)
-                && !isTokenExpired(token)
-                && "ACCESS".equals(extractTipo(token));
-    }
+                return username != null
+                        && username.equals(email)
+                        && !isTokenExpired(token)
+                        && "ACCESS".equals(extractType(token));
+        }
 
-    private boolean isTokenExpired(String token) {
-        return extractExpiration(token).before(new Date());
-    }
+        private boolean isTokenExpired(String token) {
+                Date expiration = extractAllClaims(token).getExpiration();
 
-    private Date extractExpiration(String token) {
-        return extractClaim(token, claims -> claims.getExpiration());
-    }
+                return expiration != null
+                        && expiration.toInstant().isBefore(Instant.now());
+        }
 
-    private <T> T extractClaim(
-            String token,
-            Function<Claims, T> claimsResolver) {
-
-        Claims claims = extractAllClaims(token);
-
-        return claimsResolver.apply(claims);
-    }
-
-    private Claims extractAllClaims(String token) {
-
-        return Jwts.parser()
-                .verifyWith(getSigningKey())
-                .build()
-                .parseSignedClaims(token)
-                .getPayload();
-    }
+        private Claims extractAllClaims(String token) {
+                return Jwts.parser()
+                        .verifyWith(getSigningKey())
+                        .build()
+                        .parseSignedClaims(token)
+                        .getPayload();
+        }
 }

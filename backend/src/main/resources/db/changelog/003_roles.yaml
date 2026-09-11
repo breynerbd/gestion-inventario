@@ -7,7 +7,7 @@ databaseChangeLog:
             tableName: roles
             columns:
               - column:
-                  name: id_rol
+                  name: role_id
                   type: BIGINT
                   autoIncrement: true
                   constraints:
@@ -16,17 +16,17 @@ databaseChangeLog:
                     primaryKeyName: roles_pkey
 
               - column:
-                  name: nombre_rol
+                  name: role_name
                   type: VARCHAR(50)
                   constraints:
                     nullable: false
 
               - column:
-                  name: descripcion
+                  name: description
                   type: VARCHAR(200)
 
               - column:
-                  name: estado
+                  name: status
                   type: VARCHAR(10)
                   defaultValue: ACTIVO
                   constraints:
@@ -37,6 +37,6 @@ databaseChangeLog:
       author: hogar  
       changes:
         - addUniqueConstraint:
-            columnNames: nombre_rol
-            constraintName: roles_nombre_rol_key
+            columnNames: role_name
+            constraintName: roles_role_name_key
             tableName: roles

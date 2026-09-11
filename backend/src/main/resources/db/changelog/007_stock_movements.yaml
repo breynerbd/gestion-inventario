@@ -1,0 +1,90 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1787852569580-6
+      author: hogar
+      changes:
+        - createTable:
+            tableName: stock_movements
+            columns:
+              - column:
+                  name: movement_id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: stock_movements_pkey
+
+              - column:
+                  name: movement_type
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: product_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: quantity
+                  type: INTEGER
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: reference_document
+                  type: VARCHAR(30)
+
+              - column:
+                  name: reason
+                  type: VARCHAR(250)
+
+              - column:
+                  name: user_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: movement_date
+                  type: TIMESTAMP WITHOUT TIME ZONE
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+                    
+              - column:
+                  name: status
+                  type: VARCHAR(10)
+                  defaultValue: ACTIVO
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: 1787852569580-18
+      author: hogar  
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: product_id
+            baseTableName: stock_movements
+            constraintName: fk_movements_products
+            referencedColumnNames: product_id
+            referencedTableName: products
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            validate: true
+
+  - changeSet:
+      id: 1787852569580-19
+      author: hogar  
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: user_id
+            baseTableName: stock_movements
+            constraintName: fk_movements_users
+            referencedColumnNames: user_id
+            referencedTableName: users
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            validate: true
