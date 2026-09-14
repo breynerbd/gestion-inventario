@@ -25,7 +25,7 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor 
-@RequestMapping("/api/supplier")
+@RequestMapping("/api/suppliers")
 public class SupplierController {
 
     private final SupplierService service;
