@@ -42,11 +42,11 @@ databaseChangeLog:
               (19, 'PRODUCTOS_LEER', 'Consultar productos', 'PRODUCTOS'),
               (20, 'PRODUCTOS_EDITAR', 'Editar productos', 'PRODUCTOS'),
               (21, 'PRODUCTOS_INACTIVAR', 'Inactivar productos', 'PRODUCTOS'),
-              (22, 'MOVIMIENTOS_CREAR', 'Registrar movimientos de stock', 'MOVIMIENTOS'),
-              (23, 'MOVIMIENTOS_LEER', 'Consultar movimientos de stock', 'MOVIMIENTOS'),
-              (24, 'MOVIMIENTOS_EDITAR', 'Editar movimientos de stock', 'MOVIMIENTOS'),
+              (22, 'MOVIMIENTOS_CREAR', 'Registrar movimientos de stock', 'MOVIMIENTOS_STOCK'),
+              (23, 'MOVIMIENTOS_LEER', 'Consultar movimientos de stock', 'MOVIMIENTOS_STOCK'),
+              (24, 'MOVIMIENTOS_EDITAR', 'Editar movimientos de stock', 'MOVIMIENTOS_STOCK'),
               (25, 'REPORTES_LEER', 'Consultar tablero de control y reportes', 'REPORTES'),
-              (26, 'MOVIMIENTOS_INACTIVAR', 'Inactivar movimientos de stock', 'MOVIMIENTOS');
+              (26, 'MOVIMIENTOS_INACTIVAR', 'Inactivar movimientos de stock', 'MOVIMIENTOS_STOCK');
 
   - changeSet:
       id: 1787852569580-32
