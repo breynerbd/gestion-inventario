@@ -53,24 +53,24 @@ public class CategoryService {
         return mapper.toResponseDTO(updatedCategory);
     }
 
-    public CategoryResponseDTO changeStatus(Long categoryId,Category.Status estado) {
+    public CategoryResponseDTO changeStatus(Long categoryId,Category.Status status) {
 
-    Category category = repository.findById(categoryId)
-        .orElseThrow(() -> new ResourceNotFoundException(CATEGORY_NOT_FOUND + categoryId + CATEGORY_NOT_EXIST));
+        Category category = repository.findById(categoryId)
+            .orElseThrow(() -> new ResourceNotFoundException(CATEGORY_NOT_FOUND + categoryId + CATEGORY_NOT_EXIST));
 
-    if (category.getStatus() == estado) {
-        String message = switch (estado) {
-            case ACTIVO -> "La categoria ya esta activa";
-            case INACTIVO -> "La categoria ya esta inactiva";
-        };
+        if (category.getStatus() == status) {
+            String message = switch (status) {
+                case ACTIVO -> "La categoria ya esta activa";
+                case INACTIVO -> "La categoria ya esta inactiva";
+            };
 
-        throw new StatusUnchangedException(message);
+            throw new StatusUnchangedException(message);
+        }
+
+        category.setStatus(status);
+
+        Category categoryActualizada = repository.save(category);
+
+        return mapper.toResponseDTO(categoryActualizada);
     }
-
-    category.setStatus(estado);
-
-    Category categoryActualizada = repository.save(category);
-
-    return mapper.toResponseDTO(categoryActualizada);
-}
 }
