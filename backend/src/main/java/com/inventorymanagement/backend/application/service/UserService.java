@@ -106,7 +106,7 @@ public class UserService {
             String message = switch(status){
                 case ACTIVO -> "El usuario ya esta ACTIVO";
                 case INACTIVO -> "El usuario ya esta INACTIVO";
-                case BLOQUEADO -> "El usuario ya esta bloqueado";
+                case BLOQUEADO -> "El usuario ya esta BLOQUEADO";
             };
             throw new StatusUnchangedException(message);
         }
