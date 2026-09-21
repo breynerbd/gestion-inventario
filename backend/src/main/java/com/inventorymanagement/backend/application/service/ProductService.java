@@ -35,11 +35,11 @@ public class ProductService {
 
     private void validateActiveEntities(Category category, Supplier proveedor) {
         if (category.getStatus() == Category.Status.INACTIVO) {
-            throw new IllegalArgumentException("No se puede asociar el producto a una category inactiva");
+            throw new IllegalArgumentException("No se puede asociar el producto a una categoria inactiva");
         }
 
         if (proveedor.getStatus() == Supplier.Status.INACTIVO) {
-            throw new IllegalArgumentException("No se puede asociar el producto a un proveedor INACTIVO");
+            throw new IllegalArgumentException("No se puede asociar el producto a un proveedor inactivo");
         }
     }
 
@@ -99,7 +99,7 @@ public class ProductService {
         );
 
         Category category = categoryRepository.findById(productDto.getCategoryId()) 
-            .orElseThrow(() -> new ResourceNotFoundException( "La category " + productDto.getCategoryId() + NOT_EXIST ));
+            .orElseThrow(() -> new ResourceNotFoundException( "La categoria " + productDto.getCategoryId() + NOT_EXIST ));
 
         Supplier supplier = proveedorRepository.findById(productDto.getSupplierId()) 
             .orElseThrow(() -> new ResourceNotFoundException( "El proveedor " + productDto.getSupplierId() + NOT_EXIST));
@@ -125,7 +125,7 @@ public class ProductService {
             .orElseThrow(() -> new ResourceNotFoundException(PRODUCT_NOT_FOUND + productId + NOT_EXIST)); 
             
         Category category = categoryRepository.findById(productDto.getCategoryId()) 
-            .orElseThrow(() -> new ResourceNotFoundException("La category " + productDto.getCategoryId() + NOT_EXIST)); 
+            .orElseThrow(() -> new ResourceNotFoundException("La categoria " + productDto.getCategoryId() + NOT_EXIST)); 
             
         Supplier supplier = proveedorRepository.findById(productDto.getSupplierId()) 
             .orElseThrow(() -> new ResourceNotFoundException("El proveedor " + productDto.getSupplierId() + NOT_EXIST));
