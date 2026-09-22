@@ -18,6 +18,8 @@ import com.inventorymanagement.backend.infrastructure.security.JwtService;
 
 import lombok.RequiredArgsConstructor;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +31,8 @@ public class AuthService {
     private static final String REGISTER_ROLE = "OPERADOR";
     private static final String TOKEN_TYPE = "Bearer";
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(AuthService.class);
+
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
@@ -36,6 +40,7 @@ public class AuthService {
     private final BinnacleService binnacleService;
 
     private void validateExistingData(RegisterRequestDTO registerRequest) {
+        LOGGER.debug("Vilidando datos existentes para el registro");
         if (userRepository.existsByEmail(registerRequest.getEmail())) {
             throw new DuplicateResourceException("El correo electrónico ya está registrado");
         }
@@ -50,6 +55,7 @@ public class AuthService {
     }
 
     private void validateUserStatus(User user) {
+        LOGGER.debug("Vilidando estado del usuario");
         if (user.getStatus() == User.Status.BLOQUEADO) {
 
             throw new BlockedUserException("El usuario se encuentra bloqueado");
@@ -62,16 +68,21 @@ public class AuthService {
     }
 
     private void validateActiveRole(Role role) {
+        LOGGER.debug("Vilidando estado del rol");
         if (role.getStatus() == Role.Status.INACTIVO) {
             throw new IllegalArgumentException("No te puedes registrar en este momento");
         }
     }
 
     public LoginResponseDTO registerUser(RegisterRequestDTO registerRequest) {
+        LOGGER.debug("Registrando al usuario: {}", registerRequest.getUsername());
         validateExistingData(registerRequest);
 
         Role role = roleRepository.findByRoleName(REGISTER_ROLE)
-            .orElseThrow(() -> new ResourceNotFoundException("El rol " + REGISTER_ROLE + " no existe"));
+            .orElseThrow(() -> {
+                LOGGER.warn("No se encontro el rol: {}", REGISTER_ROLE);
+                return new ResourceNotFoundException("El rol " + REGISTER_ROLE + " no existe");}
+            );
 
         validateActiveRole(role);
 
@@ -105,17 +116,21 @@ public class AuthService {
             response.setRoleName(savedUser.getRole().getRoleName());
         }
 
+        LOGGER.info("Se registro el usuario {}: {}", savedUser.getUserId(), savedUser.getUsername());
+
         return response;
     }
 
     public LoginResponseDTO login(LoginRequestDTO loginRequest, String ipAddress) {
+        LOGGER.debug("Iniciando sesion para: {}", loginRequest.getUsername());
 
         User user = userRepository
             .findByUsername(loginRequest.getUsername()).orElse(null);
 
         if(user == null){
+            LOGGER.warn("No se encontro el usuario: {}", loginRequest.getUsername());
             binnacleService.register(loginRequest.getUsername(), ipAddress, Binnacle.Result.FAILED);
-
+            
             throw new InvalidCredentialsException("Credenciales Invalidas");
         }
 
@@ -167,10 +182,13 @@ public class AuthService {
                     user.getRole().getRoleName());
         }
 
+        LOGGER.info("Inicio de sesion exitoso para: {}", user.getUsername());
+
         return response;
     }
 
     public LoginResponseDTO refreshToken(RefreshTokenRequestDTO refreshRequest) {
+        LOGGER.debug("Renovando token");
 
         String refreshToken = refreshRequest.getRefreshToken();
 
@@ -179,17 +197,22 @@ public class AuthService {
         try {
             email = jwtService.extractUsername(refreshToken);
         } catch (Exception e) {
+            LOGGER.warn("El refresh token no es valido");
             throw new IllegalArgumentException("Refresh token inválido");
         }
 
         User user = userRepository
             .findByEmail(email)
-            .orElseThrow(() -> new ResourceNotFoundException("El usuario no existe"));
+            .orElseThrow(() -> {
+                LOGGER.warn("No se encontro el usuario para renovar el token");
+                return new ResourceNotFoundException("El usuario no existe");}
+            );
 
         if (!jwtService.isRefreshTokenValid(
                 refreshToken,
                 user.getEmail())) {
 
+            LOGGER.warn("El refresh token es inválido o ha expirado");
             throw new IllegalArgumentException("El refresh token es inválido o ha expirado");
         }
 
@@ -211,6 +234,8 @@ public class AuthService {
 
             response.setRoleName(user.getRole().getRoleName());
         }
+
+        LOGGER.info("El token se renovo correctamente");
 
         return response;
     }
