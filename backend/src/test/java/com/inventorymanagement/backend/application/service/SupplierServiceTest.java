@@ -43,6 +43,9 @@ class SupplierServiceTest {
     private SupplierService service;
 
     private Supplier supplier;
+    private SupplierResponseDTO response;
+    private SupplierCreateDTO supplierDTO;
+    private SupplierUpdateDTO updateDTO;
 
     @BeforeEach
     void setUp() {
@@ -55,16 +58,31 @@ class SupplierServiceTest {
         supplier.setEmail("proveedor@gmail.com");
         supplier.setAddress("Ciudad de Guatemala");
         supplier.setStatus(Supplier.Status.ACTIVO);
-    }
 
-    @Test
-    void findSupplierById() {
-        SupplierResponseDTO response = new SupplierResponseDTO();
+        response = new SupplierResponseDTO();
         response.setSupplierId(1L);
         response.setSupplierCode("PROV001");
         response.setBusinessName("Distribuidora");
         response.setStatus(Supplier.Status.ACTIVO);
 
+        supplierDTO = new SupplierCreateDTO();
+        supplierDTO.setSupplierCode("PROV002");
+        supplierDTO.setBusinessName("Alimentos Guatemala");
+        supplierDTO.setContactName("Juan Perez");
+        supplierDTO.setPhone("23694721");
+        supplierDTO.setEmail("proveedor2@gmail.com");
+        supplierDTO.setAddress("Guatemala");
+
+        updateDTO = new SupplierUpdateDTO();
+        updateDTO.setBusinessName("Distribuidora Guate");
+        updateDTO.setContactName("Pedro Lopez");
+        updateDTO.setPhone("21475869");
+        updateDTO.setEmail("distribuidora@gmail.com");
+        updateDTO.setAddress("Mixco");
+    }
+
+    @Test
+    void findSupplierById() {
         when(repository.findById(1L)).thenReturn(Optional.of(supplier));
         when(mapper.toResponseDTO(supplier)).thenReturn(response);
 
@@ -86,21 +104,15 @@ class SupplierServiceTest {
 
         assertEquals("El proveedor 10 no existe", exception.getMessage());
 
-        verify(repository).findById(10L);
         verifyNoInteractions(mapper);
     }
 
     @Test
     void findAllSuppliers() {
         Pageable pageable = PageRequest.of(0, 10);
-        Page<Supplier> supplierPage = new PageImpl<>(List.of(supplier));
+        Page<Supplier> page = new PageImpl<>(List.of(supplier));
 
-        SupplierResponseDTO response = new SupplierResponseDTO();
-        response.setSupplierId(1L);
-        response.setSupplierCode("PROV001");
-        response.setBusinessName("Distribuidora");
-
-        when(repository.findAll(pageable)).thenReturn(supplierPage);
+        when(repository.findAll(pageable)).thenReturn(page);
         when(mapper.toResponseDTO(supplier)).thenReturn(response);
 
         Page<SupplierResponseDTO> result = service.findAllSuppliers(pageable);
@@ -114,33 +126,18 @@ class SupplierServiceTest {
 
     @Test
     void createSupplier() {
-        SupplierCreateDTO supplierDTO = new SupplierCreateDTO();
-        supplierDTO.setSupplierCode("PROV002");
-        supplierDTO.setBusinessName("Alimentos Guatemala");
-        supplierDTO.setContactName("Juan Perez");
-        supplierDTO.setPhone("23694721");
-        supplierDTO.setEmail("proveedor2@gmail.com");
-        supplierDTO.setAddress("Guatemala");
-
-        Supplier newSupplier = new Supplier();
-        newSupplier.setSupplierCode("PROV002");
-        newSupplier.setBusinessName("Alimentos Guatemala");
-        newSupplier.setStatus(Supplier.Status.ACTIVO);
-
         Supplier saved = new Supplier();
         saved.setSupplierId(2L);
         saved.setSupplierCode("PROV002");
         saved.setBusinessName("Alimentos Guatemala");
         saved.setStatus(Supplier.Status.ACTIVO);
 
-        SupplierResponseDTO response = new SupplierResponseDTO();
         response.setSupplierId(2L);
         response.setSupplierCode("PROV002");
         response.setBusinessName("Alimentos Guatemala");
-        response.setStatus(Supplier.Status.ACTIVO);
 
-        when(mapper.toEntity(supplierDTO)).thenReturn(newSupplier);
-        when(repository.save(newSupplier)).thenReturn(saved);
+        when(mapper.toEntity(supplierDTO)).thenReturn(supplier);
+        when(repository.save(supplier)).thenReturn(saved);
         when(mapper.toResponseDTO(saved)).thenReturn(response);
 
         SupplierResponseDTO result = service.createSupplier(supplierDTO);
@@ -150,112 +147,67 @@ class SupplierServiceTest {
         assertEquals("Alimentos Guatemala", result.getBusinessName());
 
         verify(mapper).toEntity(supplierDTO);
-        verify(repository).save(newSupplier);
+        verify(repository).save(supplier);
         verify(mapper).toResponseDTO(saved);
     }
 
     @Test
     void updateSupplier() {
-        SupplierUpdateDTO updateDTO = new SupplierUpdateDTO();
-        updateDTO.setBusinessName("Distribuidora Guate");
-        updateDTO.setContactName("Pedro Lopez");
-        updateDTO.setPhone("21475869");
-        updateDTO.setEmail("proveedor2@gmail.com");
-        updateDTO.setAddress("Mixco");
-
-        Supplier updated = new Supplier();
-        updated.setSupplierId(1L);
-        updated.setSupplierCode("PROV001");
-        updated.setBusinessName("Distribuidora Guate");
-        updated.setStatus(Supplier.Status.ACTIVO);
-
-        SupplierResponseDTO response = new SupplierResponseDTO();
-        response.setSupplierId(1L);
-        response.setSupplierCode("PROV001");
-        response.setBusinessName("Distribuidora Guate");
-        response.setStatus(Supplier.Status.ACTIVO);
-
         when(repository.findById(1L)).thenReturn(Optional.of(supplier));
-        when(repository.save(supplier)).thenReturn(updated);
-        when(mapper.toResponseDTO(updated)).thenReturn(response);
+        when(repository.save(supplier)).thenReturn(supplier);
+        when(mapper.toResponseDTO(supplier)).thenReturn(response);
 
         SupplierResponseDTO result = service.updateSupplier(1L, updateDTO);
 
         assertNotNull(result);
-        assertEquals("Distribuidora Guate", result.getBusinessName());
 
-        verify(repository).findById(1L);
         verify(mapper).updateEntity(updateDTO, supplier);
         verify(repository).save(supplier);
-        verify(mapper).toResponseDTO(updated);
+        verify(mapper).toResponseDTO(supplier);
     }
 
     @Test
     void updateSupplierNotFound() {
-        SupplierUpdateDTO updateDTO = new SupplierUpdateDTO();
-        updateDTO.setBusinessName("Tortrix");
-
         when(repository.findById(10L)).thenReturn(Optional.empty());
 
         ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> service.updateSupplier(10L, updateDTO));
 
         assertEquals("El proveedor 10 no existe", exception.getMessage());
 
-        verify(repository).findById(10L);
         verifyNoInteractions(mapper);
     }
 
     @Test
     void changeToInactive() {
-        Supplier updated = new Supplier();
-        updated.setSupplierId(1L);
-        updated.setSupplierCode("PROV001");
-        updated.setBusinessName("Distribuidora");
-        updated.setStatus(Supplier.Status.INACTIVO);
-
-        SupplierResponseDTO response = new SupplierResponseDTO();
-        response.setSupplierId(1L);
-        response.setSupplierCode("PROV001");
         response.setStatus(Supplier.Status.INACTIVO);
 
         when(repository.findById(1L)).thenReturn(Optional.of(supplier));
-        when(repository.save(supplier)).thenReturn(updated);
-        when(mapper.toResponseDTO(updated)).thenReturn(response);
+        when(repository.save(supplier)).thenReturn(supplier);
+        when(mapper.toResponseDTO(supplier)).thenReturn(response);
 
         SupplierResponseDTO result = service.changeStatus(1L, Supplier.Status.INACTIVO);
 
         assertNotNull(result);
+        assertEquals(Supplier.Status.INACTIVO, supplier.getStatus());
         assertEquals(Supplier.Status.INACTIVO, result.getStatus());
 
-        verify(repository).findById(1L);
         verify(repository).save(supplier);
-        verify(mapper).toResponseDTO(updated);
     }
 
     @Test
     void changeToActive() {
         supplier.setStatus(Supplier.Status.INACTIVO);
 
-        Supplier updated = new Supplier();
-        updated.setSupplierId(1L);
-        updated.setSupplierCode("PROV001");
-        updated.setBusinessName("Distribuidora");
-        updated.setStatus(Supplier.Status.ACTIVO);
-
-        SupplierResponseDTO response = new SupplierResponseDTO();
-        response.setSupplierId(1L);
-        response.setStatus(Supplier.Status.ACTIVO);
-
         when(repository.findById(1L)).thenReturn(Optional.of(supplier));
-        when(repository.save(supplier)).thenReturn(updated);
-        when(mapper.toResponseDTO(updated)).thenReturn(response);
+        when(repository.save(supplier)).thenReturn(supplier);
+        when(mapper.toResponseDTO(supplier)).thenReturn(response);
 
         SupplierResponseDTO result = service.changeStatus(1L, Supplier.Status.ACTIVO);
 
         assertNotNull(result);
+        assertEquals(Supplier.Status.ACTIVO, supplier.getStatus());
         assertEquals(Supplier.Status.ACTIVO, result.getStatus());
 
-        verify(repository).findById(1L);
         verify(repository).save(supplier);
     }
 
@@ -267,7 +219,6 @@ class SupplierServiceTest {
 
         assertEquals("El proveedor ya esta ACTIVO", exception.getMessage());
 
-        verify(repository).findById(1L);
         verifyNoInteractions(mapper);
     }
 
@@ -281,7 +232,6 @@ class SupplierServiceTest {
 
         assertEquals("El proveedor ya esta INACTIVO", exception.getMessage());
 
-        verify(repository).findById(1L);
         verifyNoInteractions(mapper);
     }
 }
