@@ -118,7 +118,7 @@ class SupplierServiceTest {
         Page<SupplierResponseDTO> result = service.findAllSuppliers(pageable);
 
         assertEquals(1, result.getTotalElements());
-        assertEquals("PROV001", result.getContent().get(0).getSupplierCode());
+        assertEquals("PROV001", result.getContent().getFirst().getSupplierCode());
 
         verify(repository).findAll(pageable);
         verify(mapper).toResponseDTO(supplier);

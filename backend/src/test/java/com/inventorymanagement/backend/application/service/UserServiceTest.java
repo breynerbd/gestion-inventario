@@ -128,7 +128,7 @@ class UserServiceTest {
         List<UserResponseDTO> result = service.findAllUsers();
 
         assertEquals(1, result.size());
-        assertEquals("breynerbd", result.get(0).getUsername());
+        assertEquals("breynerbd", result.getFirst().getUsername());
 
         verify(repository).findAll();
         verify(mapper).toResponseDTO(user);

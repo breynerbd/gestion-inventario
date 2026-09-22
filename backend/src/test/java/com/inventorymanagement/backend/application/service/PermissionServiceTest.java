@@ -107,7 +107,7 @@ class PermissionServiceTest {
         List<PermissionResponseDTO> result = service.findAllPermissions();
 
         assertEquals(1, result.size());
-        assertEquals("PRODUCTOS_CREAR", result.get(0).getPermissionCode());
+        assertEquals("PRODUCTOS_CREAR", result.getFirst().getPermissionCode());
 
         verify(repository).findAll();
         verify(mapper).toResponseDTO(permission);

@@ -114,7 +114,7 @@ class CategoryServiceTest {
         Page<CategoryResponseDTO> result = service.findAllCategories(pageable);
 
         assertEquals(1, result.getTotalElements());
-        assertEquals("CAT001", result.getContent().get(0).getCategoryCode());
+        assertEquals("CAT001", result.getContent().getFirst().getCategoryCode());
 
         verify(repository).findAll(pageable);
         verify(mapper).toResponseDTO(category);

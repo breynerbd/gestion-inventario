@@ -100,7 +100,7 @@ class RoleServiceTest {
         List<RoleResponseDTO> result = service.findAllRoles();
 
         assertEquals(1, result.size());
-        assertEquals("ADMINISTRADOR", result.get(0).getRoleName());
+        assertEquals("ADMINISTRADOR", result.getFirst().getRoleName());
 
         verify(repository).findAll();
         verify(mapper).toResponseDTO(role);
