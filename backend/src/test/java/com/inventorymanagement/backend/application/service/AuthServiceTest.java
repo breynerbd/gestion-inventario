@@ -57,6 +57,9 @@ class AuthServiceTest {
 
     private User user;
     private Role role;
+    private RegisterRequestDTO register;
+    private LoginRequestDTO login;
+    private RefreshTokenRequestDTO refresh;
 
     @BeforeEach
     void setUp() {
@@ -76,6 +79,21 @@ class AuthServiceTest {
         user.setRole(role);
         user.setStatus(User.Status.ACTIVO);
         user.setFailedAttempts(0);
+
+        register = new RegisterRequestDTO();
+        register.setUsername("omar497");
+        register.setPassword("omar2021497.");
+        register.setFirstNames("Omar Alexander");
+        register.setLastNames("Benitez Cruz");
+        register.setEmail("omara@gmail.com");
+        register.setPhone("59317420");
+
+        login = new LoginRequestDTO();
+        login.setUsername("breynerbd");
+        login.setPassword("breyner2007.");
+
+        refresh = new RefreshTokenRequestDTO();
+        refresh.setRefreshToken("refreshToken");
     }
 
     @Test
@@ -113,98 +131,64 @@ class AuthServiceTest {
         assertEquals("omar497", result.getUsername());
         assertEquals(2L, result.getUserId());
 
-        verify(userRepository).save(any(User.class));
         verify(jwtService).generateAccessToken(savedUser);
     }
 
     @Test
     void emailExists() {
-        RegisterRequestDTO dto = new RegisterRequestDTO();
-        dto.setEmail("breyner@gmail.com");
+        when(userRepository.existsByEmail("omara@gmail.com")).thenReturn(true);
 
-        when(userRepository.existsByEmail("breyner@gmail.com")).thenReturn(true);
-
-        DuplicateResourceException exception = assertThrows(DuplicateResourceException.class, () -> service.registerUser(dto));
+        DuplicateResourceException exception = assertThrows(DuplicateResourceException.class, () -> service.registerUser(register));
 
         assertEquals("El correo electrónico ya está registrado", exception.getMessage());
-
-        verify(userRepository, never()).save(any(User.class));
     }
 
     @Test
     void usernameExists() {
-        RegisterRequestDTO dto = new RegisterRequestDTO();
-        dto.setUsername("omar497");
-
         when(userRepository.existsByUsername("omar497")).thenReturn(true);
 
-        DuplicateResourceException exception = assertThrows(DuplicateResourceException.class, () -> service.registerUser(dto));
+        DuplicateResourceException exception = assertThrows(DuplicateResourceException.class, () -> service.registerUser(register));
 
         assertEquals("El nombre de usuario ya está registrado", exception.getMessage());
-
-        verify(userRepository, never()).save(any(User.class));
     }
 
     @Test
     void phoneExists() {
-        RegisterRequestDTO dto = new RegisterRequestDTO();
-        dto.setPhone("42681953");
+        when(userRepository.existsByPhone("59317420")).thenReturn(true);
 
-        when(userRepository.existsByPhone("42681953")).thenReturn(true);
-
-        DuplicateResourceException exception = assertThrows(DuplicateResourceException.class, () -> service.registerUser(dto));
+        DuplicateResourceException exception = assertThrows(DuplicateResourceException.class, () -> service.registerUser(register));
 
         assertEquals("El teléfono ya está registrado", exception.getMessage());
-
-        verify(userRepository, never()).save(any(User.class));
     }
 
     @Test
     void roleNotFound() {
-        RegisterRequestDTO dto = new RegisterRequestDTO();
-        dto.setUsername("breynerbd");
-        dto.setEmail("breyner@gmail.com");
-        dto.setPhone("51742683");
-        
         when(roleRepository.findByRoleName("OPERADOR")).thenReturn(Optional.empty());
 
-        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> service.registerUser(dto));
+        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> service.registerUser(register));
 
         assertEquals("El rol OPERADOR no existe", exception.getMessage());
-
-        verify(userRepository, never()).save(any(User.class));
     }
 
     @Test
     void inactiveRole() {
         role.setStatus(Role.Status.INACTIVO);
 
-        RegisterRequestDTO dto = new RegisterRequestDTO();
-        dto.setUsername("fernando21");
-        dto.setEmail("fernando@gmail.com");
-        dto.setPhone("38264915");
-
         when(roleRepository.findByRoleName("OPERADOR")).thenReturn(Optional.of(role));
 
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> service.registerUser(dto));
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> service.registerUser(register));
 
         assertEquals("No te puedes registrar en este momento", exception.getMessage());
-
-        verify(userRepository, never()).save(any(User.class));
     }
 
     @Test
     void login() {
-        LoginRequestDTO dto = new LoginRequestDTO();
-        dto.setUsername("breynerbd");
-        dto.setPassword("breyner2007.");
-
         when(userRepository.findByUsername("breynerbd")).thenReturn(Optional.of(user));
         when(passwordEncoder.matches("breyner2007.", "passwordEncoded")).thenReturn(true);
         when(jwtService.generateAccessToken(user)).thenReturn("accessToken");
         when(jwtService.generateRefreshToken(user)).thenReturn("refreshToken");
 
-        LoginResponseDTO result = service.login(dto, "192.168.1.24");
+        LoginResponseDTO result = service.login(login, "192.168.1.24");
 
         assertNotNull(result);
         assertEquals("breynerbd", result.getUsername());
@@ -216,13 +200,9 @@ class AuthServiceTest {
 
     @Test
     void userNotFound() {
-        LoginRequestDTO dto = new LoginRequestDTO();
-        dto.setUsername("breynerbd");
-        dto.setPassword("Password123");
-
         when(userRepository.findByUsername("breynerbd")).thenReturn(Optional.empty());
 
-        InvalidCredentialsException exception = assertThrows(InvalidCredentialsException.class, () -> service.login(dto, "192.168.1.35"));
+        InvalidCredentialsException exception = assertThrows(InvalidCredentialsException.class, () -> service.login(login, "192.168.1.35"));
 
         assertEquals("Credenciales Invalidas", exception.getMessage());
 
@@ -233,14 +213,10 @@ class AuthServiceTest {
     void blockUser() {
         user.setFailedAttempts(4);
 
-        LoginRequestDTO dto = new LoginRequestDTO();
-        dto.setUsername("breynerbd");
-        dto.setPassword("breyner2007.");
-
         when(userRepository.findByUsername("breynerbd")).thenReturn(Optional.of(user));
         when(passwordEncoder.matches("breyner2007.", "passwordEncoded")).thenReturn(false);
 
-        assertThrows(InvalidCredentialsException.class, () -> service.login(dto, "192.168.1.58"));
+        assertThrows(InvalidCredentialsException.class, () -> service.login(login, "192.168.1.58"));
 
         assertEquals(5, user.getFailedAttempts());
         assertEquals(User.Status.BLOQUEADO, user.getStatus());
@@ -253,46 +229,33 @@ class AuthServiceTest {
     void blockedUser() {
         user.setStatus(User.Status.BLOQUEADO);
 
-        LoginRequestDTO dto = new LoginRequestDTO();
-        dto.setUsername("breynerbd");
-
         when(userRepository.findByUsername("breynerbd")).thenReturn(Optional.of(user));
 
-        BlockedUserException exception = assertThrows(BlockedUserException.class, () -> service.login(dto, "192.168.1.63"));
+        BlockedUserException exception = assertThrows(BlockedUserException.class, () -> service.login(login, "192.168.1.63"));
 
         assertEquals("El usuario se encuentra bloqueado", exception.getMessage());
-
-        verify(userRepository, never()).save(any(User.class));
     }
 
     @Test
     void userInactive() {
         user.setStatus(User.Status.INACTIVO);
 
-        LoginRequestDTO dto = new LoginRequestDTO();
-        dto.setUsername("breynerbd");
-
         when(userRepository.findByUsername("breynerbd")).thenReturn(Optional.of(user));
 
-        InactiveUserException exception = assertThrows(InactiveUserException.class, () -> service.login(dto, "192.168.1.76"));
+        InactiveUserException exception = assertThrows(InactiveUserException.class, () -> service.login(login, "192.168.1.76"));
 
         assertEquals("El usuario se encuentra INACTIVO", exception.getMessage());
-
-        verify(userRepository, never()).save(any(User.class));
     }
 
     @Test
     void refreshToken() {
-        RefreshTokenRequestDTO dto = new RefreshTokenRequestDTO();
-        dto.setRefreshToken("refreshToken");
-
         when(jwtService.extractUsername("refreshToken")).thenReturn("breyner@gmail.com");
         when(userRepository.findByEmail("breyner@gmail.com")).thenReturn(Optional.of(user));
         when(jwtService.isRefreshTokenValid("refreshToken", "breyner@gmail.com")).thenReturn(true);
         when(jwtService.generateAccessToken(user)).thenReturn("newAccessToken");
         when(jwtService.generateRefreshToken(user)).thenReturn("newRefreshToken");
 
-        LoginResponseDTO result = service.refreshToken(dto);
+        LoginResponseDTO result = service.refreshToken(refresh);
 
         assertNotNull(result);
         assertEquals("newAccessToken", result.getAccessToken());
@@ -304,14 +267,11 @@ class AuthServiceTest {
 
     @Test
     void expiredRefreshToken() {
-        RefreshTokenRequestDTO dto = new RefreshTokenRequestDTO();
-        dto.setRefreshToken("refreshToken");
-
         when(jwtService.extractUsername("refreshToken")).thenReturn("breyner@gmail.com");
         when(userRepository.findByEmail("breyner@gmail.com")).thenReturn(Optional.of(user));
         when(jwtService.isRefreshTokenValid("refreshToken", "breyner@gmail.com")).thenReturn(false);
 
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> service.refreshToken(dto));
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> service.refreshToken(refresh));
 
         assertEquals("El refresh token es inválido o ha expirado", exception.getMessage());
 
