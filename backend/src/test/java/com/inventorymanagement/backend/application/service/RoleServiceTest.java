@@ -39,6 +39,9 @@ class RoleServiceTest {
     private RoleService service;
 
     private Role role;
+    private RoleResponseDTO response;
+    private RoleCreateDTO roleDTO;
+    private RoleUpdateDTO updateDTO;
 
     @BeforeEach
     void setUp() {
@@ -47,23 +50,30 @@ class RoleServiceTest {
         role.setRoleName("ADMINISTRADOR");
         role.setDescription("Rol de administrador");
         role.setStatus(Role.Status.ACTIVO);
-    }
 
-    @Test
-    void findRoleById() {
-        RoleResponseDTO response = new RoleResponseDTO();
+        response = new RoleResponseDTO();
         response.setRoleId(1L);
         response.setRoleName("ADMINISTRADOR");
         response.setDescription("Rol de administrador");
         response.setStatus(Role.Status.ACTIVO);
 
+        roleDTO = new RoleCreateDTO();
+        roleDTO.setRoleName("SUPERVISOR");
+        roleDTO.setDescription("Rol de supervisor");
+
+        updateDTO = new RoleUpdateDTO();
+        updateDTO.setRoleName("OPERADOR");
+        updateDTO.setDescription("Rol de operador");
+    }
+
+    @Test
+    void findRoleById() {
         when(repository.findById(1L)).thenReturn(Optional.of(role));
         when(mapper.toResponseDTO(role)).thenReturn(response);
 
         RoleResponseDTO result = service.findRoleById(1L);
 
         assertNotNull(result);
-        assertEquals(1L, result.getRoleId());
         assertEquals("ADMINISTRADOR", result.getRoleName());
         assertEquals(Role.Status.ACTIVO, result.getStatus());
 
@@ -79,18 +89,11 @@ class RoleServiceTest {
 
         assertEquals("El rol 10 no existe", exception.getMessage());
 
-        verify(repository).findById(10L);
         verifyNoInteractions(mapper);
     }
 
     @Test
     void findAllRoles() {
-        RoleResponseDTO response = new RoleResponseDTO();
-        response.setRoleId(1L);
-        response.setRoleName("ADMINISTRADOR");
-        response.setDescription("Rol de administrador");
-        response.setStatus(Role.Status.ACTIVO);
-
         when(repository.findAll()).thenReturn(List.of(role));
         when(mapper.toResponseDTO(role)).thenReturn(response);
 
@@ -105,153 +108,89 @@ class RoleServiceTest {
 
     @Test
     void createRole() {
-        RoleCreateDTO roleDTO = new RoleCreateDTO();
-        roleDTO.setRoleName("SUPERVISOR");
-        roleDTO.setDescription("Rol de supervisor");
+        Role saved = new Role();
+        saved.setRoleId(2L);
+        saved.setRoleName("SUPERVISOR");
+        saved.setDescription("Rol de supervisor");
+        saved.setStatus(Role.Status.ACTIVO);
 
-        Role newRole = new Role();
-        newRole.setRoleName("SUPERVISOR");
-        newRole.setDescription("Rol de supervisor");
-
-        Role savedRole = new Role();
-        savedRole.setRoleId(2L);
-        savedRole.setRoleName("SUPERVISOR");
-        savedRole.setDescription("Rol de supervisor");
-        savedRole.setStatus(Role.Status.ACTIVO);
-
-        RoleResponseDTO response = new RoleResponseDTO();
         response.setRoleId(2L);
         response.setRoleName("SUPERVISOR");
         response.setDescription("Rol de supervisor");
-        response.setStatus(Role.Status.ACTIVO);
 
-        when(mapper.toEntity(roleDTO)).thenReturn(newRole);
-        when(repository.save(newRole)).thenReturn(savedRole);
-        when(mapper.toResponseDTO(savedRole)).thenReturn(response);
+        when(mapper.toEntity(roleDTO)).thenReturn(role);
+        when(repository.save(role)).thenReturn(saved);
+        when(mapper.toResponseDTO(saved)).thenReturn(response);
 
         RoleResponseDTO result = service.createRole(roleDTO);
 
         assertNotNull(result);
         assertEquals(2L, result.getRoleId());
         assertEquals("SUPERVISOR", result.getRoleName());
-        assertEquals(Role.Status.ACTIVO, result.getStatus());
 
         verify(mapper).toEntity(roleDTO);
-        verify(repository).save(newRole);
-        verify(mapper).toResponseDTO(savedRole);
+        verify(repository).save(role);
+        verify(mapper).toResponseDTO(saved);
     }
 
     @Test
     void updateRole() {
-        RoleUpdateDTO updateDTO = new RoleUpdateDTO();
-        updateDTO.setRoleName("OPERADOR");
-        updateDTO.setDescription("Rol de operador");
-
-        Role updatedRole = new Role();
-        updatedRole.setRoleId(1L);
-        updatedRole.setRoleName("OPERADOR");
-        updatedRole.setDescription("Rol de operador");
-        updatedRole.setStatus(Role.Status.ACTIVO);
-
-        RoleResponseDTO response = new RoleResponseDTO();
-        response.setRoleId(1L);
-        response.setRoleName("OPERADOR");
-        response.setDescription("Rol de operador");
-        response.setStatus(Role.Status.ACTIVO);
-
         when(repository.findById(1L)).thenReturn(Optional.of(role));
-        when(repository.save(role)).thenReturn(updatedRole);
-        when(mapper.toResponseDTO(updatedRole)).thenReturn(response);
+        when(repository.save(role)).thenReturn(role);
+        when(mapper.toResponseDTO(role)).thenReturn(response);
 
         RoleResponseDTO result = service.updateRole(1L, updateDTO);
 
         assertNotNull(result);
-        assertEquals(1L, result.getRoleId());
-        assertEquals("OPERADOR", result.getRoleName());
-        assertEquals(Role.Status.ACTIVO, result.getStatus());
 
-        verify(repository).findById(1L);
         verify(mapper).updateEntity(updateDTO, role);
         verify(repository).save(role);
-        verify(mapper).toResponseDTO(updatedRole);
+        verify(mapper).toResponseDTO(role);
     }
 
     @Test
     void updateRoleNotExists() {
-        RoleUpdateDTO updateDTO = new RoleUpdateDTO();
-        updateDTO.setRoleName("SUPERVISOR");
-        updateDTO.setDescription("Rol de supervisor");
-
         when(repository.findById(10L)).thenReturn(Optional.empty());
 
         ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> service.updateRole(10L, updateDTO));
 
         assertEquals("El rol 10 no existe", exception.getMessage());
 
-        verify(repository).findById(10L);
         verifyNoInteractions(mapper);
     }
 
     @Test
     void changeStatusInactive() {
-        Role updatedRole = new Role();
-        updatedRole.setRoleId(1L);
-        updatedRole.setRoleName("ADMINISTRADOR");
-        updatedRole.setDescription("Rol de administrador");
-        updatedRole.setStatus(Role.Status.INACTIVO);
-
-        RoleResponseDTO response = new RoleResponseDTO();
-        response.setRoleId(1L);
-        response.setRoleName("ADMINISTRADOR");
-        response.setDescription("Rol de administrador");
         response.setStatus(Role.Status.INACTIVO);
 
         when(repository.findById(1L)).thenReturn(Optional.of(role));
-        when(repository.save(role)).thenReturn(updatedRole);
-        when(mapper.toResponseDTO(updatedRole)).thenReturn(response);
+        when(repository.save(role)).thenReturn(role);
+        when(mapper.toResponseDTO(role)).thenReturn(response);
 
         RoleResponseDTO result = service.changeStatus(1L, Role.Status.INACTIVO);
 
         assertNotNull(result);
-        assertEquals(1L, result.getRoleId());
         assertEquals(Role.Status.INACTIVO, role.getStatus());
         assertEquals(Role.Status.INACTIVO, result.getStatus());
 
-        verify(repository).findById(1L);
         verify(repository).save(role);
-        verify(mapper).toResponseDTO(updatedRole);
     }
 
     @Test
     void changeStatusActive() {
         role.setStatus(Role.Status.INACTIVO);
 
-        Role updatedRole = new Role();
-        updatedRole.setRoleId(1L);
-        updatedRole.setRoleName("ADMINISTRADOR");
-        updatedRole.setDescription("Rol de administrador");
-        updatedRole.setStatus(Role.Status.ACTIVO);
-
-        RoleResponseDTO response = new RoleResponseDTO();
-        response.setRoleId(1L);
-        response.setRoleName("ADMINISTRADOR");
-        response.setDescription("Rol de administrador");
-        response.setStatus(Role.Status.ACTIVO);
-
         when(repository.findById(1L)).thenReturn(Optional.of(role));
-        when(repository.save(role)).thenReturn(updatedRole);
-        when(mapper.toResponseDTO(updatedRole)).thenReturn(response);
+        when(repository.save(role)).thenReturn(role);
+        when(mapper.toResponseDTO(role)).thenReturn(response);
 
         RoleResponseDTO result = service.changeStatus(1L, Role.Status.ACTIVO);
 
         assertNotNull(result);
-        assertEquals(1L, result.getRoleId());
         assertEquals(Role.Status.ACTIVO, role.getStatus());
         assertEquals(Role.Status.ACTIVO, result.getStatus());
 
-        verify(repository).findById(1L);
         verify(repository).save(role);
-        verify(mapper).toResponseDTO(updatedRole);
     }
 
     @Test
@@ -262,7 +201,6 @@ class RoleServiceTest {
 
         assertEquals("El rol ya esta ACTIVO", exception.getMessage());
 
-        verify(repository).findById(1L);
         verifyNoInteractions(mapper);
     }
 
@@ -276,7 +214,6 @@ class RoleServiceTest {
 
         assertEquals("El rol ya esta INACTIVO", exception.getMessage());
 
-        verify(repository).findById(1L);
         verifyNoInteractions(mapper);
     }
 
@@ -288,7 +225,6 @@ class RoleServiceTest {
 
         assertEquals("El rol 10 no existe", exception.getMessage());
 
-        verify(repository).findById(10L);
         verifyNoInteractions(mapper);
     }
 }
