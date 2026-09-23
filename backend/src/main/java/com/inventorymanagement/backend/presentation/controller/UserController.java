@@ -2,6 +2,8 @@ package com.inventorymanagement.backend.presentation.controller;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -28,29 +30,35 @@ import lombok.RequiredArgsConstructor;
 public class UserController {
 
     private final UserService service;
+    private static  final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 
     @GetMapping
     public ResponseEntity<List<UserResponseDTO>> findAll(){
+        LOGGER.info("Solicitud para obtener todos los usuarios");
         return ResponseEntity.ok(service.findAllUsers());
     }
 
     @GetMapping("/{userId}")
     public ResponseEntity<UserResponseDTO> findById(@PathVariable Long userId){
+        LOGGER.info("Solicitud para obtener el usuario con id {}", userId);
         return ResponseEntity.ok(service.findUserById(userId));
     }
 
     @PostMapping
     public ResponseEntity<UserResponseDTO> create(@Valid @RequestBody UserCreateDTO user){
+        LOGGER.info("Solicitud para crear un usuario");
         return ResponseEntity.status(HttpStatus.CREATED).body(service.createUser(user));
     }
 
     @PutMapping("/{userId}")
     public ResponseEntity<UserResponseDTO> update(@PathVariable Long userId, @Valid @RequestBody UserUpdateDTO userDto){
+        LOGGER.info("Solicitud para actualizar el usuario con id {}", userId);
         return ResponseEntity.ok(service.updatedUser(userId, userDto));
     }
 
     @PatchMapping("/{userId}/status")
     public ResponseEntity<UserResponseDTO> changeStatus(@PathVariable Long userId, @Valid @RequestBody UserStatusDTO statusDTO) {
+        LOGGER.info("Solicitud para cambiar el estado del usuario con id {}", userId);
         return ResponseEntity.ok(service.changeStatus(userId, statusDTO.getStatus()));
     }
 }
