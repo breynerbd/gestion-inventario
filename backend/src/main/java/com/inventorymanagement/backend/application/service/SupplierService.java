@@ -11,6 +11,8 @@ import com.inventorymanagement.backend.infrastructure.persistence.repository.Sup
 
 import lombok.RequiredArgsConstructor;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -23,44 +25,66 @@ public class SupplierService {
     private final SupplierMapper mapper;
     private static final String SUPPLIER_NOT_FOUND = "El proveedor ";
     private static final String NOT_EXIST = " no existe";
+    
+    private static final String LOGGER_NOT_FOUND = "No se encontro el proveedor: {}";
+    private static final Logger LOGGER = LoggerFactory.getLogger(SupplierService.class);
 
     public Page<SupplierResponseDTO> findAllSuppliers(Pageable pageable) {
+        LOGGER.debug("Obteniendo datos de proveedores existentes");
 
         return repository.findAll(pageable).map(mapper::toResponseDTO);
     }
 
     public SupplierResponseDTO findSupplierById(Long supplierId) {
+        LOGGER.debug("Buscando proveedor: {}", supplierId);
 
         Supplier supplier = repository.findById(supplierId)
-            .orElseThrow(() -> new ResourceNotFoundException(SUPPLIER_NOT_FOUND + supplierId + NOT_EXIST));
+            .orElseThrow(() -> {
+                LOGGER.warn(LOGGER_NOT_FOUND, supplierId);
+                return new ResourceNotFoundException(SUPPLIER_NOT_FOUND + supplierId + NOT_EXIST);}
+            );
 
         return mapper.toResponseDTO(supplier);
     }
 
     public SupplierResponseDTO createSupplier(SupplierCreateDTO supplierDto) {
+        LOGGER.debug("Creando un proveedor");
+
         Supplier supplier = mapper.toEntity(supplierDto);
         
         Supplier savedSupplier = repository.save(supplier); 
+
+        LOGGER.info("Se creo el proveedor con id: {}", savedSupplier.getSupplierId());
         
         return mapper.toResponseDTO(savedSupplier);
     }
 
     public SupplierResponseDTO updateSupplier(Long supplierId, SupplierUpdateDTO supplierDto) {
+        LOGGER.debug("Actualizando proveedor: {}", supplierId);
 
         Supplier supplier = repository.findById(supplierId)
-            .orElseThrow(() -> new ResourceNotFoundException(SUPPLIER_NOT_FOUND + supplierId + NOT_EXIST));
-        
+            .orElseThrow(() -> {
+                LOGGER.warn(LOGGER_NOT_FOUND, supplierId);
+                return new ResourceNotFoundException(SUPPLIER_NOT_FOUND + supplierId + NOT_EXIST);
+            });
+
         mapper.updateEntity(supplierDto, supplier);
 
         Supplier updatedSupplier = repository.save(supplier);
+
+        LOGGER.info("El proveedor {} se ha actualizado", supplierId);
 
         return mapper.toResponseDTO(updatedSupplier);
     }
 
     public SupplierResponseDTO changeStatus(Long supplierId, Supplier.Status status) {
+        LOGGER.debug("Cambiando estado del proveedor {} a {}", supplierId, status);
 
         Supplier supplier = repository.findById(supplierId)
-            .orElseThrow(() ->new ResourceNotFoundException(SUPPLIER_NOT_FOUND + supplierId + NOT_EXIST));
+            .orElseThrow(() -> {
+                LOGGER.warn(LOGGER_NOT_FOUND, supplierId);
+                return new ResourceNotFoundException(SUPPLIER_NOT_FOUND + supplierId + NOT_EXIST);
+            });
 
         if (supplier.getStatus() == status) {
             String message = switch (status) {
@@ -74,6 +98,8 @@ public class SupplierService {
         supplier.setStatus(status);
 
         Supplier updatedSupplier = repository.save(supplier);
+
+        LOGGER.info("El estado del proveedor {} se ha cambiado a {}", supplierId, status);
 
         return mapper.toResponseDTO(updatedSupplier);
     }
