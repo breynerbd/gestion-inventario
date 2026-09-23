@@ -15,6 +15,8 @@ import com.inventorymanagement.backend.infrastructure.persistence.repository.Use
 
 import lombok.RequiredArgsConstructor;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -34,7 +36,12 @@ public class StockMovementService {
     private static final String MOVEMENT_NOT_FOUND = "El movimiento ";
     private static final String NOT_EXIST = " no existe";
 
+    private static final String LOGGER_NOT_FOUND = "No se encontro el movimiento: {}";
+    private static final Logger LOGGER = LoggerFactory.getLogger(StockMovementService.class);
+
     private void validateReason(StockMovement.MovementType movementType, String reason) {
+        LOGGER.debug("Validando motivo del movimiento");
+
         if ((movementType == StockMovement.MovementType.SALIDA
                 || movementType == StockMovement.MovementType.AJUSTE_POSITIVO
                 || movementType == StockMovement.MovementType.AJUSTE_NEGATIVO)
@@ -45,27 +52,37 @@ public class StockMovementService {
     }
 
     private void validateActiveEntities(Product product, User user) {
+        LOGGER.debug("Validando producto y usuario activos");
+
         if (product.getStatus() == Product.Status.INACTIVO) {
+            LOGGER.warn("El producto {} esta inactivo", product.getProductId());
             throw new IllegalArgumentException("No se puede realizar el movimiento con un producto INACTIVO");
         }
 
         if (user.getStatus() == User.Status.INACTIVO) {
+            LOGGER.warn("El usuario {} esta inactivo", user.getUserId());
             throw new IllegalArgumentException("No se puede realizar el movimiento con un usuario INACTIVO");
         }
 
         if (user.getStatus() == User.Status.BLOQUEADO) {
+            LOGGER.warn("El usuario {} esta bloqueado", user.getUserId());
             throw new IllegalArgumentException("No se puede realizar el movimiento con un usuario bloqueado");
         }
     }
 
     private void validateDateRange(LocalDate startDate, LocalDate endDate) {
+        LOGGER.debug("Validando rango de fechas");
+
         if (startDate != null && endDate != null && startDate.isAfter(endDate)) {
+            LOGGER.warn("El rango de fechas no es valido");
             throw new IllegalArgumentException("La fecha de inicio no puede ser posterior a la fecha final");
         }
     }
 
     public Page<StockMovementResponseDTO> findAllMovements(Long productId, StockMovement.MovementType movementType, LocalDate startDate, 
             LocalDate endDate, Long userId, Pageable pageable) {
+
+        LOGGER.debug("Obteniendo datos de movimientos existentes");
 
         validateDateRange(startDate, endDate);
 
@@ -99,14 +116,19 @@ public class StockMovementService {
     }
 
     public StockMovementResponseDTO findMovementById(Long movementId) {
+        LOGGER.debug("Buscando movimiento: {}", movementId);
 
         StockMovement movement = movementRepository.findById(movementId)
-            .orElseThrow(() -> new ResourceNotFoundException(MOVEMENT_NOT_FOUND + movementId + NOT_EXIST));
+            .orElseThrow(() -> {
+                LOGGER.warn(LOGGER_NOT_FOUND, movementId);
+                return new ResourceNotFoundException(MOVEMENT_NOT_FOUND + movementId + NOT_EXIST);}
+            );
 
         return mapper.toResponseDTO(movement);
     }
 
     private void applyMovement(StockMovement movement, Product product) {
+        LOGGER.debug("Aplicando movimiento {} al producto {}", movement.getMovementType(), product.getProductId());
 
         switch (movement.getMovementType()) {
             case ENTRADA, AJUSTE_POSITIVO -> product.setCurrentStock(product.getCurrentStock() + movement.getQuantity());
@@ -124,6 +146,7 @@ public class StockMovementService {
     }
 
     private void revertMovement(StockMovement movement, Product product) {
+        LOGGER.debug("Revirtiendo movimiento {} del producto {}", movement.getMovementType(), product.getProductId());
 
         switch (movement.getMovementType()) {
             case ENTRADA, AJUSTE_POSITIVO -> {
@@ -142,14 +165,22 @@ public class StockMovementService {
 
     @Transactional
     public StockMovementResponseDTO registerMovement(StockMovementCreateDTO movementDto, String userEmail) {
+        LOGGER.debug("Registrando un movimiento de stock");
+
         validateReason(movementDto.getMovementType(), movementDto.getReason());
 
         Product product = productRepository.findById(movementDto.getProductId())
-            .orElseThrow(() -> new ResourceNotFoundException("El producto " + movementDto.getProductId() + NOT_EXIST));
+            .orElseThrow(() -> {
+                LOGGER.warn("No se encontro el producto: {}", movementDto.getProductId());
+                return new ResourceNotFoundException("El producto " + movementDto.getProductId() + NOT_EXIST);
+            });
 
         User user = userRepository.findByEmail(userEmail)
-            .orElseThrow(() -> new ResourceNotFoundException("El usuario logueado no existe"));
-        
+            .orElseThrow(() -> {
+                LOGGER.warn("No se encontro el usuario logueado");
+                return new ResourceNotFoundException("El usuario logueado no existe");
+            });
+
         validateActiveEntities(product, user);
 
         StockMovement movement = mapper.toEntity(movementDto, product, user);
@@ -160,15 +191,22 @@ public class StockMovementService {
 
         StockMovement savedMovement = movementRepository.save(movement);
 
+        LOGGER.info("Se registro el movimiento con id: {}", savedMovement.getMovementId());
+
         return mapper.toResponseDTO(savedMovement);
     }
 
     @Transactional
     public StockMovementResponseDTO updateMovement(Long movementId, StockMovementUpdateDTO movementDto) {
+        LOGGER.debug("Actualizando movimiento: {}", movementId);
+
         validateReason(movementDto.getMovementType(), movementDto.getReason());
 
         StockMovement movement = movementRepository.findById(movementId)
-            .orElseThrow(() -> new ResourceNotFoundException(MOVEMENT_NOT_FOUND + movementId + NOT_EXIST));
+            .orElseThrow(() -> {
+                LOGGER.warn(LOGGER_NOT_FOUND, movementId);
+                return new ResourceNotFoundException(MOVEMENT_NOT_FOUND + movementId + NOT_EXIST);}
+            );
 
         Product previousProduct = movement.getProduct();
 
@@ -204,14 +242,20 @@ public class StockMovementService {
 
         StockMovement updatedMovement = movementRepository.save(movement);
 
+        LOGGER.info("El movimiento {} se ha actualizado", movementId);
+
         return mapper.toResponseDTO(updatedMovement);
     }
 
     @Transactional
     public StockMovementResponseDTO changeStatus(Long movementId, StockMovement.Status status) {
+        LOGGER.debug("Cambiando estado del movimiento {} a {}", movementId, status);
 
         StockMovement movement = movementRepository.findById(movementId)
-            .orElseThrow(() -> new ResourceNotFoundException(MOVEMENT_NOT_FOUND + movementId + NOT_EXIST));
+            .orElseThrow(() -> {
+                LOGGER.warn(LOGGER_NOT_FOUND, movementId);
+                return new ResourceNotFoundException(MOVEMENT_NOT_FOUND + movementId + NOT_EXIST);
+            });
 
         if (movement.getStatus() == status) {
             String message = switch (status) {
@@ -236,6 +280,8 @@ public class StockMovementService {
         productRepository.save(product);
 
         StockMovement updatedMovement = movementRepository.save(movement);
+
+        LOGGER.info("El estado del movimiento {} se ha cambiado a {}", movementId, status);
 
         return mapper.toResponseDTO(updatedMovement);
     }
