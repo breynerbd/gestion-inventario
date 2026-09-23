@@ -1,5 +1,7 @@
 package com.inventorymanagement.backend.presentation.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -31,6 +33,7 @@ import lombok.RequiredArgsConstructor;
 public class ProductController {
 
     private final ProductService service;
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProductController.class);
 
     @GetMapping
     public ResponseEntity<Page<ProductResponseDTO>> findAll(
@@ -40,27 +43,31 @@ public class ProductController {
             @RequestParam(required = false) Long supplierId,
             @RequestParam(required = false) Product.Status status,
             @PageableDefault(size = 10) Pageable pageable) {
-
+        LOGGER.info("Solicitud para obtener todos los productos");
         return ResponseEntity.ok(service.findAllProducts(productCode, productName, categoryId, supplierId, status, pageable));
     }
 
     @GetMapping("/{productId}")
     public ResponseEntity<ProductResponseDTO> findAll(@PathVariable Long productId){
+        LOGGER.info("Solicitud para obtener el producto con id {}", productId);
         return ResponseEntity.ok(service.findByIdProduct(productId));
     }
 
     @PostMapping
     public ResponseEntity<ProductResponseDTO> create(@Valid @RequestBody ProductCreateDTO product){
+        LOGGER.info("Solicitud para crear un producto");
         return ResponseEntity.status(HttpStatus.CREATED).body(service.createProduct(product));
     }
 
     @PutMapping("/{productId}")
     public ResponseEntity<ProductResponseDTO> update(@PathVariable Long productId, @Valid @RequestBody ProductUpdateDTO productDto){
+        LOGGER.info("Solicitud para actualizar el producto con id {}", productId);
         return ResponseEntity.ok(service.updateProduct(productId, productDto));
     }
 
     @PatchMapping("/{productId}/status")
     public ResponseEntity<ProductResponseDTO> changeStatus(@PathVariable Long productId, @Valid @RequestBody ProductStatusDTO statusDto) {
+        LOGGER.info("Solicitud para cambiar el estado del permiso con id {}", productId);
         return ResponseEntity.ok(service.changeStatus(productId, statusDto.getStatus()));
     }
 }
