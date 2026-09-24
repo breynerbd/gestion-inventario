@@ -198,7 +198,7 @@ public class AuthService {
             email = jwtService.extractUsername(refreshToken);
         } catch (Exception e) {
             LOGGER.warn("El refresh token no es valido");
-            throw new IllegalArgumentException("Refresh token inválido");
+            throw new IllegalArgumentException("Refresh token inválido", e);
         }
 
         User user = userRepository
