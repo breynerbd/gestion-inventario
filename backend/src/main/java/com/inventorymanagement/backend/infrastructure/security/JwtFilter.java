@@ -2,6 +2,8 @@ package com.inventorymanagement.backend.infrastructure.security;
 
 import java.io.IOException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,6 +21,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
     private final CustomUserDetailsService userDetailsService;
+    private static final Logger LOGGER = LoggerFactory.getLogger(JwtFilter.class);
 
     public JwtFilter(
             JwtService jwtService,
@@ -52,6 +55,7 @@ public class JwtFilter extends OncePerRequestFilter {
         try {
             correo = jwtService.extractUsername(token);
         } catch (Exception e) {
+            LOGGER.debug("No se pudo seguir la autenticación", e);
             filterChain.doFilter(request, response);
             return;
         }

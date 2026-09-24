@@ -5,6 +5,8 @@ import com.inventorymanagement.backend.infrastructure.persistence.repository.Use
 
 import lombok.RequiredArgsConstructor;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -17,12 +19,18 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     private final UserRepository usuarioRepository;
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(CustomUserDetailsService.class);
+
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        LOGGER.debug("Buscando usuario para autenticacion");
 
         User user = usuarioRepository
             .findByEmail(email)
-            .orElseThrow(() -> new UsernameNotFoundException("El usuario con correo " + email + " no existe"));
+            .orElseThrow(() -> {
+                LOGGER.warn("No se encontro el usuario para la autenticacion");
+                return new UsernameNotFoundException("El usuario con correo " + email + " no existe");
+            });
 
         return org.springframework.security.core.userdetails.User.builder()
             .username(user.getEmail())
