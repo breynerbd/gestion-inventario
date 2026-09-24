@@ -57,9 +57,10 @@ class AuthServiceTest {
 
     private User user;
     private Role role;
-    private RegisterRequestDTO register;
+    RegisterRequestDTO register;
     private LoginRequestDTO login;
     private RefreshTokenRequestDTO refresh;
+    private static final String IP_ADDRESS = "192.0.2.10";
 
     @BeforeEach
     void setUp() {
@@ -188,25 +189,25 @@ class AuthServiceTest {
         when(jwtService.generateAccessToken(user)).thenReturn("accessToken");
         when(jwtService.generateRefreshToken(user)).thenReturn("refreshToken");
 
-        LoginResponseDTO result = service.login(login, "192.168.1.24");
+        LoginResponseDTO result = service.login(login, IP_ADDRESS);
 
         assertNotNull(result);
         assertEquals("breynerbd", result.getUsername());
         assertEquals("Bearer", result.getTokenType());
 
         verify(userRepository).save(user);
-        verify(binnacleService).register("breynerbd", "192.168.1.24", Binnacle.Result.SUCCESSFUL);
+        verify(binnacleService).register("breynerbd", IP_ADDRESS, Binnacle.Result.SUCCESSFUL);
     }
 
     @Test
     void userNotFound() {
         when(userRepository.findByUsername("breynerbd")).thenReturn(Optional.empty());
 
-        InvalidCredentialsException exception = assertThrows(InvalidCredentialsException.class, () -> service.login(login, "192.168.1.35"));
+        InvalidCredentialsException exception = assertThrows(InvalidCredentialsException.class, () -> service.login(login, IP_ADDRESS));
 
         assertEquals("Credenciales Invalidas", exception.getMessage());
 
-        verify(binnacleService).register("breynerbd", "192.168.1.35", Binnacle.Result.FAILED);
+        verify(binnacleService).register("breynerbd", IP_ADDRESS, Binnacle.Result.FAILED);
     }
 
     @Test
@@ -216,13 +217,13 @@ class AuthServiceTest {
         when(userRepository.findByUsername("breynerbd")).thenReturn(Optional.of(user));
         when(passwordEncoder.matches("breyner2007.", "passwordEncoded")).thenReturn(false);
 
-        assertThrows(InvalidCredentialsException.class, () -> service.login(login, "192.168.1.58"));
+        assertThrows(InvalidCredentialsException.class, () -> service.login(login, IP_ADDRESS));
 
         assertEquals(5, user.getFailedAttempts());
         assertEquals(User.Status.BLOQUEADO, user.getStatus());
 
         verify(userRepository).save(user);
-        verify(binnacleService).register("breynerbd", "192.168.1.58", Binnacle.Result.FAILED);
+        verify(binnacleService).register("breynerbd", IP_ADDRESS, Binnacle.Result.FAILED);
     }
 
     @Test
@@ -231,7 +232,7 @@ class AuthServiceTest {
 
         when(userRepository.findByUsername("breynerbd")).thenReturn(Optional.of(user));
 
-        BlockedUserException exception = assertThrows(BlockedUserException.class, () -> service.login(login, "192.168.1.63"));
+        BlockedUserException exception = assertThrows(BlockedUserException.class, () -> service.login(login, IP_ADDRESS));
 
         assertEquals("El usuario se encuentra bloqueado", exception.getMessage());
     }
@@ -242,7 +243,7 @@ class AuthServiceTest {
 
         when(userRepository.findByUsername("breynerbd")).thenReturn(Optional.of(user));
 
-        InactiveUserException exception = assertThrows(InactiveUserException.class, () -> service.login(login, "192.168.1.76"));
+        InactiveUserException exception = assertThrows(InactiveUserException.class, () -> service.login(login, IP_ADDRESS));
 
         assertEquals("El usuario se encuentra INACTIVO", exception.getMessage());
     }

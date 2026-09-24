@@ -20,13 +20,14 @@ class BinnacleServiceTest {
     @InjectMocks 
     private BinnacleService service;
 
+    private static final String IP_ADDRESS = "192.0.2.1";
+
     @Test
     void register() {
         String username = "breynerbd";
-        String ipAddress = "192.168.1.10";
         Binnacle.Result result = Binnacle.Result.SUCCESSFUL;
         
-        service.register(username, ipAddress, result);
+        service.register(username, IP_ADDRESS, result);
 
         verify(repository).save(any(Binnacle.class));
     }
