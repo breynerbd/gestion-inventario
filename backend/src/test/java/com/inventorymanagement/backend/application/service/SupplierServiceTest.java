@@ -178,6 +178,17 @@ class SupplierServiceTest {
     }
 
     @Test
+    void changeStatusSupplierNotFound() {
+        when(repository.findById(10L)).thenReturn(Optional.empty());
+
+        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> service.changeStatus(10L, Supplier.Status.INACTIVO));
+
+        assertEquals("El proveedor 10 no existe", exception.getMessage());
+
+        verifyNoInteractions(mapper);
+    }
+
+    @Test
     void changeToInactive() {
         response.setStatus(Supplier.Status.INACTIVO);
 
