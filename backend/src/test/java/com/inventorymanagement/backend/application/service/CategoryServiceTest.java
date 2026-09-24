@@ -47,6 +47,8 @@ class CategoryServiceTest {
     private CategoryCreateDTO categoryDTO;
     private CategoryUpdateDTO updateDTO;
 
+    private static final LocalDateTime DATE_TIME = LocalDateTime.of(2026, 9, 24, 8, 0, 0);
+
     @BeforeEach
     void setUp() {
         category = new Category();
@@ -55,8 +57,8 @@ class CategoryServiceTest {
         category.setCategoryName("Embutidos");
         category.setDescription("Carnes procesadas frescas");
         category.setStatus(Category.Status.ACTIVO);
-        category.setCreationDate(LocalDateTime.now());
-        category.setModificationDate(LocalDateTime.now());
+        category.setCreationDate(DATE_TIME);
+        category.setModificationDate(DATE_TIME);
 
         response = new CategoryResponseDTO();
         response.setCategoryId(1L);

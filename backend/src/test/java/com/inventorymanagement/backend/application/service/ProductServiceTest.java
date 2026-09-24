@@ -55,6 +55,8 @@ class ProductServiceTest {
     private ProductCreateDTO productDTO;
     private ProductUpdateDTO update;
 
+    private static final LocalDateTime DATE_TIME = LocalDateTime.of(2026, 9, 24, 8, 0, 0);
+
     @BeforeEach 
     void setUp(){
         category = new Category();
@@ -62,8 +64,8 @@ class ProductServiceTest {
         category.setCategoryCode("CAT001");
         category.setCategoryName("Bebidas Gaseosas");
         category.setDescription("Bebidas frias con gas");
-        category.setCreationDate(LocalDateTime.now());
-        category.setModificationDate(LocalDateTime.now());
+        category.setCreationDate(DATE_TIME);
+        category.setModificationDate(DATE_TIME);
         category.setStatus(Category.Status.ACTIVO);
 
         supplier = new Supplier();

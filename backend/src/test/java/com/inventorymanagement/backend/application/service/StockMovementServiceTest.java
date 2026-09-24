@@ -56,6 +56,8 @@ class StockMovementServiceTest {
     private StockMovementCreateDTO createDTO;
     private StockMovementUpdateDTO updateDTO;
 
+    private static final LocalDateTime DATE_TIME = LocalDateTime.of(2026, 9, 24, 8, 0, 0);
+
     @BeforeEach
     void setUp() {
         product = new Product();
@@ -83,7 +85,7 @@ class StockMovementServiceTest {
         movement.setQuantity(10);
         movement.setReferenceDocument("MOV001");
         movement.setReason("Compra de producto");
-        movement.setMovementDate(LocalDateTime.now());
+        movement.setMovementDate(DATE_TIME);
         movement.setProduct(product);
         movement.setUser(user);
         movement.setStatus(StockMovement.Status.ACTIVO);
