@@ -3,12 +3,14 @@ package com.inventorymanagement.backend.application.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -17,6 +19,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 
 import com.inventorymanagement.backend.application.dto.product.ProductCreateDTO;
 import com.inventorymanagement.backend.application.dto.product.ProductResponseDTO;
@@ -128,6 +135,31 @@ class ProductServiceTest {
         update.setCategoryId(1L);
         update.setSupplierId(1L);
         update.setUnitOfMeasure(Product.UnitOfMeasure.UNIDAD);
+    }
+
+    @Test
+    void findAllProducts() {
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<Product> productPage = new PageImpl<>(List.of(product));
+
+        when(repository.findAll(isA(Specification.class), isA(Pageable.class))).thenReturn(productPage);
+
+        when(mapper.toResponseDTO(product)).thenReturn(response);
+
+        Page<ProductResponseDTO> result = service.findAllProducts(
+            null,
+            null,
+            null,
+            null,
+            null,
+            pageable
+        );
+
+        assertNotNull(result);
+        assertEquals(1, result.getTotalElements());
+        assertEquals(1L, result.getContent().get(0).getProductId());
+
+        verify(mapper).toResponseDTO(product);
     }
 
     @Test 
