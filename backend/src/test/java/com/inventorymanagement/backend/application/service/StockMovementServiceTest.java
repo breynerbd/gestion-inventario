@@ -3,12 +3,14 @@ package com.inventorymanagement.backend.application.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -17,6 +19,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 
 import com.inventorymanagement.backend.application.dto.movement.StockMovementCreateDTO;
 import com.inventorymanagement.backend.application.dto.movement.StockMovementResponseDTO;
@@ -115,6 +122,31 @@ class StockMovementServiceTest {
         updateDTO.setQuantity(15);
         updateDTO.setReferenceDocument("MOV002");
         updateDTO.setReason("Actualizacion de compra");
+    }
+
+    @Test
+    void findAllMovements() {
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<StockMovement> movementPage = new PageImpl<>(List.of(movement));
+
+        when(movementRepository.findAll(isA(Specification.class), isA(Pageable.class))).thenReturn(movementPage);
+
+        when(mapper.toResponseDTO(movement)).thenReturn(response);
+
+        Page<StockMovementResponseDTO> result = service.findAllMovements(
+            null,
+            null,
+            null,
+            null,
+            null,
+            pageable
+        );
+
+        assertNotNull(result);
+        assertEquals(1, result.getTotalElements());
+        assertEquals(1L, result.getContent().get(0).getMovementId());
+
+        verify(mapper).toResponseDTO(movement);
     }
 
     @Test
@@ -377,6 +409,23 @@ class StockMovementServiceTest {
     }
 
     @Test
+    void changeStatusInactiveExit() {
+        movement.setMovementType(StockMovement.MovementType.SALIDA);
+        movement.setQuantity(10);
+
+        when(movementRepository.findById(1L)).thenReturn(Optional.of(movement));
+        when(productRepository.save(product)).thenReturn(product);
+        when(movementRepository.save(movement)).thenReturn(movement);
+        when(mapper.toResponseDTO(movement)).thenReturn(response);
+
+        StockMovementResponseDTO result = service.changeStatus(1L, StockMovement.Status.INACTIVO);
+
+        assertNotNull(result);
+        assertEquals(60, product.getCurrentStock());
+        assertEquals(StockMovement.Status.INACTIVO, movement.getStatus());
+    }
+
+    @Test
     void changeStatusAlreadyActive() {
         when(movementRepository.findById(1L)).thenReturn(Optional.of(movement));
 
@@ -405,5 +454,17 @@ class StockMovementServiceTest {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> service.changeStatus(1L, StockMovement.Status.INACTIVO));
 
         assertEquals("No es posible inactivar el movimiento porque el stock quedaria negativo", exception.getMessage());
+    }
+
+    @Test
+    void changeStatusMovementNotExist() {
+        when(movementRepository.findById(10L)).thenReturn(Optional.empty());
+
+        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> service.changeStatus(10L, StockMovement.Status.INACTIVO));
+
+        assertEquals("El movimiento 10 no existe", exception.getMessage());
+
+        verify(movementRepository).findById(10L);
+        verifyNoInteractions(productRepository);
     }
 }
