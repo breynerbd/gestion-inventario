@@ -1,0 +1,50 @@
+<div class="dashboard-container">
+    <header class="dashboard-header">
+        <div>
+            <h1>Gestion De Inventario</h1>
+        </div>
+
+        <div class="user-info">
+            <div class="user-details">
+                <p>{{ username }} |</p>
+                <span>{{ roleName }} |</span>
+            </div>
+
+            <div class="profile">
+                <p>foto</p>
+            </div>
+        </div>
+    </header>
+
+    <div class="dashboard-layout">
+        <aside class="sidebar">
+            <nav class="menu">
+                <a>Panel Principal</a>
+                <a>Productos</a>
+                <a>Categorias</a>
+                <a>Proveedores</a>
+                <a>Movimientos</a>
+                <a>Usuarios</a>
+                <a>Permisos</a>
+            </nav>
+
+            <div class="sidebar-foot">
+                <button type="button" (click)="logout()">
+                    Cerrar Sesión
+                </button>
+            </div>
+        </aside>
+
+        <main class="dashboard">
+            <div class="dashboard-card">
+
+                <section class="dashboard-body">
+                    <h2>Resumen del Inventario</h2>
+                    <p>Consulta general del sistema</p>
+                </section>
+
+            </div>
+        </main>
+    </div>
+
+</div>
