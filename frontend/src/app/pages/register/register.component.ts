@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { RegisterRequest } from '../../models/auth/register-request';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-register',
@@ -20,7 +20,7 @@ export class RegisterComponent {
   phone = "";
   errorMessage = "";
 
-  constructor(private authService: AuthService){
+  constructor(private authService: AuthService, private router: Router){
 
   }
 
@@ -38,6 +38,7 @@ export class RegisterComponent {
       next: response => {
         this.authService.saveSession(response);
         this.errorMessage = "";
+        this.router.navigate(["/dashboard"])
       },
       error: error => {
         console.log(error);

@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { LoginRequest } from '../../models/auth/login-request';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -15,7 +15,7 @@ export class LoginComponent {
   password = "";
   errorMessage = "";
 
-  constructor(private authService: AuthService){
+  constructor(private authService: AuthService, private router: Router){
 
   }
 
@@ -29,6 +29,7 @@ export class LoginComponent {
       next: response => {
         this.authService.saveSession(response);
         this.errorMessage = '';
+        this.router.navigate(["/dashboard"]);
       },
       error: error => {
         console.error(error);
