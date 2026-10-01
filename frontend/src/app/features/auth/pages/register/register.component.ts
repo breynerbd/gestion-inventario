@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
-import { RegisterRequest } from '../../models/auth/register-request';
 import { Router, RouterLink } from '@angular/router';
+import { RegisterRequest } from '../../models/register-request';
 
 @Component({
   selector: 'app-register',
@@ -20,7 +20,7 @@ export class RegisterComponent {
   phone = "";
   errorMessage = "";
 
-  constructor(private authService: AuthService, private router: Router){
+  constructor(private readonly authService: AuthService, private readonly router: Router){
 
   }
 

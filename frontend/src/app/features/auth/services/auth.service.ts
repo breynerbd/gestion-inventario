@@ -1,17 +1,17 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { LoginRequest } from '../models/auth/login-request';
 import { Observable } from 'rxjs';
-import { LoginResponse } from '../models/auth/login-response';
-import { RegisterRequest } from '../models/auth/register-request';
+import { LoginRequest } from '../models/login-request';
+import { LoginResponse } from '../models/login-response';
+import { RegisterRequest } from '../models/register-request';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = "http://localhost:8080/api/auth"
+  private readonly apiUrl = "http://localhost:8080/api/auth"
 
-  constructor(private http: HttpClient) {
+  constructor(private readonly http: HttpClient) {
 
   }
 

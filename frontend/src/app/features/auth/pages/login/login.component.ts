@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
-import { LoginRequest } from '../../models/auth/login-request';
 import { Router, RouterLink } from '@angular/router';
+import { LoginRequest } from '../../models/login-request';
 
 @Component({
   selector: 'app-login',
@@ -15,7 +15,7 @@ export class LoginComponent {
   password = "";
   errorMessage = "";
 
-  constructor(private authService: AuthService, private router: Router){
+  constructor(private readonly authService: AuthService, private readonly router: Router){
 
   }
 

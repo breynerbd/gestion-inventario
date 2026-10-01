@@ -19,8 +19,8 @@
     <div class="dashboard-layout">
         <aside class="sidebar">
             <nav class="menu">
-                <a>Panel Principal</a>
-                <a>Productos</a>
+                <a routerLink="/dashboard">Panel Principal</a>
+                <a routerLink="/dashboard/products">Productos</a>
                 <a>Categorias</a>
                 <a>Proveedores</a>
                 <a>Movimientos</a>
@@ -37,12 +37,7 @@
 
         <main class="dashboard">
             <div class="dashboard-card">
-
-                <section class="dashboard-body">
-                    <h2>Resumen del Inventario</h2>
-                    <p>Consulta general del sistema</p>
-                </section>
-
+                <router-outlet></router-outlet>
             </div>
         </main>
     </div>
