@@ -1,0 +1,108 @@
+<div class="categories-container">
+
+    <div class="categories-header">
+        <div>
+            <h1>Categorías</h1>
+            <p>Gestión de categorías del inventario</p>
+        </div>
+
+        <button type="button" (click)="openForm()">
+            Nueva Categoría
+        </button>
+    </div>
+
+    @if (errorMessage) {
+    <p class="error-message">{{ errorMessage }}</p>
+    }
+
+    @if (showForm) {
+    <div class="category-form-container">
+
+        @if (editingCategoryId === null) {
+        <h2>Nueva Categoría</h2>
+        } @else {
+        <h2>Editar Categoría</h2>
+        }
+
+        <form class="category-form" #categoryForm="ngForm" (ngSubmit)="saveCategory()">
+
+            <div class="form-group">
+                <label for="categoryCode">Código</label>
+                <input id="categoryCode" type="text" name="categoryCode" [(ngModel)]="newCategory.categoryCode"
+                    maxlength="10" required [disabled]="editingCategoryId !== null">
+            </div>
+
+            <div class="form-group">
+                <label for="categoryName">Nombre</label>
+                <input id="categoryName" type="text" name="categoryName" [(ngModel)]="newCategory.categoryName"
+                    maxlength="60" required>
+            </div>
+
+            <div class="form-group description-group">
+                <label for="description">Descripción</label>
+                <textarea id="description" name="description" [(ngModel)]="newCategory.description" maxlength="250"
+                    rows="4"></textarea>
+            </div>
+
+            <div class="form-actions">
+                <button type="button" (click)="cancelForm()">
+                    Cancelar
+                </button>
+
+                <button type="submit" [disabled]="categoryForm.invalid">
+                    Guardar Categoría
+                </button>
+            </div>
+
+        </form>
+    </div>
+    }
+
+    <div class="categories-table-container">
+
+        <table class="categories-table">
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Categoría</th>
+                    <th>Descripción</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @for (category of categories; track category.categoryId) {
+                <tr>
+                    <td>{{ category.categoryCode }}</td>
+                    <td>{{ category.categoryName }}</td>
+                    <td>{{ category.description }}</td>
+                    <td>{{ category.status }}</td>
+
+                    <td>
+                        <button type="button" (click)="editCategory(category)">
+                            Editar
+                        </button>
+
+                        <button type="button" (click)="changeStatus(category)">
+                            @if (category.status === 'ACTIVO') {
+                            Desactivar
+                            } @else {
+                            Activar
+                            }
+                        </button>
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+
+        @if (categories.length === 0) {
+        <div class="empty-categories">
+            <p>No hay categorías registradas.</p>
+        </div>
+        }
+
+    </div>
+
+</div>
