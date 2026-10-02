@@ -1,0 +1,174 @@
+<div class="products-container">
+
+    <div class="products-header">
+        <div>
+            <h1>Productos</h1>
+            <p>Gestión de productos del inventario</p>
+        </div>
+
+        <button type="button" (click)="openForm()">
+            Nuevo Producto
+        </button>
+    </div>
+
+    @if (showForm) {
+    <div class="product-form-container">
+
+        <h2>Nuevo Producto</h2>
+
+        <form class="product-form" #productForm="ngForm" (ngSubmit)="saveProduct()">
+
+            <div class="form-group">
+                <label for="productCode">Código</label>
+                <input id="productCode" type="text" name="productCode" [(ngModel)]="newProduct.productCode"
+                    [disabled]="editingProductId !== null" required>
+            </div>
+
+            <div class="form-group">
+                <label for="productName">Nombre</label>
+                <input id="productName" type="text" name="productName" [(ngModel)]="newProduct.productName" required>
+            </div>
+
+            <div class="form-group">
+                <label for="description">Descripción</label>
+                <textarea id="description" name="description" [(ngModel)]="newProduct.description"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="categoryId">Categoría</label>
+                <select id="categoryId" name="categoryId" [(ngModel)]="newProduct.categoryId" required>
+                    <option [ngValue]="0">Seleccione una categoría</option>
+
+                    @for (category of categories; track category.categoryId) {
+                    <option [ngValue]="category.categoryId">
+                        {{ category.categoryName }}
+                    </option>
+                    }
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="supplierId">Proveedor</label>
+                <select id="supplierId" name="supplierId" [(ngModel)]="newProduct.supplierId" required>
+                    <option [ngValue]="0">Seleccione un proveedor</option>
+
+                    @for (supplier of suppliers; track supplier.supplierId) {
+                    <option [ngValue]="supplier.supplierId">
+                        {{ supplier.businessName }}
+                    </option>
+                    }
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="unitOfMeasure">Unidad de medida</label>
+                <select id="unitOfMeasure" name="unitOfMeasure" [(ngModel)]="newProduct.unitOfMeasure" required>
+                    <option value="">Seleccione una unidad</option>
+                    <option value="UNIDAD">Unidad</option>
+                    <option value="CAJA">Caja</option>
+                    <option value="KILOGRAMO">Kilogramo</option>
+                    <option value="GRAMO">Gramo</option>
+                    <option value="LITRO">Litro</option>
+                    <option value="METRO">Metro</option>
+                    <option value="PAQUETE">Paquete</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="purchasePrice">Precio de compra</label>
+                <input id="purchasePrice" type="number" name="purchasePrice" [(ngModel)]="newProduct.purchasePrice"
+                    min="0.01" step="0.01" required>
+            </div>
+
+            <div class="form-group">
+                <label for="salePrice">Precio de venta</label>
+                <input id="salePrice" type="number" name="salePrice" [(ngModel)]="newProduct.salePrice" min="0.01"
+                    step="0.01" required>
+            </div>
+
+            <div class="form-group">
+                <label for="minimumStock">Stock mínimo</label>
+                <input id="minimumStock" type="number" name="minimumStock" [(ngModel)]="newProduct.minimumStock" min="0"
+                    required>
+            </div>
+
+            <div class="form-group">
+                <label for="maximumStock">Stock máximo</label>
+                <input id="maximumStock" type="number" name="maximumStock" [(ngModel)]="newProduct.maximumStock"
+                    min="0">
+            </div>
+
+            <div class="form-actions">
+                <button type="button" (click)="cancelForm()">
+                    Cancelar
+                </button>
+
+                <button type="submit" [disabled]="productForm.invalid">
+                    Guardar Producto
+                </button>
+            </div>
+
+        </form>
+
+    </div>
+    }
+
+    @if (errorMessage) {
+    <p class="error-message">{{ errorMessage }}</p>
+    }
+
+    <div class="products-table-container">
+
+        <table class="products-table">
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Producto</th>
+                    <th>Unidad</th>
+                    <th>Precio Compra</th>
+                    <th>Precio Venta</th>
+                    <th>Stock</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                @for (product of products; track product.productId) {
+                <tr>
+                    <td>{{ product.productCode }}</td>
+                    <td>{{ product.productName }}</td>
+                    <td>{{ product.unitOfMeasure }}</td>
+                    <td>Q {{ product.purchasePrice }}</td>
+                    <td>Q {{ product.salePrice }}</td>
+                    <td>{{ product.currentStock }}</td>
+                    <td>{{ product.status }}</td>
+                    <td>
+                        <button type="button" (click)="editProduct(product)">
+                            Editar
+                        </button>
+
+                        <button type="button" (click)="changeStatus(product)">
+                            @if (product.status === 'ACTIVO') {
+                            Desactivar
+                            } @else {
+                            Activar
+                            }
+                        </button>
+                    </td>
+                </tr>
+                }
+
+            </tbody>
+        </table>
+
+        @if (products.length === 0) {
+        <div class="empty-products">
+            <p>No hay productos registrados.</p>
+        </div>
+        }
+
+    </div>
+
+</div>

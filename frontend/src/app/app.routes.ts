@@ -1,8 +1,9 @@
 import { Routes } from '@angular/router';
-import { LoginComponent } from './pages/login/login.component';
-import { RegisterComponent } from './pages/register/register.component';
-import { DashboardComponent } from './pages/dashboard/dashboard.component';
-import { authGuard } from './guards/auth.guard';
+import { LoginComponent } from './features/auth/pages/login/login.component';
+import { RegisterComponent } from './features/auth/pages/register/register.component';
+import { DashboardComponent } from './features/dashboard/pages/dashboard/dashboard.component';
+import { authGuard } from './core/guards/auth.guard';
+import { ProductsComponent } from './features/products/pages/products/products.component';
 
 export const routes: Routes = [
     {
@@ -16,7 +17,13 @@ export const routes: Routes = [
     {
         path: "dashboard",
         component: DashboardComponent,
-        canActivate: [authGuard]
+        canActivate: [authGuard],
+        children: [
+            {
+                path: "products",
+                component: ProductsComponent
+            }
+        ]
     },
     {
         path: "",
