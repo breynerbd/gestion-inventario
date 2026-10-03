@@ -5,6 +5,7 @@ import { DashboardComponent } from './features/dashboard/pages/dashboard/dashboa
 import { authGuard } from './core/guards/auth.guard';
 import { ProductsComponent } from './features/products/pages/products/products.component';
 import { CategoriesComponent } from './features/categories/pages/categories/categories.component';
+import { SuppliersComponent } from './features/suppliers/pages/suppliers/suppliers.component';
 
 export const routes: Routes = [
     {
@@ -27,6 +28,10 @@ export const routes: Routes = [
             {
                 path: "categories",
                 component: CategoriesComponent
+            },
+            {
+                path: "suppliers",
+                component: SuppliersComponent
             }
         ]
     },
