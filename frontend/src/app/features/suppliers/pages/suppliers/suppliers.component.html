@@ -1,0 +1,148 @@
+<div class="suppliers-container">
+
+    <div class="suppliers-header">
+        <div>
+            <h1>Proveedores</h1>
+            <p>Gestión de proveedores del inventario</p>
+        </div>
+
+        <button type="button" (click)="openForm()">
+            Nuevo Proveedor
+        </button>
+    </div>
+
+    @if (errorMessage) {
+    <p class="error-message">{{ errorMessage }}</p>
+    }
+
+    @if (showForm) {
+    <div class="supplier-form-container">
+
+        @if (editingSupplierId === null) {
+        <h2>Nuevo Proveedor</h2>
+        } @else {
+        <h2>Editar Proveedor</h2>
+        }
+
+        <form class="supplier-form" #supplierForm="ngForm" (ngSubmit)="saveSupplier()">
+
+            <div class="form-group">
+                <label for="supplierCode">Código</label>
+                <input id="supplierCode" type="text" name="supplierCode" [(ngModel)]="newSupplier.supplierCode" required
+                    [disabled]="editingSupplierId !== null">
+            </div>
+
+            <div class="form-group">
+                <label for="documentType">Tipo de documento</label>
+
+                <select id="documentType" name="documentType" [(ngModel)]="newSupplier.documentType" required>
+                    <option value="">Selecciona un tipo de documento</option>
+                    <option value="NIT">NIT</option>
+                    <option value="RUC">RUC</option>
+                    <option value="CEDULA">Cédula</option>
+                    <option value="PASAPORTE">Pasaporte</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="documentNumber">Número de documento</label>
+                <input id="documentNumber" type="text" name="documentNumber" [(ngModel)]="newSupplier.documentNumber"
+                    required>
+            </div>
+
+            <div class="form-group">
+                <label for="businessName">Razón social</label>
+                <input id="businessName" type="text" name="businessName" [(ngModel)]="newSupplier.businessName"
+                    required>
+            </div>
+
+            <div class="form-group">
+                <label for="contactName">Nombre de contacto</label>
+                <input id="contactName" type="text" name="contactName" [(ngModel)]="newSupplier.contactName" required>
+            </div>
+
+            <div class="form-group">
+                <label for="phone">Teléfono</label>
+                <input id="phone" type="text" name="phone" [(ngModel)]="newSupplier.phone" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Correo electrónico</label>
+                <input id="email" type="email" name="email" [(ngModel)]="newSupplier.email" required>
+            </div>
+
+            <div class="form-group">
+                <label for="address">Dirección</label>
+                <input id="address" type="text" name="address" [(ngModel)]="newSupplier.address" required>
+            </div>
+
+            <div class="form-actions">
+                <button type="button" (click)="cancelForm()">
+                    Cancelar
+                </button>
+
+                <button type="submit" [disabled]="supplierForm.invalid">
+                    Guardar Proveedor
+                </button>
+            </div>
+
+        </form>
+    </div>
+    }
+
+    <div class="suppliers-table-container">
+
+        <table class="suppliers-table">
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Documento</th>
+                    <th>Razón Social</th>
+                    <th>Contacto</th>
+                    <th>Teléfono</th>
+                    <th>Correo</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @for (supplier of suppliers; track supplier.supplierId) {
+                <tr>
+                    <td>{{ supplier.supplierCode }}</td>
+                    <td>
+                        {{ supplier.documentType }} {{ supplier.documentNumber }}
+                    </td>
+                    <td>{{ supplier.businessName }}</td>
+                    <td>{{ supplier.contactName }}</td>
+                    <td>{{ supplier.phone }}</td>
+                    <td>{{ supplier.email }}</td>
+                    <td>{{ supplier.status }}</td>
+
+                    <td>
+                        <button type="button" (click)="editSupplier(supplier)">
+                            Editar
+                        </button>
+
+                        <button type="button" (click)="changeStatus(supplier)">
+                            @if (supplier.status === "ACTIVO") {
+                            Desactivar
+                            } @else {
+                            Activar
+                            }
+                        </button>
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+
+        @if (suppliers.length === 0) {
+        <div class="empty-suppliers">
+            <p>No hay proveedores registrados.</p>
+        </div>
+        }
+
+    </div>
+
+</div>
