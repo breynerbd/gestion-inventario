@@ -6,6 +6,7 @@ import { authGuard } from './core/guards/auth.guard';
 import { ProductsComponent } from './features/products/pages/products/products.component';
 import { CategoriesComponent } from './features/categories/pages/categories/categories.component';
 import { SuppliersComponent } from './features/suppliers/pages/suppliers/suppliers.component';
+import { RolesComponent } from './features/roles/pages/roles/roles.component';
 
 export const routes: Routes = [
     {
@@ -32,6 +33,10 @@ export const routes: Routes = [
             {
                 path: "suppliers",
                 component: SuppliersComponent
+            },
+            {
+                path: "roles",
+                component: RolesComponent
             }
         ]
     },
