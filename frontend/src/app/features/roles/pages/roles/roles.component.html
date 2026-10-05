@@ -1,0 +1,82 @@
+<div class="roles-container">
+    <div class="roles-header">
+        <div>
+            <h1>Roles</h1>
+            <p>Gestión de roles del sistema</p>
+        </div>
+        <button type="button" (click)="openForm()">Nuevo Rol</button>
+    </div>
+
+    @if (errorMessage) {
+    <p class="error-message">{{ errorMessage }}</p>
+    }
+
+    @if (showForm) {
+    <div class="role-form-container">
+        @if (editingRoleId === null) {
+        <h2>Nuevo Rol</h2>
+        } @else {
+        <h2>Editar Rol</h2>
+        }
+
+        <form class="role-form" #roleForm="ngForm" (ngSubmit)="saveRole()">
+            <div class="form-group">
+                <label for="roleName">Nombre del rol</label>
+                <input id="roleName" type="text" name="roleName" [(ngModel)]="newRole.roleName" maxlength="50" required>
+            </div>
+
+            <div class="form-group description-group">
+                <label for="description">Descripción</label>
+                <textarea id="description" name="description" [(ngModel)]="newRole.description" maxlength="200"
+                    rows="4">
+                    </textarea>
+            </div>
+
+            <div class="form-actions">
+                <button type="button" (click)="cancelForm()">Cancelar</button>
+                <button type="submit" [disabled]="roleForm.invalid">Guardar Rol</button>
+            </div>
+        </form>
+    </div>
+    }
+
+    <div class="roles-table-container">
+        <table class="roles-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre del Rol</th>
+                    <th>Descripción</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (role of roles; track role.roleId) {
+                <tr>
+                    <td>{{ role.roleId }}</td>
+                    <td>{{ role.roleName }}</td>
+                    <td>{{ role.description }}</td>
+                    <td>{{ role.status }}</td>
+                    <td>
+                        <button type="button" (click)="editRole(role)">Editar</button>
+                        <button type="button" (click)="changeStatus(role)">
+                            @if (role.status === "ACTIVO") {
+                            Desactivar
+                            } @else {
+                            Activar
+                            }
+                        </button>
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+
+        @if (roles.length === 0) {
+        <div class="empty-roles">
+            <p>No hay roles registrados.</p>
+        </div>
+        }
+    </div>
+</div>
