@@ -1,0 +1,128 @@
+<div class="users-container">
+    <div class="users-header">
+        <div>
+            <h1>Usuarios</h1>
+            <p>Gestión de usuarios del sistema</p>
+        </div>
+        <button type="button" (click)="openForm()">Nuevo Usuario</button>
+    </div>
+
+    @if (errorMessage) {
+    <p class="error-message">{{ errorMessage }}</p>
+    }
+
+    @if (showForm) {
+    <div class="user-form-container">
+        @if (editingUserId === null) {
+        <h2>Nuevo Usuario</h2>
+        } @else {
+        <h2>Editar Usuario</h2>
+        }
+
+        <form class="user-form" #userForm="ngForm" (ngSubmit)="saveUser()">
+            <div class="form-group">
+                <label for="username">Nombre de usuario</label>
+                <input id="username" type="text" name="username" [(ngModel)]="newUser.username" maxlength="30" required
+                    [disabled]="editingUserId !== null">
+            </div>
+
+            @if (editingUserId === null) {
+            <div class="form-group">
+                <label for="password">Contraseña</label>
+                <input id="password" type="password" name="password" [(ngModel)]="newUser.password" minlength="8"
+                    maxlength="255" required>
+            </div>
+            }
+
+            <div class="form-group">
+                <label for="firstNames">Nombres</label>
+                <input id="firstNames" type="text" name="firstNames" [(ngModel)]="newUser.firstNames" maxlength="60"
+                    required>
+            </div>
+
+            <div class="form-group">
+                <label for="lastNames">Apellidos</label>
+                <input id="lastNames" type="text" name="lastNames" [(ngModel)]="newUser.lastNames" maxlength="60"
+                    required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Correo electrónico</label>
+                <input id="email" type="email" name="email" [(ngModel)]="newUser.email" maxlength="100" required>
+            </div>
+
+            <div class="form-group">
+                <label for="phone">Teléfono</label>
+                <input id="phone" type="text" name="phone" [(ngModel)]="newUser.phone" maxlength="15">
+            </div>
+
+            <div class="form-group">
+                <label for="roleId">Rol</label>
+                <select name="roleId" id="roleId" [(ngModel)]="newUser.roleId" required>
+                    <option [ngValue]="0">Seleccione un rol</option>
+                    @for (role of roles; track role.roleId) {
+                    <option [ngValue]="role.roleId">
+                        {{ role.roleName }}
+                    </option>
+                    }
+                </select>
+            </div>
+
+            <div class="form-actions">
+                <button type="button" (click)="cancelForm()">Cancelar</button>
+                <button type="submit" [disabled]="userForm.invalid">Guardar Usuario</button>
+            </div>
+        </form>
+    </div>
+    }
+
+    <div class="users-table-container">
+        <table class="users-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Usuario</th>
+                    <th>Nombres</th>
+                    <th>Apellidos</th>
+                    <th>Correo</th>
+                    <th>Teléfono</th>
+                    <th>Rol</th>
+                    <th>Estado</th>
+                    <th>Intentos fallidos</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (user of users; track user.userId) {
+                <tr>
+                    <td>{{ user.userId }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.firstNames }}</td>
+                    <td>{{ user.lastNames }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.phone }}</td>
+                    <td>{{ user.roleName }}</td>
+                    <td>{{ user.status }}</td>
+                    <td>{{ user.failedAttempts }}</td>
+                    <td>
+                        <button type="button" (click)="editUser(user)">Editar</button>
+                        <button type="button" (click)="changeStatus(user)">
+                            @if (user.status === "ACTIVO") {
+                            Desactivar
+                            } @else {
+                            Activar
+                            }
+                        </button>
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+
+        @if (users.length === 0) {
+        <div class="empty-users">
+            <p>No hay usuarios registrados.</p>
+        </div>
+        }
+    </div>
+</div>
