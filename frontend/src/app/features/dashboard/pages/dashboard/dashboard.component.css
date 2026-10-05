@@ -98,6 +98,12 @@
   color: #F4F4F9;
 }
 
+.menu a.active {
+    background-color: #586F7C;
+    color: #F4F4F9;
+    font-weight: 600;
+}
+
 .sidebar-foot {
   padding: 20px;
   border-top: 1px solid #586F7C;

@@ -7,6 +7,7 @@ import { ProductsComponent } from './features/products/pages/products/products.c
 import { CategoriesComponent } from './features/categories/pages/categories/categories.component';
 import { SuppliersComponent } from './features/suppliers/pages/suppliers/suppliers.component';
 import { RolesComponent } from './features/roles/pages/roles/roles.component';
+import { UsersComponent } from './features/users/pages/users/users.component';
 
 export const routes: Routes = [
     {
@@ -37,6 +38,10 @@ export const routes: Routes = [
             {
                 path: "roles",
                 component: RolesComponent
+            },
+            {
+                path: "users",
+                component: UsersComponent
             }
         ]
     },
