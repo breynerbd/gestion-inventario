@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { LoginRequest } from '../models/login-request';
 import { LoginResponse } from '../models/login-response';
 import { RegisterRequest } from '../models/register-request';
+import { RefreshTokenRequest } from '../models/refresh-token-request';
 
 @Injectable({
   providedIn: 'root'
@@ -25,6 +26,17 @@ export class AuthService {
   register(request: RegisterRequest): Observable<LoginResponse>{
     return this.http.post<LoginResponse>(
       `${this.apiUrl}/register`,
+      request
+    );
+  }
+
+  refreshToken(refreshToken: string): Observable<LoginResponse>{
+    const request: RefreshTokenRequest = {
+      refreshToken: refreshToken
+    };
+
+    return this.http.post<LoginResponse>(
+      `${this.apiUrl}/refresh`,
       request
     );
   }
