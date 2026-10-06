@@ -20,6 +20,11 @@ export class SuppliersComponent implements OnInit {
   editingSupplierId: number | null = null;
   errorMessage = "";
 
+  currentPage: number = 0;
+  pageSize: number = 10;
+  totalPages: number = 0;
+  totalElements: number = 0;
+
   newSupplier: SupplierCreate = {
     supplierCode: "",
     documentType: "",
@@ -40,15 +45,24 @@ export class SuppliersComponent implements OnInit {
   }
 
   loadSuppliers(): void {
-    this.supplierService.getSuppliers().subscribe({
+    this.supplierService.getSuppliers(this.currentPage, this.pageSize).subscribe({
       next: (response) => {
         this.suppliers = response.content;
+        this.totalPages = response.totalPages;
+        this.totalElements = response.totalElements;
       },
       error: (error) => {
         console.error(error);
         this.errorMessage = "No se pudieron cargar los proveedores";
       }
     });
+  }
+
+  changePage(page: number): void {
+    if (page >= 0 && page < this.totalPages) {
+      this.currentPage = page;
+      this.loadSuppliers();
+    }
   }
 
   createSupplier(): void {

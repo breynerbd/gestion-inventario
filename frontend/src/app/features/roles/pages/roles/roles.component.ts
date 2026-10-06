@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RoleResponse } from '../../models/role-response';
 import { RoleCreate } from '../../models/role-create';
@@ -11,7 +11,7 @@ import { RoleUpdate } from '../../models/role-update';
   templateUrl: './roles.component.html',
   styleUrl: './roles.component.css'
 })
-export class RolesComponent {
+export class RolesComponent implements OnInit {
 
   roles: RoleResponse[] = [];
 
@@ -19,12 +19,15 @@ export class RolesComponent {
   editingRoleId: number | null = null;
   errorMessage = "";
 
+  currentPage = 1;
+  pageSize = 10;
+
   newRole: RoleCreate = {
     roleName: "",
     description: ""
   };
 
-  constructor(private readonly roleService: RoleService){
+  constructor(private readonly roleService: RoleService) {
   }
 
   ngOnInit(): void {
@@ -41,6 +44,21 @@ export class RolesComponent {
         this.errorMessage = "No se pudieron cargar los roles"
       }
     });
+  }
+
+  get totalPages(): number {
+    return Math.ceil(this.roles.length / this.pageSize);
+  }
+
+  get paginatedRoles(): RoleResponse[] {
+    const startIndex = (this.currentPage - 1) * this.pageSize;
+    return this.roles.slice(startIndex, startIndex + this.pageSize);
+  }
+
+  changePage(page: number): void {
+    if (page >= 1 && page <= this.totalPages) {
+      this.currentPage = page;
+    }
   }
 
   createRole(): void {
@@ -106,7 +124,7 @@ export class RolesComponent {
   }
 
   changeStatus(role: RoleResponse): void {
-    const newStatus = role.status === "ACTIVO" 
+    const newStatus = role.status === "ACTIVO"
       ? "INACTIVO"
       : "ACTIVO";
 

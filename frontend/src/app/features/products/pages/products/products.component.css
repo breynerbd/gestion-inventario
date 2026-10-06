@@ -5,6 +5,10 @@
 .products-container {
     padding: 30px;
     box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 90px);
+    padding-bottom: 25px;
 }
 
 .products-header {
@@ -12,6 +16,7 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 25px;
+    flex-shrink: 0;
 }
 
 .products-header h1 {
@@ -38,9 +43,10 @@
 }
 
 .products-table-container {
-    overflow: hidden;
+    overflow: auto;
     background-color: #F4F4F9;
     border-radius: 15px;
+    flex: 1;
 }
 
 .products-table {
@@ -58,6 +64,9 @@
 .products-table th {
     background-color: #2F4550;
     color: #F4F4F9;
+    position: sticky;
+    top: 0;
+    z-index: 1;
 }
 
 .products-table td {
@@ -91,6 +100,7 @@
 .error-message {
     margin-bottom: 20px;
     color: #dc2626;
+    flex-shrink: 0;
 }
 
 .product-form-container {
@@ -98,6 +108,7 @@
     padding: 25px;
     border-radius: 15px;
     background-color: #ffffff;
+    flex-shrink: 0;
 }
 
 .product-form-container h2 {
@@ -159,4 +170,38 @@
 
 .form-actions button:hover {
     background-color: #586F7C;
+}
+
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin-top: auto;
+    padding-top: 12px;
+    padding-bottom: 6px;
+}
+
+.pagination-container button {
+    padding: 8px 14px;
+    border: none;
+    border-radius: 6px;
+    background-color: #2F4550;
+    color: #F4F4F9;
+    cursor: pointer;
+}
+
+.pagination-container button:hover:not(:disabled) {
+    background-color: #586F7C;
+}
+
+.pagination-container button:disabled {
+    background-color: #B8DBD9;
+    color: #586F7C;
+    cursor: not-allowed;
+}
+
+.pagination-container span {
+    color: #2F4550;
+    font-weight: 500;
 }

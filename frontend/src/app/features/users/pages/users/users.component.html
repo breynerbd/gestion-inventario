@@ -93,7 +93,7 @@
                 </tr>
             </thead>
             <tbody>
-                @for (user of users; track user.userId) {
+                @for (user of paginatedUsers; track user.userId) {
                 <tr>
                     <td>{{ user.userId }}</td>
                     <td>{{ user.username }}</td>
@@ -125,4 +125,20 @@
         </div>
         }
     </div>
+
+    @if (totalPages > 1) {
+    <div class="pagination-container">
+        <button type="button" (click)="changePage(currentPage - 1)" [disabled]="currentPage === 1">
+            Anterior
+        </button>
+
+        <span>
+            Página {{ currentPage }} de {{ totalPages }}
+        </span>
+
+        <button type="button" (click)="changePage(currentPage + 1)" [disabled]="currentPage === totalPages">
+            Siguiente
+        </button>
+    </div>
+    }
 </div>

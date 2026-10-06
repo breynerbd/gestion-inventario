@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { CategoryResponse } from '../models/category-response';
@@ -17,8 +17,9 @@ export class CategoryService {
 
     constructor(private readonly http: HttpClient) { }
 
-    getCategories(): Observable<PageResponse<CategoryResponse>> {
-        return this.http.get<PageResponse<CategoryResponse>>(this.apiUrl);
+    getCategories(page: number = 0, size: number = 10): Observable<PageResponse<CategoryResponse>> {
+        const params = new HttpParams().set("page", page.toString()).set("size", size.toString());
+        return this.http.get<PageResponse<CategoryResponse>>(this.apiUrl, { params });
     }
 
     getCategoryId(categoryId: number): Observable<CategoryResponse> {

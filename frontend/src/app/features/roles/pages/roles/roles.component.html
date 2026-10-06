@@ -52,7 +52,7 @@
                 </tr>
             </thead>
             <tbody>
-                @for (role of roles; track role.roleId) {
+                @for (role of paginatedRoles; track role.roleId) {
                 <tr>
                     <td>{{ role.roleId }}</td>
                     <td>{{ role.roleName }}</td>
@@ -79,4 +79,20 @@
         </div>
         }
     </div>
+
+    @if (totalPages > 1) {
+    <div class="pagination-container">
+        <button type="button" (click)="changePage(currentPage - 1)" [disabled]="currentPage === 1">
+            Anterior
+        </button>
+
+        <span>
+            Página {{ currentPage }} de {{ totalPages }}
+        </span>
+
+        <button type="button" (click)="changePage(currentPage + 1)" [disabled]="currentPage === totalPages">
+            Siguiente
+        </button>
+    </div>
+    }
 </div>

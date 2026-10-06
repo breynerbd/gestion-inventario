@@ -24,6 +24,11 @@ export class ProductsComponent implements OnInit {
   editingProductId: number | null = null;
   errorMessage = "";
 
+  currentPage: number = 0;
+  pageSize: number = 10;
+  totalPages: number = 0;
+  totalElements: number = 0;
+
   newProduct: ProductCreate = {
     productCode: '',
     productName: '',
@@ -68,9 +73,11 @@ export class ProductsComponent implements OnInit {
   }
 
   loadProducts(): void {
-    this.productService.getProducts().subscribe({
+    this.productService.getProducts(this.currentPage, this.pageSize).subscribe({
       next: (response) => {
         this.products = response.content;
+        this.totalPages = response.totalPages;
+        this.totalElements = response.totalElements;
       },
       error: (error) => {
         console.error(error);
@@ -101,6 +108,13 @@ export class ProductsComponent implements OnInit {
         this.errorMessage = "No se pudieron cargar los proveedores";
       }
     });
+  }
+
+  changePage(page: number): void {
+    if (page >= 0 && page < this.totalPages) {
+      this.currentPage = page;
+      this.loadProducts();
+    }
   }
 
   createProduct(): void {

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { ProductResponse } from '../models/product-response';
@@ -17,8 +17,9 @@ export class ProductService {
 
     constructor(private readonly http: HttpClient) { }
 
-    getProducts(): Observable<PageResponse<ProductResponse>> {
-        return this.http.get<PageResponse<ProductResponse>>(this.apiUrl);
+    getProducts(page: number = 0, size: number = 10): Observable<PageResponse<ProductResponse>> {
+        const params = new HttpParams().set("page", page.toString()).set("size", size.toString());
+        return this.http.get<PageResponse<ProductResponse>>(this.apiUrl, { params });
     }
 
     getProductById(productId: number): Observable<ProductResponse> {

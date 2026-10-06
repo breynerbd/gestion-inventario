@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { UserResponse } from '../../models/user-response';
 import { UserCreate } from '../../models/user-create';
@@ -13,13 +13,16 @@ import { RoleService } from '../../../roles/services/role.service';
   templateUrl: './users.component.html',
   styleUrl: './users.component.css'
 })
-export class UsersComponent {
+export class UsersComponent implements OnInit {
   users: UserResponse[] = [];
   roles: RoleResponse[] = [];
 
   showForm = false;
   editingUserId: number | null = null;
   errorMessage = "";
+
+  currentPage = 1;
+  pageSize = 10;
 
   newUser: UserCreate = {
     username: "",
@@ -61,6 +64,21 @@ export class UsersComponent {
         this.errorMessage = "No se pudieron cargar los roles"
       }
     })
+  }
+
+  get totalPages(): number {
+    return Math.ceil(this.users.length / this.pageSize);
+  }
+
+  get paginatedUsers(): UserResponse[] {
+    const startIndex = (this.currentPage - 1) * this.pageSize;
+    return this.users.slice(startIndex, startIndex + this.pageSize);
+  }
+
+  changePage(page: number): void {
+    if (page >= 1 && page <= this.totalPages) {
+      this.currentPage = page;
+    }
   }
 
   createUser(): void {

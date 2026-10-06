@@ -105,4 +105,16 @@
 
     </div>
 
+    @if (totalPages > 1) {
+    <div class="pagination-container">
+        <button type="button" (click)="changePage(currentPage - 1)" [disabled]="currentPage === 0">
+            Anterior
+        </button>
+        <span>Página {{ currentPage + 1 }} de {{ totalPages }}</span>
+        <button type="button" (click)="changePage(currentPage + 1)" [disabled]="currentPage === totalPages - 1">
+            Siguiente
+        </button>
+    </div>
+    }
+
 </div>

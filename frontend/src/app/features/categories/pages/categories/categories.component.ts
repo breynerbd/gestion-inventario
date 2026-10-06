@@ -18,6 +18,11 @@ export class CategoriesComponent implements OnInit {
   editingCategoryId: number | null = null;
   errorMessage = "";
 
+  currentPage: number = 0;
+  pageSize: number = 10;
+  totalPages: number = 0;
+  totalElements: number = 0;
+
   newCategory: CategoryCreate = {
     categoryCode: "",
     categoryName: "",
@@ -45,15 +50,24 @@ export class CategoriesComponent implements OnInit {
   }
 
   loadCategories(): void {
-    this.categoryService.getCategories().subscribe({
+    this.categoryService.getCategories(this.currentPage, this.pageSize).subscribe({
       next: (response) => {
         this.categories = response.content;
+        this.totalPages = response.totalPages;
+        this.totalElements = response.totalElements;
       },
       error: (error) => {
         console.error(error);
         this.errorMessage = "No se pudieron cargar las categorias"
       }
     });
+  }
+
+  changePage(page: number): void {
+    if (page >= 0 && page < this.totalPages) {
+      this.currentPage = page;
+      this.loadCategories();
+    }
   }
 
   createCategory(): void {

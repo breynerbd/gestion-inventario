@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { PageResponse } from '../../../shared/models/page-response';
@@ -17,8 +17,9 @@ export class SupplierService {
 
     constructor(private readonly http: HttpClient) { }
 
-    getSuppliers(): Observable<PageResponse<SupplierResponse>> {
-        return this.http.get<PageResponse<SupplierResponse>>(this.apiUrl);
+    getSuppliers(page: number = 0, size: number = 10): Observable<PageResponse<SupplierResponse>> {
+        const params = new HttpParams().set("page", page.toString()).set("size", size.toString());
+        return this.http.get<PageResponse<SupplierResponse>>(this.apiUrl, { params });
     }
 
     getSupplierId(supplierId: number): Observable<SupplierResponse> {
