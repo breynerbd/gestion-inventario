@@ -52,11 +52,7 @@
                 </button>
 
                 <button type="submit" [disabled]="permissionForm.invalid">
-                    @if (editingPermissionId === null) {
                     Guardar Permiso
-                    } @else {
-                    Actualizar Permiso
-                    }
                 </button>
             </div>
         </form>
@@ -111,19 +107,9 @@
         }
     </div>
 
-    @if (totalPages > 1) {
-    <div class="pagination-container">
-        <button type="button" (click)="changePage(currentPage - 1)" [disabled]="currentPage === 1">
-            Anterior
-        </button>
-
-        <span>
-            Página {{ currentPage }} de {{ totalPages }}
-        </span>
-
-        <button type="button" (click)="changePage(currentPage + 1)" [disabled]="currentPage === totalPages">
-            Siguiente
-        </button>
-    </div>
-    }
+    <app-pagination
+        [currentPage]="currentPage"
+        [totalPages]="totalPages"
+        (pageChange)="changePage($event)"
+    ></app-pagination>
 </div>

@@ -4,10 +4,11 @@ import { RoleResponse } from '../../models/role-response';
 import { RoleCreate } from '../../models/role-create';
 import { RoleService } from '../../services/role.service';
 import { RoleUpdate } from '../../models/role-update';
+import { PaginationComponent } from '../../../../shared/components/pagination/pagination.component';
 
 @Component({
   selector: 'app-roles',
-  imports: [FormsModule],
+  imports: [FormsModule, PaginationComponent],
   templateUrl: './roles.component.html',
   styleUrl: './roles.component.css'
 })

@@ -6,10 +6,11 @@ import { UserService } from '../../services/user.service';
 import { UserUpdate } from '../../models/user-update';
 import { RoleResponse } from '../../../roles/models/role-response';
 import { RoleService } from '../../../roles/services/role.service';
+import { PaginationComponent } from '../../../../shared/components/pagination/pagination.component';
 
 @Component({
   selector: 'app-users',
-  imports: [FormsModule],
+  imports: [FormsModule, PaginationComponent],
   templateUrl: './users.component.html',
   styleUrl: './users.component.css'
 })

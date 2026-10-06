@@ -5,10 +5,11 @@ import { PermissionResponse } from "../../models/permission-response";
 import { PermissionCreate } from "../../models/permission-create";
 import { PermissionUpdate } from "../../models/permission-update";
 import { PermissionService } from "../../services/permission.service";
+import { PaginationComponent } from "../../../../shared/components/pagination/pagination.component";
 
 @Component({
   selector: "app-permissions",
-  imports: [FormsModule],
+  imports: [FormsModule, PaginationComponent],
   templateUrl: "./permissions.component.html",
   styleUrl: "./permissions.component.css"
 })

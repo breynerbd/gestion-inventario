@@ -103,7 +103,8 @@
                     Cancelar
                 </button>
 
-                <button type="submit" [disabled]="productForm.invalid">
+                <button type="submit"
+                    [disabled]="productForm.invalid || newProduct.categoryId === 0 || newProduct.supplierId === 0">
                     Guardar Producto
                 </button>
             </div>

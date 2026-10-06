@@ -172,6 +172,11 @@
     background-color: #586F7C;
 }
 
+.form-actions button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
 .pagination-container {
     display: flex;
     justify-content: center;
