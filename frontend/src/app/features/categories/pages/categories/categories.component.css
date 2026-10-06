@@ -17,6 +17,7 @@
     align-items: center;
     margin-bottom: 25px;
     flex-shrink: 0;
+    position: relative;
 }
 
 .categories-header h1 {
@@ -104,11 +105,16 @@
 }
 
 .category-form-container {
-    margin-bottom: 25px;
+    position: absolute;
+    top: 50%;
+    left: 55%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    width: 70%;
     padding: 25px;
-    border-radius: 15px;
-    background-color: #FFFFFF;
-    flex-shrink: 0;
+    border-radius: 20px;
+    background-color: #d1e2e1fd;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
 .category-form-container h2 {
