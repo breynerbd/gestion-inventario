@@ -1,0 +1,129 @@
+<div class="permissions-container">
+    <div class="permissions-header">
+        <div>
+            <h1>Permisos</h1>
+            <p>Gestión de permisos del sistema</p>
+        </div>
+
+        <button type="button" (click)="openForm()">
+            Nuevo Permiso
+        </button>
+    </div>
+
+    @if (errorMessage) {
+    <p class="error-message">{{ errorMessage }}</p>
+    }
+
+    @if (showForm) {
+    <div class="permission-form-container">
+        @if (editingPermissionId === null) {
+        <h2>Nuevo Permiso</h2>
+        } @else {
+        <h2>Editar Permiso</h2>
+        }
+
+        <form class="permission-form" #permissionForm="ngForm" (ngSubmit)="savePermission()">
+
+            <div class="form-group">
+                <label for="permissionCode">Código</label>
+                <input id="permissionCode" type="text" name="permissionCode" [(ngModel)]="newPermission.permissionCode"
+                    [disabled]="editingPermissionId !== null" required>
+            </div>
+
+            <div class="form-group">
+                <label for="permissionName">Nombre</label>
+                <input id="permissionName" type="text" name="permissionName" [(ngModel)]="newPermission.permissionName"
+                    required>
+            </div>
+
+            <div class="form-group">
+                <label for="module">Módulo</label>
+                <input id="module" type="text" name="module" [(ngModel)]="newPermission.module" required>
+            </div>
+
+            <div class="form-group">
+                <label for="description">Descripción</label>
+                <textarea id="description" name="description" [(ngModel)]="newPermission.description"></textarea>
+            </div>
+
+            <div class="form-actions">
+                <button type="button" (click)="cancelForm()">
+                    Cancelar
+                </button>
+
+                <button type="submit" [disabled]="permissionForm.invalid">
+                    @if (editingPermissionId === null) {
+                    Guardar Permiso
+                    } @else {
+                    Actualizar Permiso
+                    }
+                </button>
+            </div>
+        </form>
+    </div>
+    }
+
+    <div class="permissions-table-container">
+        <table class="permissions-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Código</th>
+                    <th>Nombre</th>
+                    <th>Módulo</th>
+                    <th>Descripción</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @for (permission of paginatedPermissions; track permission.permissionId) {
+                <tr>
+                    <td>{{ permission.permissionId }}</td>
+                    <td>{{ permission.permissionCode }}</td>
+                    <td>{{ permission.permissionName }}</td>
+                    <td>{{ permission.module }}</td>
+                    <td>{{ permission.description }}</td>
+                    <td>{{ permission.status }}</td>
+                    <td>
+                        <button type="button" (click)="editPermission(permission)">
+                            Editar
+                        </button>
+
+                        <button type="button" (click)="changeStatus(permission)">
+                            @if (permission.status === "ACTIVO") {
+                            Desactivar
+                            } @else {
+                            Activar
+                            }
+                        </button>
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+
+        @if (permissions.length === 0) {
+        <div class="empty-permissions">
+            <p>No hay permisos registrados.</p>
+        </div>
+        }
+    </div>
+
+    @if (totalPages > 1) {
+    <div class="pagination-container">
+        <button type="button" (click)="changePage(currentPage - 1)" [disabled]="currentPage === 1">
+            Anterior
+        </button>
+
+        <span>
+            Página {{ currentPage }} de {{ totalPages }}
+        </span>
+
+        <button type="button" (click)="changePage(currentPage + 1)" [disabled]="currentPage === totalPages">
+            Siguiente
+        </button>
+    </div>
+    }
+</div>
