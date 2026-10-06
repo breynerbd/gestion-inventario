@@ -1,0 +1,172 @@
+<div class="movements-container">
+
+    <div class="movements-header">
+        <div>
+            <h1>Movimientos</h1>
+            <p>Gestiona las entradas, salidas y ajustes de inventario.</p>
+        </div>
+
+        @if (!showForm) {
+        <button type="button" (click)="openForm()">
+            Nuevo Movimiento
+        </button>
+        }
+    </div>
+
+    @if (errorMessage) {
+    <p class="error-message">{{ errorMessage }}</p>
+    }
+
+    @if (showForm) {
+    <div class="movement-form-container">
+
+        <h2>
+            @if (editingMovementId === null) {
+            Nuevo Movimiento
+            } @else {
+            Editar Movimiento
+            }
+        </h2>
+
+        <form class="movement-form" #movementForm="ngForm" (ngSubmit)="saveMovement()">
+
+            <div class="form-group">
+                <label for="movementType">Tipo de Movimiento</label>
+
+                <select id="movementType" name="movementType" [(ngModel)]="newMovement.movementType" required>
+                    <option value="">Selecciona un tipo</option>
+                    <option value="ENTRADA">Entrada</option>
+                    <option value="SALIDA">Salida</option>
+                    <option value="AJUSTE_POSITIVO">Ajuste Positivo</option>
+                    <option value="AJUSTE_NEGATIVO">Ajuste Negativo</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="productId">Producto</label>
+
+                <select id="productId" name="productId" [(ngModel)]="newMovement.productId" required>
+                    <option [ngValue]="0">
+                        Seleccione un producto
+                    </option>
+
+                    @for (product of products; track product.productId) {
+                    <option [ngValue]="product.productId">
+                        {{ product.productCode }} - {{ product.productName }}
+                    </option>
+                    }
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="quantity">Cantidad</label>
+
+                <input id="quantity" name="quantity" type="number" [(ngModel)]="newMovement.quantity" min="1" required>
+            </div>
+
+            <div class="form-group">
+                <label for="referenceDocument">Documento de Referencia</label>
+
+                <input id="referenceDocument" name="referenceDocument" type="text"
+                    [(ngModel)]="newMovement.referenceDocument" required>
+            </div>
+
+            <div class="form-group">
+                <label for="reason">Motivo</label>
+
+                <textarea id="reason" name="reason" [(ngModel)]="newMovement.reason" rows="3" required></textarea>
+            </div>
+
+            <div class="form-actions">
+                <button type="button" (click)="cancelForm()">
+                    Cancelar
+                </button>
+                <button type="submit" [disabled]="movementForm.invalid">
+                    Guardar Movimiento
+                </button>
+            </div>
+
+        </form>
+
+    </div>
+    }
+
+    @if (errorMessage) {
+    <p class="error-message">{{ errorMessage }}</p>
+    }
+
+    <div class="movements-table-container">
+        <table class="movements-table">
+
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Tipo</th>
+                    <th>Producto</th>
+                    <th>Cantidad</th>
+                    <th>Documento</th>
+                    <th>Motivo</th>
+                    <th>Usuario</th>
+                    <th>Fecha</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                @for (movement of movements; track movement.movementId) {
+
+                <tr>
+                    <td>{{ movement.movementId }}</td>
+                    <td>{{ movement.movementType }}</td>
+                    <td>{{ movement.productId }}</td>
+                    <td>{{ movement.quantity }}</td>
+                    <td>{{ movement.referenceDocument }}</td>
+                    <td>{{ movement.reason }}</td>
+                    <td>{{ movement.username }}</td>
+                    <td>{{ movement.movementDate }}</td>
+                    <td>{{ movement.status }}</td>
+
+                    <td>
+                        <button type="button" (click)="editMovement(movement)">
+                            Editar
+                        </button>
+
+                        <button type="button" (click)="changeStatus(movement)">
+                            @if (movement.status === "ACTIVO") {
+                            Desactivar
+                            } @else {
+                            Activar
+                            }
+                        </button>
+                    </td>
+                </tr>
+
+                }
+
+            </tbody>
+
+        </table>
+
+        @if (products.length === 0) {
+        <div class="empty-movements">
+            No hay movimientos registrados.
+        </div>
+        }
+
+    </div>
+
+    @if (totalPages > 1) {
+    <div class="pagination-container">
+        <button type="button" (click)="changePage(currentPage - 1)" [disabled]="currentPage === 0">
+            Anterior
+        </button>
+        <span>Página {{ currentPage + 1 }} de {{ totalPages }}</span>
+        <button type="button" (click)="changePage(currentPage + 1)" [disabled]="currentPage === totalPages - 1">
+            Siguiente
+        </button>
+    </div>
+    }
+
+</div>
