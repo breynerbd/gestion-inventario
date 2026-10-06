@@ -9,6 +9,7 @@ import { SuppliersComponent } from './features/suppliers/pages/suppliers/supplie
 import { RolesComponent } from './features/roles/pages/roles/roles.component';
 import { UsersComponent } from './features/users/pages/users/users.component';
 import { PermissionsComponent } from './features/permissions/pages/permissions/permissions.component';
+import { MovementsComponent } from './features/stockMovements/pages/movements/movements.component';
 
 export const routes: Routes = [
     {
@@ -47,6 +48,10 @@ export const routes: Routes = [
             {
                 path: "permissions",
                 component: PermissionsComponent
+            },
+            {
+                path: "movements",
+                component: MovementsComponent
             }
         ]
     },
