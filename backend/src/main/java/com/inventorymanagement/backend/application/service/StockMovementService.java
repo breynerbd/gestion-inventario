@@ -99,12 +99,12 @@ public class StockMovementService {
 
         if (startDate != null) {
             specification = specification.and((root, query, cb) -> 
-                cb.greaterThanOrEqualTo(root.get("startDate"),startDate.atStartOfDay()));
+                cb.greaterThanOrEqualTo(root.get("movementDate"),startDate.atStartOfDay()));
         }
 
         if (endDate != null) {
             specification = specification.and((root, query, cb) ->
-                cb.lessThan(root.get("endDate"),endDate.plusDays(1).atStartOfDay()));
+                cb.lessThan(root.get("movementDate"),endDate.plusDays(1).atStartOfDay()));
         }
 
         if (userId != null) {
