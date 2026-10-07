@@ -1,14 +1,75 @@
 <div class="products-container">
 
     <div class="products-header">
-        <div>
+        <div class="products-title">
             <h1>Productos</h1>
             <p>Gestión de productos del inventario</p>
         </div>
 
-        <button type="button" (click)="openForm()">
-            Nuevo Producto
-        </button>
+        <div class="products-actions">
+            <div class="filter-group">
+                <label for="searchProductCode">Código</label>
+                <input id="searchProductCode" type="text" [(ngModel)]="searchProductCode" (keyup.enter)="applyFilters()"
+                    placeholder="Código">
+            </div>
+
+            <div class="filter-group">
+                <label for="searchProductName">Producto</label>
+                <input id="searchProductName" type="text" [(ngModel)]="searchProductName" (keyup.enter)="applyFilters()"
+                    placeholder="Producto">
+            </div>
+
+            <div class="filter-group">
+                <label for="selectedCategoryId">Categoría</label>
+                <select id="selectedCategoryId" [(ngModel)]="selectedCategoryId" (change)="applyFilters()">
+
+                    <option [ngValue]="0">Todas</option>
+
+                    @for (category of categories; track category.categoryId) {
+                    <option [ngValue]="category.categoryId">
+                        {{ category.categoryName }}
+                    </option>
+                    }
+
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="selectedSupplierId">Proveedor</label>
+                <select id="selectedSupplierId" [(ngModel)]="selectedSupplierId" (change)="applyFilters()">
+
+                    <option [ngValue]="0">Todos</option>
+
+                    @for (supplier of suppliers; track supplier.supplierId) {
+                    <option [ngValue]="supplier.supplierId">
+                        {{ supplier.businessName }}
+                    </option>
+                    }
+
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="selectedStatus">Estado</label>
+                <select id="selectedStatus" [(ngModel)]="selectedStatus" (change)="applyFilters()">
+
+                    <option value="">Todos</option>
+                    <option value="ACTIVO">Activo</option>
+                    <option value="INACTIVO">Inactivo</option>
+
+                </select>
+            </div>
+
+            <button type="button" class="clear-filters-button" (click)="clearFilters()">
+                Limpiar
+            </button>
+
+            <button type="button" class="new-product-button" (click)="openForm()">
+                Nuevo Producto
+            </button>
+
+        </div>
+
     </div>
 
     @if (showForm) {

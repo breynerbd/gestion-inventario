@@ -14,10 +14,15 @@
 .products-header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-end;
+    gap: 20px;
     margin-bottom: 25px;
     flex-shrink: 0;
     position: relative;
+}
+
+.products-title {
+    flex-shrink: 0;
 }
 
 .products-header h1 {
@@ -30,16 +35,66 @@
     color: #586F7C;
 }
 
-.products-header button {
-    padding: 12px 20px;
-    border: none;
-    border-radius: 8px;
+.products-actions {
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+    gap: 10px;
+    flex: 1;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.filter-group label {
+    font-size: 14px;
+    color: #586F7C;
+}
+
+.filter-group input,
+.filter-group select {
+    width: 120px;
+    padding: 8px 9px;
+    border: 1px solid #B8DBD9;
+    border-radius: 6px;
+    background-color: #F4F4F9;
+    box-sizing: border-box;
+}
+
+.filter-group input:focus,
+.filter-group select:focus {
+    outline: none;
+    border-color: #697c889a;
+}
+
+.clear-filters-button {
+    padding: 8px 12px;
+    border: 1px solid #B8DBD9;
+    border-radius: 6px;
     background-color: #2F4550;
     color: #F4F4F9;
     cursor: pointer;
+    white-space: nowrap;
 }
 
-.products-header button:hover {
+.clear-filters-button:hover {
+    background-color: #586F7C;
+}
+
+.new-product-button {
+    padding: 10px 16px;
+    border: none;
+    border-radius: 7px;
+    background-color: #2F4550;
+    color: #F4F4F9;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.new-product-button:hover {
     background-color: #586F7C;
 }
 

@@ -24,6 +24,12 @@ export class ProductsComponent implements OnInit {
   editingProductId: number | null = null;
   errorMessage = "";
 
+  searchProductCode = "";
+  searchProductName = "";
+  selectedCategoryId = 0;
+  selectedSupplierId = 0;
+  selectedStatus = "";
+
   currentPage: number = 0;
   pageSize: number = 10;
   totalPages: number = 0;
@@ -73,7 +79,9 @@ export class ProductsComponent implements OnInit {
   }
 
   loadProducts(): void {
-    this.productService.getProducts(this.currentPage, this.pageSize).subscribe({
+    this.productService.getProducts(this.currentPage, this.pageSize, this.searchProductCode, this.searchProductName, 
+      this.selectedCategoryId, this.selectedSupplierId, this.selectedStatus)
+    .subscribe({
       next: (response) => {
         this.products = response.content;
         this.totalPages = response.totalPages;
@@ -84,6 +92,22 @@ export class ProductsComponent implements OnInit {
         this.errorMessage = "No se pudieron cargar los productos"
       }
     });
+  }
+
+  applyFilters(): void {
+    this.currentPage = 0;
+    this.loadProducts();
+  }
+
+  clearFilters(): void {
+    this.searchProductCode = "";
+    this.searchProductName = "";
+    this.selectedCategoryId = 0;
+    this.selectedSupplierId = 0;
+    this.selectedStatus = "";
+
+    this.currentPage = 0;
+    this.loadProducts();
   }
 
   loadCategories(): void {
