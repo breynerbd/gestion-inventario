@@ -1,16 +1,70 @@
 <div class="movements-container">
 
     <div class="movements-header">
-        <div>
+        <div class="movements-title">
             <h1>Movimientos</h1>
             <p>Gestiona las entradas, salidas y ajustes de inventario.</p>
         </div>
 
-        @if (!showForm) {
-        <button type="button" (click)="openForm()">
-            Nuevo Movimiento
-        </button>
-        }
+        <div class="movements-actions">
+            <div class="filter-group">
+                <label for="selectedProductId">Producto</label>
+                <select id="selectedProductId" [(ngModel)]="selectedProductId" (change)="applyFilters()">
+
+                    <option [ngValue]="0">Todos</option>
+
+                    @for (product of products; track product.productId) {
+                    <option [ngValue]="product.productId">
+                        {{ product.productName }}
+                    </option>
+                    }
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="selectedMovementType">Tipo</label>
+                <select id="selectedMovementType" [(ngModel)]="selectedMovementType" (change)="applyFilters()">
+
+                    <option value="">Todos</option>
+                    <option value="ENTRADA">Entrada</option>
+                    <option value="SALIDA">Salida</option>
+                    <option value="AJUSTE_POSITIVO">Ajuste positivo</option>
+                    <option value="AJUSTE_NEGATIVO">Ajuste negativo</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="startDate">Desde</label>
+                <input id="startDate" type="date" [(ngModel)]="startDate" (change)="applyFilters()">
+            </div>
+
+            <div class="filter-group">
+                <label for="endDate">Hasta</label>
+                <input id="endDate" type="date" [(ngModel)]="endDate" (change)="applyFilters()">
+            </div>
+
+            <div class="filter-group">
+                <label for="selectedUserId">Usuario</label>
+                <select id="selectedUserId" [(ngModel)]="selectedUserId" (change)="applyFilters()">
+
+                    <option [ngValue]="0">Todos</option>
+
+                    @for (user of users; track user.userId) {
+                    <option [ngValue]="user.userId">
+                        {{ user.username }}
+                    </option>
+                    }
+                </select>
+            </div>
+
+            <button type="button" class="clear-filters-button" (click)="clearFilters()">
+                Limpiar
+            </button>
+
+            <button type="button" class="new-movement-button" (click)="openForm()">
+                Nuevo Movimiento
+            </button>
+        </div>
     </div>
 
     @if (errorMessage) {
@@ -125,7 +179,7 @@
                     <td>{{ movement.referenceDocument }}</td>
                     <td>{{ movement.reason }}</td>
                     <td>{{ movement.username }}</td>
-                    <td>{{ movement.movementDate }}</td>
+                    <td>{{ movement.movementDate | date:"dd/MM/yyyy HH:mm" }}</td>
                     <td>{{ movement.status }}</td>
 
                     <td>
@@ -149,7 +203,7 @@
 
         </table>
 
-        @if (products.length === 0) {
+        @if (movements.length === 0) {
         <div class="empty-movements">
             No hay movimientos registrados.
         </div>

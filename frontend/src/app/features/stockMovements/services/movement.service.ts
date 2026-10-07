@@ -17,8 +17,17 @@ export class MovementService {
     constructor(private readonly http: HttpClient){
     }
 
-    getMovements(page: number = 0, size: number = 10): Observable<PageResponse<MovementResponse>> {
-        const params = new HttpParams().set("page", page.toString()).set("size", size.toString());
+    getMovements(page: number = 0, size: number = 10, 
+            productId: number = 0, movementType: string = "", startDate: string = "",
+            endDate: string = "", userId: number = 0
+        ): Observable<PageResponse<MovementResponse>> {
+            let params = new HttpParams().set("page", page.toString()).set("size", size.toString());
+    
+            if(productId) params = params.set("productId", productId);
+            if(movementType.trim()) params = params.set("movementType", movementType.trim());
+            if(startDate.trim()) params = params.set("startDate", startDate.trim());
+            if(endDate.trim()) params = params.set("endDate", endDate.trim());
+            if(userId) params = params.set("userId", userId);
         return this.http.get<PageResponse<MovementResponse>>(this.apiUrl, { params });
     }
 

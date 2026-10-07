@@ -3,22 +3,25 @@ import { FormsModule } from "@angular/forms";
 
 import { MovementCreate } from "../../models/movement-create";
 import { MovementResponse } from "../../models/movement-response";
-import { MovementStatus } from "../../models/movement-status";
 import { MovementUpdate } from "../../models/movement-update";
 import { MovementService } from "../../services/movement.service";
 
 import { ProductResponse } from "../../../products/models/product-response";
 import { ProductService } from "../../../products/services/product.service";
+import { UserResponse } from "../../../users/models/user-response";
+import { UserService } from "../../../users/services/user.service";
+import { DatePipe } from "@angular/common";
 
 @Component({
   selector: "app-movements",
-  imports: [FormsModule],
+  imports: [FormsModule, DatePipe],
   templateUrl: "./movements.component.html",
   styleUrl: "./movements.component.css"
 })
 export class MovementsComponent implements OnInit {
   movements: MovementResponse[] = [];
   products: ProductResponse[] = [];
+  users: UserResponse[] = [];
 
   showForm = false;
   editingMovementId: number | null = null;
@@ -29,6 +32,12 @@ export class MovementsComponent implements OnInit {
   totalPages: number = 0;
   totalElements: number = 0;
 
+  selectedProductId: number = 0;
+  selectedMovementType = "";
+  startDate = "";
+  endDate = "";
+  selectedUserId: number = 0;
+
   newMovement: MovementCreate = {
     movementType: "",
     productId: 0,
@@ -37,16 +46,21 @@ export class MovementsComponent implements OnInit {
     reason: ""
   };
 
-  constructor(private readonly movementService: MovementService, private readonly productService: ProductService) {
+  constructor(private readonly movementService: MovementService, private readonly productService: ProductService,
+    private readonly userService: UserService
+  ) {
   }
 
   ngOnInit(): void {
     this.loadMovements();
     this.loadProducts();
+    this.loadUsers();
   }
 
   loadMovements(): void {
-    this.movementService.getMovements(this.currentPage, this.pageSize).subscribe({
+    this.movementService.getMovements(this.currentPage, this.pageSize, this.selectedProductId,
+      this.selectedMovementType, this.startDate, this.endDate, this.selectedUserId
+    ).subscribe({
       next: (response) => {
         this.movements = response.content;
         this.totalPages = response.totalPages;
@@ -71,11 +85,38 @@ export class MovementsComponent implements OnInit {
     });
   }
 
+  loadUsers(): void {
+    this.userService.getUsers().subscribe({
+        next: (response) => {
+            this.users = response;
+        },
+        error: (error) => {
+            console.error(error);
+            this.errorMessage = "No se pudieron cargar los usuarios";
+        }
+    });
+}
+
   changePage(page: number): void {
     if (page >= 0 && page < this.totalPages) {
       this.currentPage = page;
       this.loadMovements();
     }
+  }
+
+  applyFilters(): void {
+    this.currentPage = 0;
+    this.loadMovements();
+  }
+
+  clearFilters(): void {
+    this.selectedProductId = 0;
+    this.selectedMovementType = "";
+    this.startDate = "";
+    this.endDate = "";
+    this.selectedUserId = 0;
+    this.currentPage = 0;
+    this.loadMovements();
   }
 
   createMovement(): void {
