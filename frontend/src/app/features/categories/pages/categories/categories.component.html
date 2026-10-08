@@ -16,45 +16,47 @@
     }
 
     @if (showForm) {
-    <div class="category-form-container">
+    <div class="form-overlay">
+        <div class="category-form-container">
 
-        @if (editingCategoryId === null) {
-        <h2>Nueva Categoría</h2>
-        } @else {
-        <h2>Editar Categoría</h2>
-        }
+            @if (editingCategoryId === null) {
+            <h2>Nueva Categoría</h2>
+            } @else {
+            <h2>Editar Categoría</h2>
+            }
 
-        <form class="category-form" #categoryForm="ngForm" (ngSubmit)="saveCategory()">
+            <form class="category-form" #categoryForm="ngForm" (ngSubmit)="saveCategory()">
 
-            <div class="form-group">
-                <label for="categoryCode">Código</label>
-                <input id="categoryCode" type="text" name="categoryCode" [(ngModel)]="newCategory.categoryCode"
-                    maxlength="10" required [disabled]="editingCategoryId !== null">
-            </div>
+                <div class="form-group">
+                    <label for="categoryCode">Código</label>
+                    <input id="categoryCode" type="text" name="categoryCode" [(ngModel)]="newCategory.categoryCode"
+                        maxlength="10" required [disabled]="editingCategoryId !== null">
+                </div>
 
-            <div class="form-group">
-                <label for="categoryName">Nombre</label>
-                <input id="categoryName" type="text" name="categoryName" [(ngModel)]="newCategory.categoryName"
-                    maxlength="60" required>
-            </div>
+                <div class="form-group">
+                    <label for="categoryName">Nombre</label>
+                    <input id="categoryName" type="text" name="categoryName" [(ngModel)]="newCategory.categoryName"
+                        maxlength="60" required>
+                </div>
 
-            <div class="form-group description-group">
-                <label for="description">Descripción</label>
-                <textarea id="description" name="description" [(ngModel)]="newCategory.description" maxlength="250"
-                    rows="4"></textarea>
-            </div>
+                <div class="form-group description-group">
+                    <label for="description">Descripción</label>
+                    <textarea id="description" name="description" [(ngModel)]="newCategory.description" maxlength="250"
+                        rows="4"></textarea>
+                </div>
 
-            <div class="form-actions">
-                <button type="button" (click)="cancelForm()">
-                    Cancelar
-                </button>
+                <div class="form-actions">
+                    <button type="button" (click)="cancelForm()">
+                        Cancelar
+                    </button>
 
-                <button type="submit" [disabled]="categoryForm.invalid">
-                    Guardar Categoría
-                </button>
-            </div>
+                    <button type="submit" [disabled]="categoryForm.invalid">
+                        Guardar Categoría
+                    </button>
+                </div>
 
-        </form>
+            </form>
+        </div>
     </div>
     }
 
