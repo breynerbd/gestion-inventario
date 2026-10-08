@@ -72,76 +72,79 @@
     }
 
     @if (showForm) {
-    <div class="movement-form-container">
+    <div class="form-overlay">
+        <div class="movement-form-container">
 
-        <h2>
-            @if (editingMovementId === null) {
-            Nuevo Movimiento
-            } @else {
-            Editar Movimiento
-            }
-        </h2>
+            <h2>
+                @if (editingMovementId === null) {
+                Nuevo Movimiento
+                } @else {
+                Editar Movimiento
+                }
+            </h2>
 
-        <form class="movement-form" #movementForm="ngForm" (ngSubmit)="saveMovement()">
+            <form class="movement-form" #movementForm="ngForm" (ngSubmit)="saveMovement()">
 
-            <div class="form-group">
-                <label for="movementType">Tipo de Movimiento</label>
+                <div class="form-group">
+                    <label for="movementType">Tipo de Movimiento</label>
 
-                <select id="movementType" name="movementType" [(ngModel)]="newMovement.movementType" required>
-                    <option value="">Selecciona un tipo</option>
-                    <option value="ENTRADA">Entrada</option>
-                    <option value="SALIDA">Salida</option>
-                    <option value="AJUSTE_POSITIVO">Ajuste Positivo</option>
-                    <option value="AJUSTE_NEGATIVO">Ajuste Negativo</option>
-                </select>
-            </div>
+                    <select id="movementType" name="movementType" [(ngModel)]="newMovement.movementType" required>
+                        <option value="">Selecciona un tipo</option>
+                        <option value="ENTRADA">Entrada</option>
+                        <option value="SALIDA">Salida</option>
+                        <option value="AJUSTE_POSITIVO">Ajuste Positivo</option>
+                        <option value="AJUSTE_NEGATIVO">Ajuste Negativo</option>
+                    </select>
+                </div>
 
-            <div class="form-group">
-                <label for="productId">Producto</label>
+                <div class="form-group">
+                    <label for="productId">Producto</label>
 
-                <select id="productId" name="productId" [(ngModel)]="newMovement.productId" required>
-                    <option [ngValue]="0">
-                        Seleccione un producto
-                    </option>
+                    <select id="productId" name="productId" [(ngModel)]="newMovement.productId" required>
+                        <option [ngValue]="0">
+                            Seleccione un producto
+                        </option>
 
-                    @for (product of products; track product.productId) {
-                    <option [ngValue]="product.productId">
-                        {{ product.productCode }} - {{ product.productName }}
-                    </option>
-                    }
-                </select>
-            </div>
+                        @for (product of products; track product.productId) {
+                        <option [ngValue]="product.productId">
+                            {{ product.productCode }} - {{ product.productName }}
+                        </option>
+                        }
+                    </select>
+                </div>
 
-            <div class="form-group">
-                <label for="quantity">Cantidad</label>
+                <div class="form-group">
+                    <label for="quantity">Cantidad</label>
 
-                <input id="quantity" name="quantity" type="number" [(ngModel)]="newMovement.quantity" min="1" required>
-            </div>
+                    <input id="quantity" name="quantity" type="number" [(ngModel)]="newMovement.quantity" min="1"
+                        required>
+                </div>
 
-            <div class="form-group">
-                <label for="referenceDocument">Documento de Referencia</label>
+                <div class="form-group">
+                    <label for="referenceDocument">Documento de Referencia</label>
 
-                <input id="referenceDocument" name="referenceDocument" type="text"
-                    [(ngModel)]="newMovement.referenceDocument" required>
-            </div>
+                    <input id="referenceDocument" name="referenceDocument" type="text"
+                        [(ngModel)]="newMovement.referenceDocument" required>
+                </div>
 
-            <div class="form-group">
-                <label for="reason">Motivo</label>
+                <div class="form-group">
+                    <label for="reason">Motivo</label>
 
-                <textarea id="reason" name="reason" [(ngModel)]="newMovement.reason" rows="3" required></textarea>
-            </div>
+                    <textarea id="reason" name="reason" [(ngModel)]="newMovement.reason" rows="3" required></textarea>
+                </div>
 
-            <div class="form-actions">
-                <button type="button" (click)="cancelForm()">
-                    Cancelar
-                </button>
-                <button type="submit" [disabled]="movementForm.invalid">
-                    Guardar Movimiento
-                </button>
-            </div>
+                <div class="form-actions">
+                    <button type="button" (click)="cancelForm()">
+                        Cancelar
+                    </button>
+                    <button type="submit" [disabled]="movementForm.invalid">
+                        Guardar Movimiento
+                    </button>
+                </div>
 
-        </form>
+            </form>
 
+        </div>
     </div>
     }
 

@@ -159,17 +159,25 @@
     flex-shrink: 0;
 }
 
+.form-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(2px);
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .movement-form-container {
-    position: absolute;
-    top: 50%;
-    left: 55%;
-    transform: translate(-50%, -50%);
-    z-index: 10;
     width: 70%;
     padding: 25px;
     border-radius: 20px;
     background-color: #d1e2e1fd;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
 .movement-form-container h2 {
