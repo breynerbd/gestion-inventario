@@ -11,6 +11,7 @@ import { ProductService } from "../../../products/services/product.service";
 import { UserResponse } from "../../../users/models/user-response";
 import { UserService } from "../../../users/services/user.service";
 import { DatePipe } from "@angular/common";
+import { RoleAuthService } from "../../../../core/services/role-auth.service";
 
 @Component({
   selector: "app-movements",
@@ -47,7 +48,7 @@ export class MovementsComponent implements OnInit {
   };
 
   constructor(private readonly movementService: MovementService, private readonly productService: ProductService,
-    private readonly userService: UserService
+    private readonly userService: UserService, private readonly roleAuthService: RoleAuthService
   ) {
   }
 
@@ -55,6 +56,18 @@ export class MovementsComponent implements OnInit {
     this.loadMovements();
     this.loadProducts();
     this.loadUsers();
+  }
+
+  isAdmin(): boolean {
+    return this.roleAuthService.isAdmin();
+  }
+
+  canCreateMovements(): boolean {
+    return this.roleAuthService.createMovement();
+  }
+
+  canEditMovements(): boolean {
+    return this.roleAuthService.editMovement();
   }
 
   loadMovements(): void {
@@ -86,6 +99,10 @@ export class MovementsComponent implements OnInit {
   }
 
   loadUsers(): void {
+    if(!this.isAdmin()) {
+      return;
+    }
+
     this.userService.getUsers().subscribe({
         next: (response) => {
             this.users = response;

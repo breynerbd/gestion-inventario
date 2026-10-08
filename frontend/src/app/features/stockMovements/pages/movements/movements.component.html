@@ -43,6 +43,7 @@
                 <input id="endDate" type="date" [(ngModel)]="endDate" (change)="applyFilters()">
             </div>
 
+            @if(isAdmin()) {
             <div class="filter-group">
                 <label for="selectedUserId">Usuario</label>
                 <select id="selectedUserId" [(ngModel)]="selectedUserId" (change)="applyFilters()">
@@ -56,14 +57,17 @@
                     }
                 </select>
             </div>
+            }
 
             <button type="button" class="clear-filters-button" (click)="clearFilters()">
                 Limpiar
             </button>
 
+            @if(canCreateMovements()) {
             <button type="button" class="new-movement-button" (click)="openForm()">
                 Nuevo Movimiento
             </button>
+            }
         </div>
     </div>
 
@@ -71,7 +75,7 @@
     <p class="error-message">{{ errorMessage }}</p>
     }
 
-    @if (showForm) {
+    @if (showForm && (canCreateMovements() || canEditMovements())) {
     <div class="form-overlay">
         <div class="movement-form-container">
 
@@ -148,10 +152,6 @@
     </div>
     }
 
-    @if (errorMessage) {
-    <p class="error-message">{{ errorMessage }}</p>
-    }
-
     <div class="movements-table-container">
         <table class="movements-table">
 
@@ -166,7 +166,9 @@
                     <th>Usuario</th>
                     <th>Fecha</th>
                     <th>Estado</th>
+                    @if(canEditMovements()) {
                     <th>Acciones</th>
+                    }
                 </tr>
             </thead>
 
@@ -184,7 +186,7 @@
                     <td>{{ movement.username }}</td>
                     <td>{{ movement.movementDate | date:"dd/MM/yyyy HH:mm" }}</td>
                     <td>{{ movement.status }}</td>
-
+                    @if(canEditMovements()) {
                     <td>
                         <button type="button" (click)="editMovement(movement)">
                             Editar
@@ -198,6 +200,7 @@
                             }
                         </button>
                     </td>
+                    }
                 </tr>
 
                 }
