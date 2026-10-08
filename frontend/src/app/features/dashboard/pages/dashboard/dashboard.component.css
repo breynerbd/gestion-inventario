@@ -59,9 +59,11 @@
   justify-content: center;
 }
 
-.profile p {
-  margin: 0;
-  color: #F4F4F9;
+.profile img {
+  height: 30px;
+  width: 30px;
+  object-fit: cover;
+  border-radius: 50%;
 }
 
 .dashboard-layout {
