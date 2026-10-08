@@ -6,9 +6,11 @@
             <p>Gestión de categorías del inventario</p>
         </div>
 
+        @if(canManageCategories()) {
         <button type="button" (click)="openForm()">
             Nueva Categoría
         </button>
+        }
     </div>
 
     @if (errorMessage) {
@@ -69,7 +71,9 @@
                     <th>Categoría</th>
                     <th>Descripción</th>
                     <th>Estado</th>
+                    @if(canManageCategories()) {
                     <th>Acciones</th>
+                    }
                 </tr>
             </thead>
 
@@ -80,7 +84,7 @@
                     <td>{{ category.categoryName }}</td>
                     <td>{{ category.description }}</td>
                     <td>{{ category.status }}</td>
-
+                    @if(canManageCategories()) {
                     <td>
                         <button type="button" (click)="editCategory(category)">
                             Editar
@@ -94,6 +98,7 @@
                             }
                         </button>
                     </td>
+                    }
                 </tr>
                 }
             </tbody>

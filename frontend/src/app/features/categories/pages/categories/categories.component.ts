@@ -4,6 +4,7 @@ import { CategoryResponse } from '../../models/category-response';
 import { CategoryCreate } from '../../models/category-create';
 import { CategoryUpdate } from '../../models/category-update';
 import { CategoryService } from '../../services/category.service';
+import { RoleAuthService } from '../../../../core/services/role-auth.service';
 
 @Component({
   selector: 'app-categories',
@@ -29,8 +30,12 @@ export class CategoriesComponent implements OnInit {
     description: ""
   };
 
-  constructor(private readonly categoryService: CategoryService) {
+  constructor(private readonly categoryService: CategoryService, private readonly roleAuthService: RoleAuthService) {
 
+  }
+
+  canManageCategories(): boolean {
+    return this.roleAuthService.createCategory();
   }
 
   ngOnInit(): void {
