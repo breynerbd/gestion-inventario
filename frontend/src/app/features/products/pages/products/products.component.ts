@@ -8,6 +8,7 @@ import { SupplierService } from '../../../suppliers/service/supplier.service';
 import { FormsModule } from '@angular/forms';
 import { ProductCreate } from '../../models/product-create';
 import { ProductUpdate } from '../../models/product-update';
+import { RoleAuthService } from '../../../../core/services/role-auth.service';
 
 @Component({
   selector: 'app-products',
@@ -68,8 +69,12 @@ export class ProductsComponent implements OnInit {
   }
 
   constructor(private readonly productService: ProductService, private readonly categoryService: CategoryService,
-    private readonly supplierService: SupplierService
+    private readonly supplierService: SupplierService, private readonly roleAuthService: RoleAuthService
   ) {
+  }
+
+  canManageProducts(): boolean {
+    return this.roleAuthService.createProduct();
   }
 
   ngOnInit(): void {

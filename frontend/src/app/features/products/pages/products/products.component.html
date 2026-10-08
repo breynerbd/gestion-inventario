@@ -64,9 +64,11 @@
                 Limpiar
             </button>
 
+            @if(canManageProducts()){
             <button type="button" class="new-product-button" (click)="openForm()">
                 Nuevo Producto
             </button>
+            }
 
         </div>
 
@@ -194,7 +196,9 @@
                     <th>Precio Venta</th>
                     <th>Stock</th>
                     <th>Estado</th>
+                    @if(canManageProducts()) {
                     <th>Acciones</th>
+                    }
                 </tr>
             </thead>
 
@@ -209,6 +213,7 @@
                     <td>Q {{ product.salePrice }}</td>
                     <td>{{ product.currentStock }}</td>
                     <td>{{ product.status }}</td>
+                    @if(canManageProducts()) {
                     <td>
                         <button type="button" (click)="editProduct(product)">
                             Editar
@@ -222,6 +227,7 @@
                             }
                         </button>
                     </td>
+                    }
                 </tr>
                 }
 
