@@ -10,6 +10,7 @@ import { RolesComponent } from './features/roles/pages/roles/roles.component';
 import { UsersComponent } from './features/users/pages/users/users.component';
 import { PermissionsComponent } from './features/permissions/pages/permissions/permissions.component';
 import { MovementsComponent } from './features/stockMovements/pages/movements/movements.component';
+import { roleAuthGuard } from './core/guards/role-auth.guard';
 
 export const routes: Routes = [
     {
@@ -39,15 +40,18 @@ export const routes: Routes = [
             },
             {
                 path: "roles",
-                component: RolesComponent
+                component: RolesComponent,
+                canActivate: [roleAuthGuard(["ADMINISTRADOR"])]
             },
             {
                 path: "users",
-                component: UsersComponent
+                component: UsersComponent,
+                canActivate: [roleAuthGuard(["ADMINISTRADOR"])]
             },
             {
                 path: "permissions",
-                component: PermissionsComponent
+                component: PermissionsComponent,
+                canActivate: [roleAuthGuard(["ADMINISTRADOR"])]
             },
             {
                 path: "movements",
