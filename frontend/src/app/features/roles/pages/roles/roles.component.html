@@ -12,31 +12,34 @@
     }
 
     @if (showForm) {
-    <div class="role-form-container">
-        @if (editingRoleId === null) {
-        <h2>Nuevo Rol</h2>
-        } @else {
-        <h2>Editar Rol</h2>
-        }
+    <div class="form-overlay">
+        <div class="role-form-container">
+            @if (editingRoleId === null) {
+            <h2>Nuevo Rol</h2>
+            } @else {
+            <h2>Editar Rol</h2>
+            }
 
-        <form class="role-form" #roleForm="ngForm" (ngSubmit)="saveRole()">
-            <div class="form-group">
-                <label for="roleName">Nombre del rol</label>
-                <input id="roleName" type="text" name="roleName" [(ngModel)]="newRole.roleName" maxlength="50" required>
-            </div>
+            <form class="role-form" #roleForm="ngForm" (ngSubmit)="saveRole()">
+                <div class="form-group">
+                    <label for="roleName">Nombre del rol</label>
+                    <input id="roleName" type="text" name="roleName" [(ngModel)]="newRole.roleName" maxlength="50"
+                        required>
+                </div>
 
-            <div class="form-group description-group">
-                <label for="description">Descripción</label>
-                <textarea id="description" name="description" [(ngModel)]="newRole.description" maxlength="200"
-                    rows="4">
+                <div class="form-group description-group">
+                    <label for="description">Descripción</label>
+                    <textarea id="description" name="description" [(ngModel)]="newRole.description" maxlength="200"
+                        rows="4">
                     </textarea>
-            </div>
+                </div>
 
-            <div class="form-actions">
-                <button type="button" (click)="cancelForm()">Cancelar</button>
-                <button type="submit" [disabled]="roleForm.invalid">Guardar Rol</button>
-            </div>
-        </form>
+                <div class="form-actions">
+                    <button type="button" (click)="cancelForm()">Cancelar</button>
+                    <button type="submit" [disabled]="roleForm.invalid">Guardar Rol</button>
+                </div>
+            </form>
+        </div>
     </div>
     }
 
@@ -80,9 +83,6 @@
         }
     </div>
 
-    <app-pagination 
-        [currentPage]="currentPage" 
-        [totalPages]="totalPages"
-        (pageChange)="changePage($event)">
+    <app-pagination [currentPage]="currentPage" [totalPages]="totalPages" (pageChange)="changePage($event)">
     </app-pagination>
 </div>
