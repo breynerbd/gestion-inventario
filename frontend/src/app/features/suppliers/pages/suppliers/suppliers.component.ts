@@ -5,6 +5,7 @@ import { SupplierResponse } from "../../models/supplier-response";
 import { SupplierCreate } from "../../models/supplier-create";
 import { SupplierUpdate } from "../../models/supplier-update";
 import { SupplierService } from "../../service/supplier.service";
+import { RoleAuthService } from "../../../../core/services/role-auth.service";
 
 @Component({
   selector: "app-suppliers",
@@ -36,12 +37,16 @@ export class SuppliersComponent implements OnInit {
     address: ""
   };
 
-  constructor(private readonly supplierService: SupplierService) { 
+  constructor(private readonly supplierService: SupplierService, private readonly roleAuthService: RoleAuthService) { 
 
   }
 
   ngOnInit(): void {
     this.loadSuppliers();
+  }
+
+  canManageSuppliers(): boolean {
+    return this.roleAuthService.createSupplier();
   }
 
   loadSuppliers(): void {

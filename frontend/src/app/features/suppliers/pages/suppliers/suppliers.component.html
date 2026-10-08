@@ -6,9 +6,11 @@
             <p>Gestión de proveedores del inventario</p>
         </div>
 
+        @if(canManageSuppliers()) {
         <button type="button" (click)="openForm()">
             Nuevo Proveedor
         </button>
+        }
     </div>
 
     @if (errorMessage) {
@@ -105,7 +107,9 @@
                     <th>Teléfono</th>
                     <th>Correo</th>
                     <th>Estado</th>
+                    @if(canManageSuppliers()) {
                     <th>Acciones</th>
+                    }
                 </tr>
             </thead>
 
@@ -121,7 +125,7 @@
                     <td>{{ supplier.phone }}</td>
                     <td>{{ supplier.email }}</td>
                     <td>{{ supplier.status }}</td>
-
+                    @if(canManageSuppliers()) {
                     <td>
                         <button type="button" (click)="editSupplier(supplier)">
                             Editar
@@ -135,6 +139,7 @@
                             }
                         </button>
                     </td>
+                    }
                 </tr>
                 }
             </tbody>
