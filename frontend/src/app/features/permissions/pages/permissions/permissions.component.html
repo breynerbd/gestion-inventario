@@ -15,47 +15,49 @@
     }
 
     @if (showForm) {
-    <div class="permission-form-container">
-        @if (editingPermissionId === null) {
-        <h2>Nuevo Permiso</h2>
-        } @else {
-        <h2>Editar Permiso</h2>
-        }
+    <div class="form-overlay">
+        <div class="permission-form-container">
+            @if (editingPermissionId === null) {
+            <h2>Nuevo Permiso</h2>
+            } @else {
+            <h2>Editar Permiso</h2>
+            }
 
-        <form class="permission-form" #permissionForm="ngForm" (ngSubmit)="savePermission()">
+            <form class="permission-form" #permissionForm="ngForm" (ngSubmit)="savePermission()">
 
-            <div class="form-group">
-                <label for="permissionCode">Código</label>
-                <input id="permissionCode" type="text" name="permissionCode" [(ngModel)]="newPermission.permissionCode"
-                    [disabled]="editingPermissionId !== null" required>
-            </div>
+                <div class="form-group">
+                    <label for="permissionCode">Código</label>
+                    <input id="permissionCode" type="text" name="permissionCode"
+                        [(ngModel)]="newPermission.permissionCode" [disabled]="editingPermissionId !== null" required>
+                </div>
 
-            <div class="form-group">
-                <label for="permissionName">Nombre</label>
-                <input id="permissionName" type="text" name="permissionName" [(ngModel)]="newPermission.permissionName"
-                    required>
-            </div>
+                <div class="form-group">
+                    <label for="permissionName">Nombre</label>
+                    <input id="permissionName" type="text" name="permissionName"
+                        [(ngModel)]="newPermission.permissionName" required>
+                </div>
 
-            <div class="form-group">
-                <label for="module">Módulo</label>
-                <input id="module" type="text" name="module" [(ngModel)]="newPermission.module" required>
-            </div>
+                <div class="form-group">
+                    <label for="module">Módulo</label>
+                    <input id="module" type="text" name="module" [(ngModel)]="newPermission.module" required>
+                </div>
 
-            <div class="form-group">
-                <label for="description">Descripción</label>
-                <textarea id="description" name="description" [(ngModel)]="newPermission.description"></textarea>
-            </div>
+                <div class="form-group">
+                    <label for="description">Descripción</label>
+                    <textarea id="description" name="description" [(ngModel)]="newPermission.description"></textarea>
+                </div>
 
-            <div class="form-actions">
-                <button type="button" (click)="cancelForm()">
-                    Cancelar
-                </button>
+                <div class="form-actions">
+                    <button type="button" (click)="cancelForm()">
+                        Cancelar
+                    </button>
 
-                <button type="submit" [disabled]="permissionForm.invalid">
-                    Guardar Permiso
-                </button>
-            </div>
-        </form>
+                    <button type="submit" [disabled]="permissionForm.invalid">
+                        Guardar Permiso
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
     }
 
@@ -107,9 +109,6 @@
         }
     </div>
 
-    <app-pagination
-        [currentPage]="currentPage"
-        [totalPages]="totalPages"
-        (pageChange)="changePage($event)"
-    ></app-pagination>
+    <app-pagination [currentPage]="currentPage" [totalPages]="totalPages"
+        (pageChange)="changePage($event)"></app-pagination>
 </div>
