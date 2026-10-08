@@ -73,105 +73,108 @@
     </div>
 
     @if (showForm) {
-    <div class="product-form-container">
+    <div class="form-overlay">
+        <div class="product-form-container">
 
-        <h2>Nuevo Producto</h2>
+            <h2>Nuevo Producto</h2>
 
-        <form class="product-form" #productForm="ngForm" (ngSubmit)="saveProduct()">
+            <form class="product-form" #productForm="ngForm" (ngSubmit)="saveProduct()">
 
-            <div class="form-group">
-                <label for="productCode">Código</label>
-                <input id="productCode" type="text" name="productCode" [(ngModel)]="newProduct.productCode"
-                    [disabled]="editingProductId !== null" required>
-            </div>
+                <div class="form-group">
+                    <label for="productCode">Código</label>
+                    <input id="productCode" type="text" name="productCode" [(ngModel)]="newProduct.productCode"
+                        [disabled]="editingProductId !== null" required>
+                </div>
 
-            <div class="form-group">
-                <label for="productName">Nombre</label>
-                <input id="productName" type="text" name="productName" [(ngModel)]="newProduct.productName" required>
-            </div>
+                <div class="form-group">
+                    <label for="productName">Nombre</label>
+                    <input id="productName" type="text" name="productName" [(ngModel)]="newProduct.productName"
+                        required>
+                </div>
 
-            <div class="form-group">
-                <label for="description">Descripción</label>
-                <textarea id="description" name="description" [(ngModel)]="newProduct.description"></textarea>
-            </div>
+                <div class="form-group">
+                    <label for="description">Descripción</label>
+                    <textarea id="description" name="description" [(ngModel)]="newProduct.description"></textarea>
+                </div>
 
-            <div class="form-group">
-                <label for="categoryId">Categoría</label>
-                <select id="categoryId" name="categoryId" [(ngModel)]="newProduct.categoryId" required>
-                    <option [ngValue]="0">Seleccione una categoría</option>
+                <div class="form-group">
+                    <label for="categoryId">Categoría</label>
+                    <select id="categoryId" name="categoryId" [(ngModel)]="newProduct.categoryId" required>
+                        <option [ngValue]="0">Seleccione una categoría</option>
 
-                    @for (category of categories; track category.categoryId) {
-                    <option [ngValue]="category.categoryId">
-                        {{ category.categoryName }}
-                    </option>
-                    }
-                </select>
-            </div>
+                        @for (category of categories; track category.categoryId) {
+                        <option [ngValue]="category.categoryId">
+                            {{ category.categoryName }}
+                        </option>
+                        }
+                    </select>
+                </div>
 
-            <div class="form-group">
-                <label for="supplierId">Proveedor</label>
-                <select id="supplierId" name="supplierId" [(ngModel)]="newProduct.supplierId" required>
-                    <option [ngValue]="0">Seleccione un proveedor</option>
+                <div class="form-group">
+                    <label for="supplierId">Proveedor</label>
+                    <select id="supplierId" name="supplierId" [(ngModel)]="newProduct.supplierId" required>
+                        <option [ngValue]="0">Seleccione un proveedor</option>
 
-                    @for (supplier of suppliers; track supplier.supplierId) {
-                    <option [ngValue]="supplier.supplierId">
-                        {{ supplier.businessName }}
-                    </option>
-                    }
-                </select>
-            </div>
+                        @for (supplier of suppliers; track supplier.supplierId) {
+                        <option [ngValue]="supplier.supplierId">
+                            {{ supplier.businessName }}
+                        </option>
+                        }
+                    </select>
+                </div>
 
-            <div class="form-group">
-                <label for="unitOfMeasure">Unidad de medida</label>
-                <select id="unitOfMeasure" name="unitOfMeasure" [(ngModel)]="newProduct.unitOfMeasure" required>
-                    <option value="">Seleccione una unidad</option>
-                    <option value="UNIDAD">Unidad</option>
-                    <option value="CAJA">Caja</option>
-                    <option value="KILOGRAMO">Kilogramo</option>
-                    <option value="GRAMO">Gramo</option>
-                    <option value="LITRO">Litro</option>
-                    <option value="METRO">Metro</option>
-                    <option value="PAQUETE">Paquete</option>
-                </select>
-            </div>
+                <div class="form-group">
+                    <label for="unitOfMeasure">Unidad de medida</label>
+                    <select id="unitOfMeasure" name="unitOfMeasure" [(ngModel)]="newProduct.unitOfMeasure" required>
+                        <option value="">Seleccione una unidad</option>
+                        <option value="UNIDAD">Unidad</option>
+                        <option value="CAJA">Caja</option>
+                        <option value="KILOGRAMO">Kilogramo</option>
+                        <option value="GRAMO">Gramo</option>
+                        <option value="LITRO">Litro</option>
+                        <option value="METRO">Metro</option>
+                        <option value="PAQUETE">Paquete</option>
+                    </select>
+                </div>
 
-            <div class="form-group">
-                <label for="purchasePrice">Precio de compra</label>
-                <input id="purchasePrice" type="number" name="purchasePrice" [(ngModel)]="newProduct.purchasePrice"
-                    min="0.01" step="0.01" required>
-            </div>
+                <div class="form-group">
+                    <label for="purchasePrice">Precio de compra</label>
+                    <input id="purchasePrice" type="number" name="purchasePrice" [(ngModel)]="newProduct.purchasePrice"
+                        min="0.01" step="0.01" required>
+                </div>
 
-            <div class="form-group">
-                <label for="salePrice">Precio de venta</label>
-                <input id="salePrice" type="number" name="salePrice" [(ngModel)]="newProduct.salePrice" min="0.01"
-                    step="0.01" required>
-            </div>
+                <div class="form-group">
+                    <label for="salePrice">Precio de venta</label>
+                    <input id="salePrice" type="number" name="salePrice" [(ngModel)]="newProduct.salePrice" min="0.01"
+                        step="0.01" required>
+                </div>
 
-            <div class="form-group">
-                <label for="minimumStock">Stock mínimo</label>
-                <input id="minimumStock" type="number" name="minimumStock" [(ngModel)]="newProduct.minimumStock" min="0"
-                    required>
-            </div>
+                <div class="form-group">
+                    <label for="minimumStock">Stock mínimo</label>
+                    <input id="minimumStock" type="number" name="minimumStock" [(ngModel)]="newProduct.minimumStock"
+                        min="0" required>
+                </div>
 
-            <div class="form-group">
-                <label for="maximumStock">Stock máximo</label>
-                <input id="maximumStock" type="number" name="maximumStock" [(ngModel)]="newProduct.maximumStock"
-                    min="0">
-            </div>
+                <div class="form-group">
+                    <label for="maximumStock">Stock máximo</label>
+                    <input id="maximumStock" type="number" name="maximumStock" [(ngModel)]="newProduct.maximumStock"
+                        min="0">
+                </div>
 
-            <div class="form-actions">
-                <button type="button" (click)="cancelForm()">
-                    Cancelar
-                </button>
+                <div class="form-actions">
+                    <button type="button" (click)="cancelForm()">
+                        Cancelar
+                    </button>
 
-                <button type="submit"
-                    [disabled]="productForm.invalid || newProduct.categoryId === 0 || newProduct.supplierId === 0">
-                    Guardar Producto
-                </button>
-            </div>
+                    <button type="submit"
+                        [disabled]="productForm.invalid || newProduct.categoryId === 0 || newProduct.supplierId === 0">
+                        Guardar Producto
+                    </button>
+                </div>
 
-        </form>
+            </form>
 
+        </div>
     </div>
     }
 
