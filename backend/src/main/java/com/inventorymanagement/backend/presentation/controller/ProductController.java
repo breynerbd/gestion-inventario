@@ -1,5 +1,7 @@
 package com.inventorymanagement.backend.presentation.controller;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -45,6 +47,12 @@ public class ProductController {
             @PageableDefault(size = 10) Pageable pageable) {
         LOGGER.info("Solicitud para obtener todos los productos");
         return ResponseEntity.ok(service.findAllProducts(productCode, productName, categoryId, supplierId, status, pageable));
+    }
+
+    @GetMapping("/low-stock")
+    public ResponseEntity<List<ProductResponseDTO>> findLowStockProducts() {
+        LOGGER.info("Solicitud para obtener productos con stock bajo");
+        return ResponseEntity.ok(service.findLowStockProducts());
     }
 
     @GetMapping("/{productId}")

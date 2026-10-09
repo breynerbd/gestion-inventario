@@ -23,6 +23,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -205,5 +206,10 @@ public class ProductService {
         LOGGER.info("El estado del producto {} se ha cambiado a {}", productId, status);
 
         return mapper.toResponseDTO(updatedProduct);
+    }
+
+    public List<ProductResponseDTO> findLowStockProducts() {
+        LOGGER.debug("Obteniendo productos con stock bajo");
+        return  repository.findLowStockProducts(Product.Status.ACTIVO).stream().map(mapper::toResponseDTO).toList();
     }
 }
