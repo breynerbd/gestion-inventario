@@ -11,6 +11,7 @@ import { UsersComponent } from './features/users/pages/users/users.component';
 import { PermissionsComponent } from './features/permissions/pages/permissions/permissions.component';
 import { MovementsComponent } from './features/stockMovements/pages/movements/movements.component';
 import { roleAuthGuard } from './core/guards/role-auth.guard';
+import { DashboardHomeComponent } from './features/dashboard/pages/dashboard-home/dashboard-home.component';
 
 export const routes: Routes = [
     {
@@ -26,6 +27,10 @@ export const routes: Routes = [
         component: DashboardComponent,
         canActivate: [authGuard],
         children: [
+            {
+                path: "",
+                component: DashboardHomeComponent
+            },
             {
                 path: "products",
                 component: ProductsComponent
