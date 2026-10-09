@@ -1,0 +1,153 @@
+:host {
+    font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+    min-width: 0;
+}
+
+.dashboard-home {
+    padding: 30px;
+    color: #2F4550;
+    box-sizing: border-box;
+}
+
+.page-header {
+    margin-bottom: 25px;
+}
+
+.page-header h2 {
+    margin: 0;
+    font-size: 28px;
+}
+
+.page-header p {
+    margin: 6px 0 0;
+    color: #586F7C;
+}
+
+.indicators {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.indicator-card {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 22px;
+    background-color: #FFFFFF;
+    border: 1px solid #E1E5EB;
+    border-radius: 12px;
+    min-width: 0;
+}
+
+.indicator-icon {
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.products-icon {
+    background-color: #E8EDFF;
+    color: #5170FF;
+}
+
+.suppliers-icon {
+    background-color: #DDF4F1;
+    color: #26796F;
+}
+
+.stock-icon {
+    background-color: #FFF0D6;
+    color: #A86A00;
+}
+
+.value-icon {
+    background-color: #E0F4E8;
+    color: #25804B;
+}
+
+.indicator-info {
+    min-width: 0;
+}
+
+.indicator-info p {
+    margin: 0 0 8px;
+    color: #586F7C;
+    font-size: 14px;
+}
+
+.indicator-info h3 {
+    margin: 0;
+    font-size: 25px;
+    overflow-wrap: anywhere;
+}
+
+.charts-section {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.chart-card {
+    min-width: 0;
+    padding: 22px;
+    background-color: #FFFFFF;
+    border: 1px solid #E1E5EB;
+    border-radius: 12px;
+}
+
+.chart-card h3,
+.section-header h3 {
+    margin: 0;
+    font-size: 19px;
+}
+
+.chart-card>p,
+.section-header p {
+    margin: 7px 0 0;
+    color: #586F7C;
+    font-size: 14px;
+}
+
+.chart-placeholder {
+    height: 260px;
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #F4F6FA;
+    border: 1px dashed #B8C4D0;
+    border-radius: 8px;
+    color: #586F7C;
+}
+
+.alerts-section {
+    padding: 22px;
+    background-color: #FFFFFF;
+    border: 1px solid #E1E5EB;
+    border-radius: 12px;
+}
+
+.empty-alerts {
+    margin-top: 20px;
+    padding: 25px;
+    text-align: center;
+    background-color: #F4F6FA;
+    border-radius: 8px;
+    color: #586F7C;
+}
+
+.chart-container {
+    position: relative;
+    height: 260px;
+    width: 100%;
+    margin-top: 20px;
+}

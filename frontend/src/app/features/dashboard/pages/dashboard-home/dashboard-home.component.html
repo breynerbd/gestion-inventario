@@ -1,0 +1,92 @@
+<div class="dashboard-home">
+
+    <div class="page-header">
+        <div>
+            <h2>Panel Principal</h2>
+            <p>Resumen general del inventario</p>
+        </div>
+    </div>
+
+    <section class="indicators">
+
+        <article class="indicator-card">
+            <div class="indicator-icon products-icon">
+                <ng-icon name="lucidePackage"></ng-icon>
+            </div>
+            <div class="indicator-info">
+                <p>Productos activos</p>
+                <h3>{{ totalProducts }}</h3>
+            </div>
+        </article>
+
+        <article class="indicator-card">
+            <div class="indicator-icon suppliers-icon">
+                <ng-icon name="lucideTruck"></ng-icon>
+            </div>
+            <div class="indicator-info">
+                <p>Proveedores activos</p>
+                <h3>{{ totalSuppliers }}</h3>
+            </div>
+        </article>
+
+        <article class="indicator-card">
+            <div class="indicator-icon stock-icon">
+                <ng-icon name="lucideAlertTriangle"></ng-icon>
+            </div>
+            <div class="indicator-info">
+                <p>Productos con stock bajo</p>
+                <h3>{{ lowStockProducts }}</h3>
+            </div>
+        </article>
+
+        <article class="indicator-card">
+            <div class="indicator-icon value-icon">
+                <ng-icon name="lucideBanknoteArrowUp"></ng-icon>
+            </div>
+            <div class="indicator-info">
+                <p>Valor del inventario</p>
+                <h3>{{ inventoryValue | currency: "GTQ" : "symbol" : "1.2-2" }}</h3>
+            </div>
+        </article>
+
+    </section>
+
+    <section class="charts-section">
+
+        <article class="chart-card">
+            <h3>Productos con menor stock</h3>
+            <p>Productos que necesitan reposición</p>
+            <div class="chart-container">
+                <canvas #stockChart></canvas>
+            </div>
+        </article>
+
+        <article class="chart-card">
+            <h3>Movimientos de inventario</h3>
+            <p>Entradas y salidas por periodo</p>
+            <div class="chart-placeholder">
+            </div>
+        </article>
+
+        <article class="chart-card">
+            <h3>Productos por categoría</h3>
+            <p>Distribución de productos registrados</p>
+            <div class="chart-placeholder">
+            </div>
+        </article>
+
+    </section>
+
+    <section class="alerts-section">
+        <div class="section-header">
+            <div>
+                <h3>Alertas de stock bajo</h3>
+                <p>Productos que necesitan atención</p>
+            </div>
+        </div>
+
+        <div class="empty-alerts">
+        </div>
+    </section>
+
+</div>
