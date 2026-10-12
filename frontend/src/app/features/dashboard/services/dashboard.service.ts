@@ -4,13 +4,14 @@ import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { LowStockProduct } from "../models/low-stock-product";
 import { MovementSummary } from "../models/movement-summary";
+import { ProductsCount } from "../models/products-category";
 
 @Injectable({
     providedIn: "root"
 })
 export class DashboardService {
 
-    private apiUrl = "http://localhost:8080/api/products";
+    private apiProductsUrl = "http://localhost:8080/api/products";
     private apiMovementsUrl = "http://localhost:8080/api/movements"
 
     constructor(private http: HttpClient){
@@ -18,13 +19,19 @@ export class DashboardService {
 
     getLowStockProducts(): Observable<LowStockProduct[]> {
         return this.http.get<LowStockProduct[]>(
-            `${this.apiUrl}/low-stock`
+            `${this.apiProductsUrl}/low-stock`
         );
     }
 
     getMovementsSummary(): Observable<MovementSummary[]> {
         return this.http.get<MovementSummary[]> (
             `${this.apiMovementsUrl}/summary`
-        )
+        );
+    }
+
+    getProductsCount(): Observable<ProductsCount[]> {
+        return this.http.get<ProductsCount[]> (
+            `${this.apiProductsUrl}/products-category`
+        );
     }
 }

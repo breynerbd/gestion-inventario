@@ -6,6 +6,7 @@ import { Chart, ChartConfiguration, registerables } from "chart.js";
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { lucidePackage, lucideTruck, lucideAlertTriangle, lucideBanknoteArrowUp } from '@ng-icons/lucide';
 import { MovementSummary } from '../../models/movement-summary';
+import { ProductsCount } from '../../models/products-category';
 
 Chart.register(...registerables);
 
@@ -28,18 +29,25 @@ export class DashboardHomeComponent implements AfterViewInit, OnDestroy {
   @ViewChild("movementChart")
   private movementChartCanvas!: ElementRef<HTMLCanvasElement>;
 
+  @ViewChild("categoryChart")
+  private categoryChartCanvas!: ElementRef<HTMLCanvasElement>;
+
   private stockChart?: Chart;
   private movementChart?: Chart;
+  private categoryChart?: Chart;
 
   constructor(private readonly dashboardService: DashboardService) { }
 
   ngAfterViewInit(): void {
     this.loadLowStockProducts();
     this.loadMovementSummary();
+    this.loadProductsCountCategory();
   }
 
   ngOnDestroy(): void {
     this.stockChart?.destroy();
+    this.movementChart?.destroy();
+    this.categoryChart?.destroy();
   }
 
   private loadLowStockProducts(): void {
@@ -71,7 +79,7 @@ export class DashboardHomeComponent implements AfterViewInit, OnDestroy {
           {
             label: "Stock actual",
             data: products.map(product => product.currentStock),
-            backgroundColor: "#5170ff",
+            backgroundColor: "#709eb7",
             borderRadius: 5
           },
           {
@@ -133,8 +141,8 @@ export class DashboardHomeComponent implements AfterViewInit, OnDestroy {
           {
             label: "Entradas",
             data: movements.map(movement => movement.entries),
-            borderColor: "#5170ff",
-            backgroundColor: "#5170ff",
+            borderColor: "#709eb7",
+            backgroundColor: "#709eb7",
             tension: 0.3,
             fill: false
           },
@@ -157,6 +165,61 @@ export class DashboardHomeComponent implements AfterViewInit, OnDestroy {
             ticks: {
               precision: 0
             }
+          }
+        }
+      }
+    });
+  }
+
+  private loadProductsCountCategory(): void {
+    this.dashboardService.getProductsCount().subscribe({
+      next: (categories: ProductsCount[]) => {
+        this.createCategoryChart(categories);
+      },
+      error: (error) => {
+        console.error("Error al cargar la agrupacion por categoría", error);
+      }
+    });
+  }
+
+  private createCategoryChart(categories: ProductsCount[]): void {
+    const canvas = this.categoryChartCanvas?.nativeElement;
+
+    if (!canvas) {
+      return;
+    }
+
+    this.categoryChart?.destroy();
+
+    this.categoryChart = new Chart(canvas, {
+      type: "pie",
+      data: {
+        labels: categories.map(category => category.categoryName),
+        datasets: [
+          {
+            label: "Productos",
+            data: categories.map(category => category.productCount),
+            backgroundColor: [
+              "#709eb7",
+              "#B8DBD9",
+              "#586F7C",
+              "#F4B860",
+              "#E07A5F",
+              "#81B29A",
+              "#9B8EC4",
+              "#E6A4B4"
+            ],
+            borderWidth: 2,
+            borderColor: "#FFFFFF"
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: "bottom"
           }
         }
       }
