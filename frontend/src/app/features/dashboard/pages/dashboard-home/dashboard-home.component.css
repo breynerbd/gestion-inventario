@@ -54,22 +54,22 @@
 }
 
 .products-icon {
-    background-color: #E8EDFF;
+    background-color: #eef2fdea;
     color: #5170FF;
 }
 
 .suppliers-icon {
-    background-color: #DDF4F1;
+    background-color: #eef2fdea;
     color: #26796F;
 }
 
 .stock-icon {
-    background-color: #FFF0D6;
+    background-color: #eef2fdea;
     color: #A86A00;
 }
 
 .value-icon {
-    background-color: #E0F4E8;
+    background-color: #eef2fdea;
     color: #25804B;
 }
 
@@ -123,8 +123,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #F4F6FA;
-    border: 1px dashed #B8C4D0;
     border-radius: 8px;
     color: #586F7C;
 }

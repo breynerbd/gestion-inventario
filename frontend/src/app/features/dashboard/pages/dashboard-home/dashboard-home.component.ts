@@ -5,6 +5,7 @@ import { LowStockProduct } from '../../models/low-stock-product';
 import { Chart, ChartConfiguration, registerables } from "chart.js";
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { lucidePackage, lucideTruck, lucideAlertTriangle, lucideBanknoteArrowUp } from '@ng-icons/lucide';
+import { MovementSummary } from '../../models/movement-summary';
 
 Chart.register(...registerables);
 
@@ -24,12 +25,17 @@ export class DashboardHomeComponent implements AfterViewInit, OnDestroy {
   @ViewChild("stockChart")
   private stockChartCanvas!: ElementRef<HTMLCanvasElement>;
 
+  @ViewChild("movementChart")
+  private movementChartCanvas!: ElementRef<HTMLCanvasElement>;
+
   private stockChart?: Chart;
+  private movementChart?: Chart;
 
   constructor(private readonly dashboardService: DashboardService) { }
 
   ngAfterViewInit(): void {
     this.loadLowStockProducts();
+    this.loadMovementSummary();
   }
 
   ngOnDestroy(): void {
@@ -97,5 +103,63 @@ export class DashboardHomeComponent implements AfterViewInit, OnDestroy {
     };
 
     this.stockChart = new Chart(canvas, configuration);
+  }
+
+  private loadMovementSummary(): void {
+    this.dashboardService.getMovementsSummary().subscribe({
+      next: (movements: MovementSummary[]) => {
+        this.createMovementChart(movements);
+      },
+      error: (error) => {
+        console.error("Error al cargar el resumen de movimientos", error);
+      }
+    });
+  }
+
+  private createMovementChart(movements: MovementSummary[]): void {
+    const context = this.movementChartCanvas.nativeElement.getContext("2d");
+
+    if (!context) {
+      return;
+    }
+
+    this.movementChart?.destroy();
+
+    this.movementChart = new Chart(context, {
+      type: "line",
+      data: {
+        labels: movements.map(movement => movement.date),
+        datasets: [
+          {
+            label: "Entradas",
+            data: movements.map(movement => movement.entries),
+            borderColor: "#5170ff",
+            backgroundColor: "#5170ff",
+            tension: 0.3,
+            fill: false
+          },
+          {
+            label: "Salidas",
+            data: movements.map(movement => movement.exits),
+            borderColor: "#B8DBD9",
+            backgroundColor: "#B8DBD9",
+            tension: 0.3,
+            fill: false
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: {
+              precision: 0
+            }
+          }
+        }
+      }
+    });
   }
 }
