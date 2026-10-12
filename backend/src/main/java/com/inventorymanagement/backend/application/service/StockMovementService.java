@@ -7,6 +7,7 @@ import com.inventorymanagement.backend.domain.exception.StatusUnchangedException
 import com.inventorymanagement.backend.domain.exception.ResourceNotFoundException;
 import com.inventorymanagement.backend.application.dto.movement.StockMovementCreateDTO;
 import com.inventorymanagement.backend.application.dto.movement.StockMovementResponseDTO;
+import com.inventorymanagement.backend.application.dto.movement.StockMovementSummaryDTO;
 import com.inventorymanagement.backend.application.dto.movement.StockMovementUpdateDTO;
 import com.inventorymanagement.backend.application.mapper.StockMovementMapper;
 import com.inventorymanagement.backend.infrastructure.persistence.repository.StockMovementRepository;
@@ -24,6 +25,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 @Service
 @RequiredArgsConstructor 
@@ -125,6 +129,27 @@ public class StockMovementService {
             );
 
         return mapper.toResponseDTO(movement);
+    }
+
+    public List<StockMovementSummaryDTO> getMovementSummary() {
+        List<StockMovement> movements = movementRepository.findActiveMovements(StockMovement.Status.ACTIVO);
+
+        Map<LocalDate, long[]> dailyMovements = new TreeMap<>();
+
+        for(StockMovement movement : movements) {
+            LocalDate date = movement.getMovementDate().toLocalDate();
+
+            dailyMovements.putIfAbsent(date, new long[2]);
+
+            if(movement.getMovementType() == StockMovement.MovementType.ENTRADA) {
+                dailyMovements.get(date)[0]++;
+            } else if (movement.getMovementType() == StockMovement.MovementType.SALIDA) {
+                dailyMovements.get(date)[1]++;
+            }
+        }
+        return dailyMovements.entrySet().stream().map(entry -> new StockMovementSummaryDTO(
+            entry.getKey(), entry.getValue()[0], entry.getValue()[1]
+        )).toList();
     }
 
     private void applyMovement(StockMovement movement, Product product) {

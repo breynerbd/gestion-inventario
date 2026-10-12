@@ -2,6 +2,7 @@ package com.inventorymanagement.backend.presentation.controller;
 
 import com.inventorymanagement.backend.application.dto.movement.StockMovementCreateDTO;
 import com.inventorymanagement.backend.application.dto.movement.StockMovementStatusDTO;
+import com.inventorymanagement.backend.application.dto.movement.StockMovementSummaryDTO;
 import com.inventorymanagement.backend.application.dto.movement.StockMovementResponseDTO;
 import com.inventorymanagement.backend.application.dto.movement.StockMovementUpdateDTO;
 import com.inventorymanagement.backend.application.service.StockMovementService;
@@ -22,6 +23,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.List;
+
 
 @RestController
 @RequiredArgsConstructor 
@@ -44,6 +47,12 @@ public class StockMovementController {
 
         LOGGER.info("Solicitud para obtener todos los movimientos de stock");
         return ResponseEntity.ok(service.findAllMovements(productId, movementType, startDate, endDate, userId, pageable));
+    }
+
+    @GetMapping("/summary")
+    public ResponseEntity<List<StockMovementSummaryDTO>> getMovementSummary() {
+        LOGGER.info("Solicitud para obtener el resumen de movimientos");
+        return ResponseEntity.ok(service.getMovementSummary());
     }
 
     @GetMapping("/{movementId}")
