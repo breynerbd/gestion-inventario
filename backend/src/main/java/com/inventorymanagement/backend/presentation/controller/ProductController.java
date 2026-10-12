@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.inventorymanagement.backend.application.dto.product.ProductCountCategoryDTO;
 import com.inventorymanagement.backend.application.dto.product.ProductCreateDTO;
 import com.inventorymanagement.backend.application.dto.product.ProductStatusDTO;
 import com.inventorymanagement.backend.application.dto.product.ProductResponseDTO;
@@ -54,6 +55,13 @@ public class ProductController {
         LOGGER.info("Solicitud para obtener productos con stock bajo");
         return ResponseEntity.ok(service.findLowStockProducts());
     }
+
+    @GetMapping("/products-category")
+    public ResponseEntity<List<ProductCountCategoryDTO>> findProductCountInCategory() {
+        LOGGER.info("Solicitud para obtener el total de productos por categoria");
+        return ResponseEntity.ok(service.getProductCountInCategory());
+    }
+    
 
     @GetMapping("/{productId}")
     public ResponseEntity<ProductResponseDTO> findAll(@PathVariable Long productId){

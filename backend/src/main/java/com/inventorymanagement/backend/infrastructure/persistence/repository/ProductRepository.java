@@ -12,4 +12,7 @@ import org.springframework.data.repository.query.Param;
 public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpecificationExecutor<Product> {
     @Query ("SELECT p FROM Product p WHERE p.status = :status AND p.currentStock <= p.minimumStock")
     List<Product> findLowStockProducts(@Param ("status") Product.Status status);
+
+    @Query("select p.category.categoryName, count(p) from Product p where p.status = :status group by p.category.categoryName")
+    List<Object[]> findProductCountInCategory(@Param("status") Product.Status status);
 }

@@ -5,6 +5,7 @@ import com.inventorymanagement.backend.domain.entity.Product;
 import com.inventorymanagement.backend.domain.entity.Supplier;
 import com.inventorymanagement.backend.domain.exception.StatusUnchangedException;
 import com.inventorymanagement.backend.domain.exception.ResourceNotFoundException;
+import com.inventorymanagement.backend.application.dto.product.ProductCountCategoryDTO;
 import com.inventorymanagement.backend.application.dto.product.ProductCreateDTO;
 import com.inventorymanagement.backend.application.dto.product.ProductResponseDTO;
 import com.inventorymanagement.backend.application.dto.product.ProductUpdateDTO;
@@ -107,6 +108,14 @@ public class ProductService {
             });
         
         return mapper.toResponseDTO(product);
+    }
+
+    public List<ProductCountCategoryDTO> getProductCountInCategory() {
+        LOGGER.debug("Agrupando productos por categoria");
+        List<Object[]> results = repository.findProductCountInCategory(Product.Status.ACTIVO);
+
+        LOGGER.info("Se obtubieron las categorias con total de productos");
+        return results.stream().map(result -> new ProductCountCategoryDTO((String) result[0], (Long) result[1])).toList();
     }
 
     public ProductResponseDTO createProduct(ProductCreateDTO productDto) {
