@@ -4,7 +4,7 @@ import { DashboardService } from '../../services/dashboard.service';
 import { LowStockProduct } from '../../models/low-stock-product';
 import { Chart, ChartConfiguration, registerables } from "chart.js";
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
-import { lucidePackage, lucideTruck, lucideAlertTriangle, lucideBanknoteArrowUp } from '@ng-icons/lucide';
+import { lucidePackage, lucideTruck, lucideAlertTriangle, lucideBanknoteArrowUp, lucideBanknoteArrowDown } from '@ng-icons/lucide';
 import { MovementSummary } from '../../models/movement-summary';
 import { ProductsCount } from '../../models/products-category';
 
@@ -15,13 +15,14 @@ Chart.register(...registerables);
   imports: [CommonModule, NgIconComponent],
   templateUrl: './dashboard-home.component.html',
   styleUrl: './dashboard-home.component.css',
-  viewProviders: [provideIcons({ lucidePackage, lucideTruck, lucideAlertTriangle, lucideBanknoteArrowUp })]
+  viewProviders: [provideIcons({ lucidePackage, lucideTruck, lucideAlertTriangle, lucideBanknoteArrowUp, lucideBanknoteArrowDown })]
 })
 export class DashboardHomeComponent implements AfterViewInit, OnDestroy {
-  totalProducts = 125;
-  totalSuppliers = 18;
-  lowStockProducts = 7;
-  inventoryValue = 24500;
+  totalProducts = 0;
+  totalSuppliers = 0;
+  lowStockProducts = 0;
+  inventoryValue = 0;
+  inventoryInvestment = 0;
 
   @ViewChild("stockChart")
   private stockChartCanvas!: ElementRef<HTMLCanvasElement>;
@@ -42,6 +43,11 @@ export class DashboardHomeComponent implements AfterViewInit, OnDestroy {
     this.loadLowStockProducts();
     this.loadMovementSummary();
     this.loadProductsCountCategory();
+
+    this.loadActiveProducts();
+    this.loadActiveSuppliers();
+    this.loadInventoryValue();
+    this.loadInventoryInvestment();
   }
 
   ngOnDestroy(): void {
@@ -60,6 +66,50 @@ export class DashboardHomeComponent implements AfterViewInit, OnDestroy {
         console.error(error);
       }
     });
+  }
+
+  private loadActiveProducts(): void {
+    this.dashboardService.getActiveProducts().subscribe({
+      next: (count: number) => {
+        this.totalProducts = count;
+      },
+      error: (error) => {
+        console.error("No se pudo obtener la cantidad de productos activos", error);
+      }
+    });
+  }
+
+  private loadActiveSuppliers(): void {
+    this.dashboardService.getActiveSuppliers().subscribe({
+      next: (count: number) => {
+        this.totalSuppliers = count;
+      },
+      error: (error) => {
+        console.error("No se pudo obtener la cantidad de proveedores activos", error);
+      }
+    });
+  }
+
+  private loadInventoryValue(): void {
+    this.dashboardService.getInventoryValue().subscribe({
+      next: (value: number) => {
+        this.inventoryValue = value;
+      },
+      error: (error) => {
+        console.error("No se pudo obtener el valor del inventario", error);
+      }
+    });
+  }
+
+  private loadInventoryInvestment(): void {
+    this.dashboardService.getInventoryInvestment().subscribe({
+      next: (investment: number) => {
+        this.inventoryInvestment = investment;
+      },
+      error: (error) => {
+        console.error("No se pudo obtener la inversión del inventario", error);
+      }
+    })
   }
 
   private createStockChart(products: LowStockProduct[]): void {

@@ -40,12 +40,22 @@
         </article>
 
         <article class="indicator-card">
+            <div class="indicator-icon investment-icon">
+                <ng-icon name="lucideBanknoteArrowDown"></ng-icon>
+            </div>
+            <div class="indicator-info">
+                <p>Inversión del inventario</p>
+                <h3>{{ inventoryInvestment | currency: "GTQ " : "symbol" : "1.2-2"}}</h3>
+            </div>
+        </article>
+
+        <article class="indicator-card">
             <div class="indicator-icon value-icon">
                 <ng-icon name="lucideBanknoteArrowUp"></ng-icon>
             </div>
             <div class="indicator-info">
                 <p>Valor del inventario</p>
-                <h3>{{ inventoryValue | currency: "GTQ" : "symbol" : "1.2-2" }}</h3>
+                <h3>{{ inventoryValue | currency: "GTQ " : "symbol" : "1.2-2" }}</h3>
             </div>
         </article>
 

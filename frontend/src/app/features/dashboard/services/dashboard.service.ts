@@ -13,6 +13,7 @@ export class DashboardService {
 
     private apiProductsUrl = "http://localhost:8080/api/products";
     private apiMovementsUrl = "http://localhost:8080/api/movements"
+    private apiSuppliersUrl = "http://localhost:8080/api/suppliers"
 
     constructor(private http: HttpClient){
     }
@@ -32,6 +33,30 @@ export class DashboardService {
     getProductsCount(): Observable<ProductsCount[]> {
         return this.http.get<ProductsCount[]> (
             `${this.apiProductsUrl}/products-category`
+        );
+    }
+
+    getActiveProducts(): Observable<number> {
+        return this.http.get<number> (
+            `${this.apiProductsUrl}/active-products`
+        );
+    }
+
+    getInventoryValue(): Observable<number> {
+        return this.http.get<number> (
+            `${this.apiProductsUrl}/inventory-value`
+        )
+    }
+
+    getInventoryInvestment(): Observable<number> {
+        return this.http.get<number> (
+            `${this.apiProductsUrl}/inventory-investment`
+        )
+    }
+
+    getActiveSuppliers(): Observable<number> {
+        return this.http.get<number> (
+            `${this.apiSuppliersUrl}/active-suppliers`
         );
     }
 }
