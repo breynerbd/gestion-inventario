@@ -5,12 +5,15 @@ import { CategoryCreate } from '../../models/category-create';
 import { CategoryUpdate } from '../../models/category-update';
 import { CategoryService } from '../../services/category.service';
 import { RoleAuthService } from '../../../../core/services/role-auth.service';
+import { NgIconComponent, provideIcons } from '@ng-icons/core';
+import { lucideBan, lucideCircleCheck, lucidePencilSparkles } from '@ng-icons/lucide';
 
 @Component({
   selector: 'app-categories',
-  imports: [FormsModule],
+  imports: [FormsModule, NgIconComponent],
   templateUrl: './categories.component.html',
-  styleUrl: './categories.component.css'
+  styleUrl: './categories.component.css',
+  viewProviders: [provideIcons({ lucideBan, lucideCircleCheck, lucidePencilSparkles })]
 })
 export class CategoriesComponent implements OnInit {
   categories: CategoryResponse[] = [];
