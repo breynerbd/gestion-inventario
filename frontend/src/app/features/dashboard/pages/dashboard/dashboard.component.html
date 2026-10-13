@@ -1,7 +1,13 @@
 <div class="dashboard-container">
+    <button type="button" class="menu-toggle" [hidden]="isSidebarOpen" (click)="toggleSidebar()" [attr.aria-expanded]="isSidebarOpen"
+        aria-label="Abrir o cerrar menú">
+        <ng-icon class="menu-icon" name="lucideMenu"></ng-icon>
+    </button>
     <header class="dashboard-header">
-        <div>
-            <h1>Gestion De Inventario</h1>
+        <div class="header-title">
+            <div>
+                <h1>Gestion De Inventario</h1>
+            </div>
         </div>
 
         <div class="user-info">
@@ -17,16 +23,21 @@
     </header>
 
     <div class="dashboard-layout">
-        <aside class="sidebar">
+        @if (isSidebarOpen) {
+        <button type="button" class="sidebar-overlay" aria-label="Cerrar menú" (click)="closeSidebar()">
+        </button>
+        }
+
+        <aside class="sidebar" [class.sidebar-open]="isSidebarOpen">
             <nav class="menu">
-                <a routerLink="/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Panel Principal</a>
-                <a routerLink="/dashboard/products" routerLinkActive="active">Productos</a>
-                <a routerLink="/dashboard/movements" routerLinkActive="active">Movimientos</a>
-                <a routerLink="/dashboard/categories" routerLinkActive="active">Categorias</a>
-                <a routerLink="/dashboard/suppliers" routerLinkActive="active">Proveedores</a>
-                @if (canManageUsers()) {<a routerLink="/dashboard/users" routerLinkActive="active">Usuarios</a>}
-                @if (canManageRoles()) {<a routerLink="/dashboard/roles" routerLinkActive="active">Roles</a>}
-                @if (canManagePermissions()) {<a routerLink="/dashboard/permissions" routerLinkActive="active">Permisos</a>}
+                <a routerLink="/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="closeSidebar()">Panel Principal</a>
+                <a routerLink="/dashboard/products" routerLinkActive="active" (click)="closeSidebar()">Productos</a>
+                <a routerLink="/dashboard/movements" routerLinkActive="active" (click)="closeSidebar()">Movimientos</a>
+                <a routerLink="/dashboard/categories" routerLinkActive="active" (click)="closeSidebar()">Categorias</a>
+                <a routerLink="/dashboard/suppliers" routerLinkActive="active" (click)="closeSidebar()">Proveedores</a>
+                @if (canManageUsers()) {<a routerLink="/dashboard/users" routerLinkActive="active" (click)="closeSidebar()">Usuarios</a>}
+                @if (canManageRoles()) {<a routerLink="/dashboard/roles" routerLinkActive="active" (click)="closeSidebar()">Roles</a>}
+                @if (canManagePermissions()) {<a routerLink="/dashboard/permissions" routerLinkActive="active" (click)="closeSidebar()">Permisos</a>}
             </nav>
 
             <div class="sidebar-foot">
@@ -42,5 +53,4 @@
             </div>
         </main>
     </div>
-
 </div>
