@@ -118,6 +118,27 @@ public class ProductService {
         return results.stream().map(result -> new ProductCountCategoryDTO((String) result[0], (Long) result[1])).toList();
     }
 
+    public long countActiveProducts() {
+        LOGGER.debug("Contando los productos activos");
+        
+        LOGGER.info("Se obtuvo la cantidad de productos activos");
+        return repository.countProductsByStatus(Product.Status.ACTIVO);
+    }
+
+    public BigDecimal getInventoryValue() {
+        LOGGER.debug("Obteniendo el valor total del inventario");
+
+        LOGGER.info("Se obtuvo el total del inventario con exito");
+        return repository.calculateInventoryValue(Product.Status.ACTIVO);
+    }
+
+    public BigDecimal getInventoryInvestment() {
+        LOGGER.debug("Obteniendo la inversión total del inventario");
+
+        LOGGER.info("Se obtuvo la inversión del inventario con exito");
+        return repository.calculateInventoryInvestment();
+    }
+
     public ProductResponseDTO createProduct(ProductCreateDTO productDto) {
         validateProductRules(
             productDto.getPurchasePrice(),

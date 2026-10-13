@@ -2,6 +2,7 @@ package com.inventorymanagement.backend.infrastructure.persistence.repository;
 
 import com.inventorymanagement.backend.domain.entity.Product;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,4 +16,11 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
 
     @Query("select p.category.categoryName, count(p) from Product p where p.status = :status group by p.category.categoryName")
     List<Object[]> findProductCountInCategory(@Param("status") Product.Status status);
+
+    long countProductsByStatus(Product.Status status);
+    @Query("select coalesce(sum(p.currentStock * p.salePrice), 0) from Product p where p.status = :status")
+    BigDecimal calculateInventoryValue(@Param("status") Product.Status status);
+
+    @Query("select coalesce(sum(p.currentStock * p.purchasePrice), 0) from Product p")
+    BigDecimal calculateInventoryInvestment();
 }

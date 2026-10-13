@@ -1,5 +1,6 @@
 package com.inventorymanagement.backend.presentation.controller;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -61,7 +62,24 @@ public class ProductController {
         LOGGER.info("Solicitud para obtener el total de productos por categoria");
         return ResponseEntity.ok(service.getProductCountInCategory());
     }
+
+    @GetMapping("/active-products")
+    public ResponseEntity<Long> countActiveProducts() {
+        LOGGER.info("Solicitud para obtener la cantidad de productos activos");
+        return ResponseEntity.ok(service.countActiveProducts());
+    }
     
+    @GetMapping("/inventory-value")
+    public ResponseEntity<BigDecimal> getInventoryValue() {
+        LOGGER.info("Solicitud para obtener el valor total del inventario");
+        return ResponseEntity.ok(service.getInventoryValue());
+    }
+
+    @GetMapping("/inventory-investment")
+    public ResponseEntity<BigDecimal> getInventoryInvestment() {
+        LOGGER.info("Solicitud para obtener la inversión total del inventario");
+        return ResponseEntity.ok(service.getInventoryInvestment());
+    }
 
     @GetMapping("/{productId}")
     public ResponseEntity<ProductResponseDTO> findAll(@PathVariable Long productId){
