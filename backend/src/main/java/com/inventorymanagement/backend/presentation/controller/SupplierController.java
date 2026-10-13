@@ -39,6 +39,12 @@ public class SupplierController {
         return ResponseEntity.ok(service.findAllSuppliers(pageable));
     }
 
+    @GetMapping("/active-suppliers")
+    public ResponseEntity<Long> countActiveSuppliers() {
+        LOGGER.info("Solicitud para obtener la cantidad de supervisores activos");
+        return ResponseEntity.ok(service.countActiveSuppliers());
+    }
+
     @GetMapping("/{supplierId}")
     public ResponseEntity<SupplierResponseDTO> findById(@PathVariable Long supplierId){
         LOGGER.info("Solicitud para obtener el proveedor con id {}", supplierId);

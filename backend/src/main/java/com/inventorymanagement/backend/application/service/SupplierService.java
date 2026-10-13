@@ -47,6 +47,13 @@ public class SupplierService {
         return mapper.toResponseDTO(supplier);
     }
 
+    public long countActiveSuppliers() {
+        LOGGER.debug("Obteniendo la cantidad de supervisores activos");
+
+        LOGGER.info("Se obtuvo la cantidad de supervisores activos");
+        return repository.countSupplierByStatus(Supplier.Status.ACTIVO);
+    }
+
     public SupplierResponseDTO createSupplier(SupplierCreateDTO supplierDto) {
         LOGGER.debug("Creando un proveedor");
 
