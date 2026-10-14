@@ -10,14 +10,14 @@ import { ProductCreate } from '../../models/product-create';
 import { ProductUpdate } from '../../models/product-update';
 import { RoleAuthService } from '../../../../core/services/role-auth.service';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
-import { lucideBan, lucideCircleCheck, lucidePencilSparkles } from '@ng-icons/lucide';
+import { lucideBan, lucideCircleCheck, lucidePencilSparkles, lucidePlus } from '@ng-icons/lucide';
 
 @Component({
   selector: 'app-products',
   imports: [FormsModule, NgIconComponent],
   templateUrl: './products.component.html',
   styleUrl: './products.component.css',
-  viewProviders: [provideIcons({ lucideBan, lucideCircleCheck, lucidePencilSparkles })]
+  viewProviders: [provideIcons({ lucideBan, lucideCircleCheck, lucidePencilSparkles, lucidePlus })]
 })
 export class ProductsComponent implements OnInit {
   products: ProductResponse[] = [];

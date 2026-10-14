@@ -180,10 +180,13 @@
 
     .page-header h2 {
         margin-top: 5px;
-        font-size: 22px;
+        font-size: 20px;
     }
 
-    /* Indicadores en 2 columnas */
+    .page-header p {
+        font-size: 12px;
+    }
+
     .indicators {
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 14px;
@@ -208,7 +211,6 @@
         font-size: 21px;
     }
 
-    /* Gráficas en 1 sola columna */
     .charts-section {
         grid-template-columns: minmax(0, 1fr);
         gap: 16px;
@@ -242,7 +244,6 @@
         font-size: 20px;
     }
 
-    /* Indicadores en 2 columnas */
     .indicators {
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 10px;
@@ -269,7 +270,6 @@
         font-size: 17px;
     }
 
-    /* Gráficas en 1 sola columna */
     .charts-section {
         grid-template-columns: minmax(0, 1fr);
         gap: 12px;

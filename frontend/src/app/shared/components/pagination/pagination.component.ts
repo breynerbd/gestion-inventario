@@ -1,10 +1,13 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { NgIconComponent, provideIcons } from '@ng-icons/core';
+import { lucideBan, lucideChevronLeft, lucideChevronRight } from '@ng-icons/lucide';
 
 @Component({
   selector: 'app-pagination',
-  imports: [],
+  imports: [NgIconComponent],
   templateUrl: './pagination.component.html',
-  styleUrl: './pagination.component.css'
+  styleUrl: './pagination.component.css',
+  viewProviders: [provideIcons({ lucideChevronRight, lucideChevronLeft })]
 })
 export class PaginationComponent {
   @Input() currentPage = 1;

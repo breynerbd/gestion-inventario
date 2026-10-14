@@ -9,7 +9,9 @@
         @if(canManageCategories()) {
         <button type="button" (click)="openForm()">
             <span class="text-desktop">Nueva Categoría</span>
-            <span class="text-mobile">+</span>
+            <span class="text-mobile">
+                <ng-icon name="lucidePlus" class="icon-add"></ng-icon>
+            </span>
         </button>
         }
     </div>

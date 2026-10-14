@@ -2,7 +2,7 @@
 <div class="pagination-container">
 
     <button type="button" (click)="changePage(currentPage - 1)" [disabled]="currentPage === 1">
-        Anterior
+        <ng-icon name="lucideChevronLeft" class="action-icon"></ng-icon>
     </button>
 
     <span>
@@ -10,7 +10,7 @@
     </span>
 
     <button type="button" (click)="changePage(currentPage + 1)" [disabled]="currentPage === totalPages">
-        Siguiente
+        <ng-icon name="lucideChevronRight" class="action-icon"></ng-icon>
     </button>
 
 </div>

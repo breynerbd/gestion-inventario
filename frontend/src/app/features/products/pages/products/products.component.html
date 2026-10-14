@@ -67,7 +67,9 @@
             @if(canManageProducts()){
             <button type="button" class="new-product-button" (click)="openForm()">
                 <span class="text-desktop">Nuevo Producto</span>
-                <span class="text-mobile">+</span>
+                <span class="text-mobile">
+                    <ng-icon name="lucidePlus" class="icon-add"></ng-icon>
+                </span>
             </button>
             }
 
