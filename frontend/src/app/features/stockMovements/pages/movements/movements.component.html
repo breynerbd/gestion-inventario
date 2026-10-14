@@ -65,7 +65,10 @@
 
             @if(canCreateMovements()) {
             <button type="button" class="new-movement-button" (click)="openForm()">
-                Nuevo Movimiento
+                <span class="text-desktop">Nuevo Movimiento</span>
+                <span class="text-mobile">
+                    <ng-icon name="lucidePlus" class="icon-add"></ng-icon>
+                </span>
             </button>
             }
         </div>
@@ -188,15 +191,16 @@
                     <td>{{ movement.status }}</td>
                     @if(canEditMovements()) {
                     <td>
-                        <button type="button" (click)="editMovement(movement)">
-                            Editar
+                        <button type="button" class="icon-action-btn" (click)="editMovement(movement)" title="Editar">
+                            <ng-icon name="lucidePencilSparkles" class="action-icon"></ng-icon>
                         </button>
 
-                        <button type="button" (click)="changeStatus(movement)">
-                            @if (movement.status === "ACTIVO") {
-                            Desactivar
+                        <button type="button" class="icon-action-btn" (click)="changeStatus(movement)"
+                            [title]="movement.status === 'ACTIVO' ? 'Desactivar' : 'Activar'">
+                            @if (movement.status === 'ACTIVO') {
+                            <ng-icon name="lucideBan" class="action-icon"></ng-icon>
                             } @else {
-                            Activar
+                            <ng-icon name="lucideCircleCheck" class="action-icon"></ng-icon>
                             }
                         </button>
                     </td>

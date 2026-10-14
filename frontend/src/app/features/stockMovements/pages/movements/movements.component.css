@@ -84,6 +84,13 @@
     background-color: #586F7C;
 }
 
+.text-mobile {
+    display: none;
+}
+.text-desktop {
+    display: inline;
+}
+
 .new-movement-button {
     padding: 10px 16px;
     border: none;
@@ -133,18 +140,36 @@
     background-color: #B8DBD9;
 }
 
-.movements-table td button {
-    padding: 7px 12px;
-    border: none;
-    border-radius: 6px;
-    background-color: #586F7C;
-    color: #F4F4F9;
-    cursor: pointer;
-    margin-right: 5px;
+.movements-table td.actions-cell,
+.movements-table td:last-child {
+    white-space: nowrap;
 }
 
-.movements-table td button:hover {
-    background-color: #2F4550;
+.movements-table td .icon-action-btn {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 4px;
+    transition: background-color 0.2s ease;
+    vertical-align: middle;
+}
+
+.movements-table td .icon-action-btn:hover {
+    background-color: #B8DBD9;
+}
+
+.movements-table td .icon-action-btn .action-icon {
+    font-size: 18px;
+    color: #2F4550;
+}
+
+.movements-table td .icon-action-btn:hover .action-icon {
+    color: #586F7C;
 }
 
 .empty-movements {
@@ -167,14 +192,15 @@
     height: 100%;
     background-color: rgba(0, 0, 0, 0.49);
     backdrop-filter: blur(2px);
-    z-index: 1000;
+    z-index: 2000;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
 .movement-form-container {
-    width: 30%;
+    width: 35%;
+    max-width: 420px;
     padding: 25px;
     border-radius: 20px;
     background-color: #d1e2e1fd;
@@ -278,4 +304,349 @@
 .pagination-container span {
     color: #2F4550;
     font-weight: 500;
+}
+
+@media (max-width: 1400px) {
+    .movements-container {
+        padding: 20px;
+        padding-bottom: 16px;
+    }
+
+    .movements-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    .new-movement-button {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 999;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+        border-radius: 50%;
+        width: 38px;
+        height: 38px;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex: unset !important;
+    }
+
+    .new-movement-button .text-desktop {
+        display: none;
+    }
+
+    .new-movement-button .text-mobile {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .new-movement-button .icon-add {
+        font-size: 20px;
+        color: #F4F4F9;
+    }
+
+    .movements-actions {
+        justify-content: flex-start;
+        flex-wrap: nowrap;
+        gap: 8px;
+        min-width: 0;
+        overflow-x: auto;
+        scrollbar-width: none;
+    }
+
+    .movements-actions::-webkit-scrollbar {
+        display: none;
+    }
+
+    .filter-group {
+        flex: 1 1 0;
+        min-width: 90px;
+        gap: 3px;
+    }
+
+    .filter-group:first-child {
+        flex: 1.5 1 0;
+    }
+
+    .filter-group label {
+        font-size: 11px;
+        white-space: nowrap;
+    }
+
+    .filter-group input,
+    .filter-group select {
+        width: 100%;
+        height: 25px;
+        padding: 0 6px;
+        font-size: 11px;
+    }
+
+    .clear-filters-button {
+        flex: 0 0 auto;
+        height: 25px;
+        padding: 0 10px;
+        font-size: 11px;
+        text-align: center;
+    }
+
+    .movements-table-container {
+        border-radius: 10px;
+    }
+
+    .movements-table {
+        min-width: 700px;
+    }
+
+    .movements-table th,
+    .movements-table td {
+        padding: 10px;
+        font-size: 12px;
+    }
+
+    .movements-table td .icon-action-btn .action-icon {
+        font-size: 14px;
+    }
+
+    .movement-form-container {
+        width: 55%;
+        max-width: 420px;
+        padding: 18px;
+    }
+
+    .movement-form-container h2 {
+        font-size: 16px;
+        margin-bottom: 12px;
+    }
+
+    .movement-form {
+        gap: 10px;
+    }
+
+    .form-group label {
+        font-size: 11px;
+        margin-bottom: 4px;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        padding: 5px 12px;
+        font-size: 10px;
+    }
+
+    .form-actions button {
+        padding: 7px 10px;
+        font-size: 10px;
+    }
+}
+
+@media (max-width: 768px) {
+    .movements-container {
+        padding: 14px;
+        padding-bottom: 14px;
+    }
+
+    .movements-header {
+        margin-bottom: 14px;
+        gap: 10px;
+    }
+
+    .new-movement-button {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 999;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+        border-radius: 50%;
+        width: 38px;
+        height: 38px;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex: unset !important;
+    }
+
+    .new-movement-button .text-desktop {
+        display: none;
+    }
+
+    .new-movement-button .text-mobile {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .new-movement-button .icon-add {
+        font-size: 20px;
+        color: #F4F4F9;
+    }
+
+    .movements-header h1 {
+        margin-top: 5px;
+        font-size: 18px;
+    }
+
+    .movements-header p {
+        font-size: 11px;
+        margin-bottom: 10px;
+    }
+
+    .movements-actions {
+        gap: 6px;
+        margin: 0;
+        padding: 0;
+    }
+
+    .filter-group {
+        flex: 1 1 0;
+        min-width: 80px;
+    }
+
+    .movements-table-container {
+        border-radius: 10px;
+    }
+
+    .movements-table {
+        min-width: 700px;
+    }
+
+    .movements-table th,
+    .movements-table td {
+        padding: 10px;
+        font-size: 12px;
+    }
+
+    .movements-table td .icon-action-btn .action-icon {
+        font-size: 14px;
+    }
+
+    .pagination-container {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .pagination-container button {
+        padding: 6px 12px;
+        font-size: 12px;
+    }
+
+    .form-overlay {
+        padding: 10px;
+        box-sizing: border-box;
+    }
+
+    .movement-form-container {
+        width: 100%;
+        max-width: 340px;
+        max-height: calc(100dvh - 20px);
+        padding: 14px;
+        box-sizing: border-box;
+        overflow-y: auto;
+        border-radius: 12px;
+    }
+
+    .movement-form {
+        grid-template-columns: minmax(2, 1fr);
+        gap: 8px;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        width: 100%;
+        font-size: 10px;
+    }
+
+    .form-actions {
+        flex-wrap: wrap;
+    }
+
+    .form-actions button {
+        padding: 7px 14px;
+        font-size: 9px;
+    }
+}
+
+@media (max-width: 480px) {
+    .movements-container {
+        padding: 10px;
+    }
+
+    .movements-header h1 {
+        margin-bottom: 5px;
+        font-size: 18px;
+    }
+
+    .new-movement-button {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 999;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+        border-radius: 50%;
+        height: 30px;
+        width: 30px;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .new-movement-button .text-desktop {
+        display: none;
+    }
+
+    .new-movement-button .text-mobile {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .new-movement-button .icon-add {
+        font-size: 18px;
+        color: #F4F4F9;
+    }
+
+    .movements-actions {
+        margin: 0;
+        padding: 0;
+        gap: 5px;
+    }
+
+    .filter-group {
+        flex: 1 1 0;
+        min-width: 74px;
+    }
+
+    .clear-filters-button {
+        padding: 0 8px;
+    }
+
+    .movements-table {
+        min-width: 600px;
+    }
+
+    .movements-table th,
+    .movements-table td {
+        padding: 8px;
+        font-size: 11px;
+    }
+
+    .movements-table td .icon-action-btn .action-icon {
+        font-size: 13px;
+    }
+
+    .form-actions {
+        flex-wrap: wrap;
+    }
+
+    .form-actions button {
+        padding: 7px 14px;
+        font-size: 10px;
+    }
 }

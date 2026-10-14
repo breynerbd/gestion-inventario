@@ -12,12 +12,15 @@ import { UserResponse } from "../../../users/models/user-response";
 import { UserService } from "../../../users/services/user.service";
 import { DatePipe } from "@angular/common";
 import { RoleAuthService } from "../../../../core/services/role-auth.service";
+import { NgIconComponent, provideIcons } from '@ng-icons/core';
+import { lucideBan, lucideCircleCheck, lucidePencilSparkles, lucidePlus } from '@ng-icons/lucide';
 
 @Component({
   selector: "app-movements",
-  imports: [FormsModule, DatePipe],
+  imports: [FormsModule, DatePipe, NgIconComponent],
   templateUrl: "./movements.component.html",
-  styleUrl: "./movements.component.css"
+  styleUrl: "./movements.component.css",
+  viewProviders: [provideIcons({ lucideBan, lucideCircleCheck, lucidePencilSparkles, lucidePlus })]
 })
 export class MovementsComponent implements OnInit {
   movements: MovementResponse[] = [];
