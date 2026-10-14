@@ -7,12 +7,15 @@ import { UserUpdate } from '../../models/user-update';
 import { RoleResponse } from '../../../roles/models/role-response';
 import { RoleService } from '../../../roles/services/role.service';
 import { PaginationComponent } from '../../../../shared/components/pagination/pagination.component';
+import { NgIconComponent, provideIcons } from '@ng-icons/core';
+import { lucideBan, lucideCircleCheck, lucidePencilSparkles, lucidePlus } from '@ng-icons/lucide';
 
 @Component({
   selector: 'app-users',
-  imports: [FormsModule, PaginationComponent],
+  imports: [FormsModule, PaginationComponent, NgIconComponent],
   templateUrl: './users.component.html',
-  styleUrl: './users.component.css'
+  styleUrl: './users.component.css',
+  viewProviders: [provideIcons({ lucideBan, lucideCircleCheck, lucidePencilSparkles, lucidePlus })]
 })
 export class UsersComponent implements OnInit {
   users: UserResponse[] = [];

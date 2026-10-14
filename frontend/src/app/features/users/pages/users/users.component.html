@@ -4,7 +4,12 @@
             <h1>Usuarios</h1>
             <p>Gestión de usuarios del sistema</p>
         </div>
-        <button type="button" (click)="openForm()">Nuevo Usuario</button>
+        <button type="button" (click)="openForm()">
+            <span class="text-desktop">Nuevo Usuario</span>
+            <span class="text-mobile">
+                <ng-icon name="lucidePlus" class="icon-add"></ng-icon>
+            </span>
+        </button>
     </div>
 
     @if (errorMessage) {
@@ -107,12 +112,16 @@
                     <td>{{ user.status }}</td>
                     <td>{{ user.failedAttempts }}</td>
                     <td>
-                        <button type="button" (click)="editUser(user)">Editar</button>
-                        <button type="button" (click)="changeStatus(user)">
-                            @if (user.status === "ACTIVO") {
-                            Desactivar
+                        <button type="button" class="icon-action-btn" (click)="editUser(user)" title="Editar">
+                            <ng-icon name="lucidePencilSparkles" class="action-icon"></ng-icon>
+                        </button>
+
+                        <button type="button" class="icon-action-btn" (click)="changeStatus(user)"
+                            [title]="user.status === 'ACTIVO' ? 'Desactivar' : 'Activar'">
+                            @if (user.status === 'ACTIVO') {
+                            <ng-icon name="lucideBan" class="action-icon"></ng-icon>
                             } @else {
-                            Activar
+                            <ng-icon name="lucideCircleCheck" class="action-icon"></ng-icon>
                             }
                         </button>
                     </td>
