@@ -5,12 +5,15 @@ import { RoleCreate } from '../../models/role-create';
 import { RoleService } from '../../services/role.service';
 import { RoleUpdate } from '../../models/role-update';
 import { PaginationComponent } from '../../../../shared/components/pagination/pagination.component';
+import { NgIconComponent, provideIcons } from '@ng-icons/core';
+import { lucideBan, lucideCircleCheck, lucidePencilSparkles, lucidePlus } from '@ng-icons/lucide';
 
 @Component({
   selector: 'app-roles',
-  imports: [FormsModule, PaginationComponent],
+  imports: [FormsModule, PaginationComponent, NgIconComponent],
   templateUrl: './roles.component.html',
-  styleUrl: './roles.component.css'
+  styleUrl: './roles.component.css',
+  viewProviders: [provideIcons({ lucideBan, lucideCircleCheck, lucidePencilSparkles, lucidePlus })]
 })
 export class RolesComponent implements OnInit {
 

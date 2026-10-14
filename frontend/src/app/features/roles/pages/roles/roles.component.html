@@ -4,7 +4,12 @@
             <h1>Roles</h1>
             <p>Gestión de roles del sistema</p>
         </div>
-        <button type="button" (click)="openForm()">Nuevo Rol</button>
+        <button type="button" (click)="openForm()">
+            <span class="text-desktop">Nuevo Rol</span>
+            <span class="text-mobile">
+                <ng-icon name="lucidePlus" class="icon-add"></ng-icon>
+            </span>
+        </button>
     </div>
 
     @if (errorMessage) {
@@ -62,12 +67,16 @@
                     <td>{{ role.description }}</td>
                     <td>{{ role.status }}</td>
                     <td>
-                        <button type="button" (click)="editRole(role)">Editar</button>
-                        <button type="button" (click)="changeStatus(role)">
-                            @if (role.status === "ACTIVO") {
-                            Desactivar
+                        <button type="button" class="icon-action-btn" (click)="editRole(role)" title="Editar">
+                            <ng-icon name="lucidePencilSparkles" class="action-icon"></ng-icon>
+                        </button>
+
+                        <button type="button" class="icon-action-btn" (click)="changeStatus(role)"
+                            [title]="role.status === 'ACTIVO' ? 'Desactivar' : 'Activar'">
+                            @if (role.status === 'ACTIVO') {
+                            <ng-icon name="lucideBan" class="action-icon"></ng-icon>
                             } @else {
-                            Activar
+                            <ng-icon name="lucideCircleCheck" class="action-icon"></ng-icon>
                             }
                         </button>
                     </td>
