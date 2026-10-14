@@ -6,7 +6,10 @@
         </div>
 
         <button type="button" (click)="openForm()">
-            Nuevo Permiso
+            <span class="text-desktop">Nuevo Permiso</span>
+            <span class="text-mobile">
+                <ng-icon name="lucidePlus" class="icon-add"></ng-icon>
+            </span>
         </button>
     </div>
 
@@ -85,15 +88,17 @@
                     <td>{{ permission.description }}</td>
                     <td>{{ permission.status }}</td>
                     <td>
-                        <button type="button" (click)="editPermission(permission)">
-                            Editar
+                        <button type="button" class="icon-action-btn" (click)="editPermission(permission)"
+                            title="Editar">
+                            <ng-icon name="lucidePencilSparkles" class="action-icon"></ng-icon>
                         </button>
 
-                        <button type="button" (click)="changeStatus(permission)">
-                            @if (permission.status === "ACTIVO") {
-                            Desactivar
+                        <button type="button" class="icon-action-btn" (click)="changeStatus(permission)"
+                            [title]="permission.status === 'ACTIVO' ? 'Desactivar' : 'Activar'">
+                            @if (permission.status === 'ACTIVO') {
+                            <ng-icon name="lucideBan" class="action-icon"></ng-icon>
                             } @else {
-                            Activar
+                            <ng-icon name="lucideCircleCheck" class="action-icon"></ng-icon>
                             }
                         </button>
                     </td>
