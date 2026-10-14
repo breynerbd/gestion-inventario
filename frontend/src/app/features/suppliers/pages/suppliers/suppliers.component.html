@@ -8,7 +8,10 @@
 
         @if(canManageSuppliers()) {
         <button type="button" (click)="openForm()">
-            Nuevo Proveedor
+            <span class="text-desktop">Nuevo Proveedor</span>
+            <span class="text-mobile">
+                <ng-icon name="lucidePlus" class="icon-add"></ng-icon>
+            </span>
         </button>
         }
     </div>
@@ -127,15 +130,16 @@
                     <td>{{ supplier.status }}</td>
                     @if(canManageSuppliers()) {
                     <td>
-                        <button type="button" (click)="editSupplier(supplier)">
-                            Editar
+                        <button type="button" class="icon-action-btn" (click)="editSupplier(supplier)" title="Editar">
+                            <ng-icon name="lucidePencilSparkles" class="action-icon"></ng-icon>
                         </button>
 
-                        <button type="button" (click)="changeStatus(supplier)">
-                            @if (supplier.status === "ACTIVO") {
-                            Desactivar
+                        <button type="button" class="icon-action-btn" (click)="changeStatus(supplier)"
+                            [title]="supplier.status === 'ACTIVO' ? 'Desactivar' : 'Activar'">
+                            @if (supplier.status === 'ACTIVO') {
+                            <ng-icon name="lucideBan" class="action-icon"></ng-icon>
                             } @else {
-                            Activar
+                            <ng-icon name="lucideCircleCheck" class="action-icon"></ng-icon>
                             }
                         </button>
                     </td>

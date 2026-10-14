@@ -6,12 +6,15 @@ import { SupplierCreate } from "../../models/supplier-create";
 import { SupplierUpdate } from "../../models/supplier-update";
 import { SupplierService } from "../../service/supplier.service";
 import { RoleAuthService } from "../../../../core/services/role-auth.service";
+import { NgIconComponent, provideIcons } from '@ng-icons/core';
+import { lucideBan, lucideCircleCheck, lucidePencilSparkles, lucidePlus } from '@ng-icons/lucide';
 
 @Component({
   selector: "app-suppliers",
-  imports: [FormsModule],
+  imports: [FormsModule, NgIconComponent],
   templateUrl: "./suppliers.component.html",
-  styleUrl: "./suppliers.component.css"
+  styleUrl: "./suppliers.component.css",
+  viewProviders: [provideIcons({ lucideBan, lucideCircleCheck, lucidePencilSparkles, lucidePlus })]
 })
 export class SuppliersComponent implements OnInit {
 
