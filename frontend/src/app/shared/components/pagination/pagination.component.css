@@ -10,7 +10,7 @@
 }
 
 .pagination-container button {
-    padding: 8px 12px;
+    padding: 6px 10px;
     border: none;
     border-radius: 6px;
     background-color: #2F4550;
@@ -34,7 +34,7 @@
 }
 
 .pagination-container button .action-icon {
-    font-size: 16px;
+    font-size: 14px;
     color: #F4F4F9;
 }
 
@@ -45,7 +45,7 @@
 .pagination-container span {
     color: #2F4550;
     font-weight: 500;
-    font-size: 14px;
+    font-size: 12px;
     white-space: nowrap;
 }
 
@@ -53,7 +53,7 @@
     .pagination-container {
         gap: 10px;
         padding-top: 10px;
-        padding-bottom: 6px;
+        padding-bottom: 16px;
     }
 
     .pagination-container button {

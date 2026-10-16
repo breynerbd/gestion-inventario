@@ -280,15 +280,20 @@
     margin-top: auto;
     padding-top: 12px;
     padding-bottom: 6px;
+    flex-shrink: 0;
 }
 
 .pagination-container button {
-    padding: 8px 14px;
+    padding: 8px 12px;
     border: none;
     border-radius: 6px;
     background-color: #2F4550;
     color: #F4F4F9;
     cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease;
 }
 
 .pagination-container button:hover:not(:disabled) {
@@ -299,11 +304,23 @@
     background-color: #B8DBD9;
     color: #586F7C;
     cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.pagination-container button .action-icon {
+    font-size: 16px;
+    color: #F4F4F9;
+}
+
+.pagination-container button:disabled .action-icon {
+    color: #586F7C;
 }
 
 .pagination-container span {
     color: #2F4550;
     font-weight: 500;
+    font-size: 14px;
+    white-space: nowrap;
 }
 
 @media (max-width: 1400px) {
@@ -320,7 +337,7 @@
 
     .new-movement-button {
         position: fixed;
-        bottom: 20px;
+        bottom: 25px;
         right: 20px;
         z-index: 999;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
@@ -442,6 +459,24 @@
         padding: 7px 10px;
         font-size: 10px;
     }
+
+    .pagination-container {
+        gap: 10px;
+        padding-top: 10px;
+        padding-bottom: 16px;
+    }
+
+    .pagination-container button {
+        padding: 6px 10px;
+    }
+
+    .pagination-container button .action-icon {
+        font-size: 14px;
+    }
+
+    .pagination-container span {
+        font-size: 12px;
+    }
 }
 
 @media (max-width: 768px) {
@@ -457,7 +492,7 @@
 
     .new-movement-button {
         position: fixed;
-        bottom: 20px;
+        bottom: 25px;
         right: 20px;
         z-index: 999;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
@@ -493,7 +528,7 @@
 
     .movements-header p {
         font-size: 11px;
-        margin-bottom: 10px;
+        margin-bottom: 4px;
     }
 
     .movements-actions {
@@ -526,12 +561,20 @@
     }
 
     .pagination-container {
-        flex-wrap: wrap;
-        gap: 8px;
+        gap: 10px;
+        padding-top: 8px;
+        padding-bottom: 4px;
     }
 
     .pagination-container button {
-        padding: 6px 12px;
+        padding: 6px 10px;
+    }
+
+    .pagination-container button .action-icon {
+        font-size: 14px;
+    }
+
+    .pagination-container span {
         font-size: 12px;
     }
 
@@ -584,7 +627,7 @@
 
     .new-movement-button {
         position: fixed;
-        bottom: 20px;
+        bottom: 25px;
         right: 20px;
         z-index: 999;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
@@ -639,6 +682,11 @@
 
     .movements-table td .icon-action-btn .action-icon {
         font-size: 13px;
+    }
+
+    .pagination-container {
+        gap: 10px;
+        padding-bottom: 1px;
     }
 
     .form-actions {
