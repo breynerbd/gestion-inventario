@@ -24,19 +24,40 @@
             } @else {
             <h2>Editar Rol</h2>
             }
+            @if (errorMessageForm) {
+            <p class="error-message-form">{{ errorMessageForm }}</p>
+            }
 
             <form class="role-form" #roleForm="ngForm" (ngSubmit)="saveRole()">
                 <div class="form-group">
                     <label for="roleName">Nombre del rol</label>
                     <input id="roleName" type="text" name="roleName" [(ngModel)]="newRole.roleName" maxlength="50"
-                        required>
+                        #roleName="ngModel" pattern="^[A-Z ]+$" required>
+
+                    @if (roleName.invalid && roleName.touched) {
+                        @if (roleName.errors?.["required"]) {
+                            <small class="validation-message">El nombre del rol es obligatorio.</small>
+                        }
+
+                        @if (roleName.errors?.["maxlength"]) {
+                            <small class="validation-message">El nombre del rol tiene un máximo de 50 caracteres.</small>
+                        }
+
+                        @if (roleName.errors?.["pattern"]) {
+                            <small class="validation-message">Usa únicamente letras mayúsculas y espacios.</small>
+                        }
+                    }
                 </div>
 
                 <div class="form-group description-group">
                     <label for="description">Descripción</label>
                     <textarea id="description" name="description" [(ngModel)]="newRole.description" maxlength="200"
-                        rows="4">
+                        #description="ngModel" rows="4">
                     </textarea>
+
+                    @if (description.errors?.["maxlength"] && description.touched) {
+                        <small class="validation-message">La descripción tiene un máximo de 200 caracteres.</small>
+                    }
                 </div>
 
                 <div class="form-actions">

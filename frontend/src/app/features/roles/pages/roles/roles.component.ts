@@ -22,6 +22,7 @@ export class RolesComponent implements OnInit {
   showForm = false;
   editingRoleId: number | null = null;
   errorMessage = "";
+  errorMessageForm = "";
 
   currentPage = 1;
   pageSize = 10;
@@ -120,6 +121,13 @@ export class RolesComponent implements OnInit {
   }
 
   saveRole(): void {
+    this.errorMessageForm = "";
+
+    if (!this.newRole.roleName.trim()) {
+      this.errorMessageForm = "El nombre del rol es obligatorio.";
+      return;
+    }
+
     if (this.editingRoleId === null) {
       this.createRole();
     } else {
@@ -141,7 +149,7 @@ export class RolesComponent implements OnInit {
       },
       error: (error) => {
         console.error(error);
-        this.errorMessage = "No se pudo cambiar el estado del proveedor";
+        this.errorMessage = "No se pudo cambiar el estado del rol";
       }
     });
   }
@@ -150,6 +158,7 @@ export class RolesComponent implements OnInit {
     this.showForm = true;
     this.editingRoleId = null;
     this.errorMessage = "";
+    this.errorMessageForm = "";
     this.resetForm();
   }
 
