@@ -25,29 +25,76 @@
             } @else {
             <h2>Editar Permiso</h2>
             }
+            @if (errorMessageForm) {
+            <p class="error-message">{{ errorMessageForm }}</p>
+            }
 
             <form class="permission-form" #permissionForm="ngForm" (ngSubmit)="savePermission()">
 
                 <div class="form-group">
                     <label for="permissionCode">Código</label>
                     <input id="permissionCode" type="text" name="permissionCode"
-                        [(ngModel)]="newPermission.permissionCode" [disabled]="editingPermissionId !== null" required>
+                        [(ngModel)]="newPermission.permissionCode" #permissionCode="ngModel" maxlength="60"
+                        pattern="^[A-Z0-9_]+$" [disabled]="editingPermissionId !== null" required>
+
+                    @if (permissionCode.invalid && permissionCode.touched) {
+                        @if (permissionCode.errors?.["required"]) {
+                            <small class="validation-message">El código del permiso es obligatorio.</small>
+                        }
+                        @if (permissionCode.errors?.["maxlength"]) {
+                            <small class="validation-message">El código tiene un máximo de 60 caracteres.</small>
+                        }
+                        @if (permissionCode.errors?.["pattern"]) {
+                            <small class="validation-message">Solo se permiten letras mayúsculas, números y guiones bajos.</small>
+                        }
+                    }
                 </div>
 
                 <div class="form-group">
                     <label for="permissionName">Nombre</label>
                     <input id="permissionName" type="text" name="permissionName"
-                        [(ngModel)]="newPermission.permissionName" required>
+                        [(ngModel)]="newPermission.permissionName" #permissionName="ngModel" maxlength="100" required>
+
+                    @if (permissionName.invalid && permissionName.touched) {
+                        @if (permissionName.errors?.["required"]) {
+                            <small class="validation-message">El nombre del permiso es obligatorio.</small>
+                        }
+                        @if (permissionName.errors?.["maxlength"]) {
+                            <small class="validation-message">El nombre tiene un máximo de 100 caracteres.</small>
+                        }
+                    }
                 </div>
 
                 <div class="form-group">
                     <label for="module">Módulo</label>
-                    <input id="module" type="text" name="module" [(ngModel)]="newPermission.module" required>
+                    <select id="module" type="text" name="module" [(ngModel)]="newPermission.module" #module="ngModel" required>
+                        <option value="" disabled>Seleccione un módulo</option>
+                        <option value="USERS">Usuarios</option>
+                        <option value="PRODUCTS">Productos</option>
+                        <option value="CATEGORIES">Categorías</option>
+                        <option value="SUPPLIERS">Proveedores</option>
+                        <option value="STOCK_MOVEMENTS">Movimientos de inventario</option>
+                        <option value="ROLES">Roles</option>
+                        <option value="PERMISSIONS">Permisos</option>
+                    </select>
+
+                    @if (module.invalid && module.touched) {
+                        @if (module.errors?.["required"]) {
+                            <small class="validation-message">Selecciona un módulo.</small>
+                        }
+                    }
                 </div>
 
                 <div class="form-group">
                     <label for="description">Descripción</label>
-                    <textarea id="description" name="description" [(ngModel)]="newPermission.description"></textarea>
+                    <textarea id="description" name="description" [(ngModel)]="newPermission.description" #description="ngModel" 
+                        maxlength="200"></textarea>
+
+                    @if (description.invalid && description.touched) {
+                        @if (description.errors?.["maxlength"]) {
+                            <small class="validation-message">La descripción tiene un máximo de 200 caracteres.</small>
+                        }
+                    }
                 </div>
 
                 <div class="form-actions">

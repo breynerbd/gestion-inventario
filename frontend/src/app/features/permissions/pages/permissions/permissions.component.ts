@@ -23,6 +23,7 @@ export class PermissionsComponent implements OnInit {
   showForm = false;
   editingPermissionId: number | null = null;
   errorMessage = "";
+  errorMessageForm = "";
 
   currentPage = 1;
   pageSize = 10;
@@ -125,14 +126,35 @@ export class PermissionsComponent implements OnInit {
   }
 
   savePermission(): void {
-    this.errorMessage = "";
+    this.errorMessageForm = "";
+
+    if (!this.newPermission.permissionName.trim()) {
+      this.errorMessageForm = "El nombre del permiso es obligatorio.";
+      return;
+    }
 
     if (this.editingPermissionId === null) {
+      if (!this.newPermission.permissionCode?.trim()) {
+        this.errorMessageForm = "El código del permiso es obligatorio.";
+        return;
+      }
+
+      if (!this.newPermission.module) {
+        this.errorMessageForm = "Debes seleccionar un módulo.";
+        return;
+      }
+
       this.createPermission();
     } else {
+      if (!this.newPermission.module) {
+        this.errorMessageForm = "Debes seleccionar un módulo.";
+        return;
+      }
+
       this.updatePermission();
     }
   }
+
 
   changeStatus(permission: PermissionResponse): void {
     const newStatus = permission.status === "ACTIVO"
@@ -157,6 +179,7 @@ export class PermissionsComponent implements OnInit {
     this.showForm = true;
     this.editingPermissionId = null;
     this.errorMessage = "";
+    this.errorMessageForm = "";
     this.resetForm();
   }
 
