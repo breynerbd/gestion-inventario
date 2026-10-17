@@ -29,58 +29,131 @@
             } @else {
             <h2>Editar Proveedor</h2>
             }
+            @if (errorMessageForm) {
+            <p class="error-message-form">{{ errorMessageForm }}</p>
+            }
 
             <form class="supplier-form" #supplierForm="ngForm" (ngSubmit)="saveSupplier()">
 
                 <div class="form-group">
                     <label for="supplierCode">Código</label>
                     <input id="supplierCode" type="text" name="supplierCode" [(ngModel)]="newSupplier.supplierCode"
-                        required [disabled]="editingSupplierId !== null">
+                        #supplierCode="ngModel" maxlength="10" pattern="^[A-Za-z0-9_-]+$" required [disabled]="editingSupplierId !== null">
+                    
+                @if (supplierCode.invalid && supplierCode.touched) {
+                    @if (supplierCode.errors?.["required"]) {
+                        <small class="validation-message">El código del proveedor es obligatorio.</small>
+                    }
+                    @if (supplierCode.errors?.["maxlength"]) {
+                        <small class="validation-message">El código tiene un máximo de 10 caracteres.</small>
+                    }
+                    @if (supplierCode.errors?.["pattern"]) {
+                        <small class="validation-message">Usa solo letras, números, guión y guión bajo.</small>
+                    }
+                }
                 </div>
 
                 <div class="form-group">
                     <label for="documentType">Tipo de documento</label>
 
-                    <select id="documentType" name="documentType" [(ngModel)]="newSupplier.documentType" required>
+                    <select id="documentType" name="documentType" [(ngModel)]="newSupplier.documentType" #documentType="ngModel" required>
                         <option value="">Selecciona un tipo de documento</option>
                         <option value="NIT">NIT</option>
                         <option value="RUC">RUC</option>
                         <option value="CEDULA">Cédula</option>
                         <option value="PASAPORTE">Pasaporte</option>
                     </select>
+
+                    @if (documentType.invalid && documentType.touched) {
+                        <small class="validation-message">Selecciona un tipo de documento.</small>
+                    }
                 </div>
 
                 <div class="form-group">
                     <label for="documentNumber">Número de documento</label>
                     <input id="documentNumber" type="text" name="documentNumber"
-                        [(ngModel)]="newSupplier.documentNumber" required>
+                        [(ngModel)]="newSupplier.documentNumber" #documentNumber="ngModel" maxlength="20" required>
+
+                    @if (documentNumber.invalid && documentNumber.touched) {
+                        @if (documentNumber.errors?.["required"]) {
+                            <small class="validation-message">El número de documento es obligatorio.</small>
+                        }
+                        @if (documentNumber.errors?.["maxlength"]) {
+                            <small class="validation-message">El documento no puede superar los 20 caracteres.</small>
+                        }
+                    }
                 </div>
 
                 <div class="form-group">
                     <label for="businessName">Razón social</label>
                     <input id="businessName" type="text" name="businessName" [(ngModel)]="newSupplier.businessName"
-                        required>
+                        #businessName="ngModel" maxlength="150" required>
+
+                    
+                    @if (businessName.invalid && businessName.touched) {
+                        @if (businessName.errors?.["required"]) {
+                            <small class="validation-message">La razón social es obligatoria.</small>
+                        }
+                        @if (businessName.errors?.["maxlength"]) {
+                            <small class="validation-message">La razón social tiene un máximo de 150 caracteres.</small>
+                        }
+                    }
                 </div>
 
                 <div class="form-group">
                     <label for="contactName">Nombre de contacto</label>
                     <input id="contactName" type="text" name="contactName" [(ngModel)]="newSupplier.contactName"
-                        required>
+                        #contactName="ngModel" maxlength="80" required>
+
+                    @if (contactName.errors?.["maxlength"] && contactName.touched) {
+                        <small class="validation-message">El nombre de contacto tiene un máximo de 100 caracteres.</small>
+                    }
                 </div>
 
                 <div class="form-group">
                     <label for="phone">Teléfono</label>
-                    <input id="phone" type="text" name="phone" [(ngModel)]="newSupplier.phone" required>
+                    <input id="phone" type="text" name="phone" [(ngModel)]="newSupplier.phone" #phone="ngModel"
+                        maxlength="15" pattern="^[0-9+ -]+$" required>
+
+                    @if (phone.invalid && phone.touched) {
+                        @if (phone.errors?.["required"]) {
+                            <small class="validation-message">El teléfono es obligatorio.</small>
+                        }
+                        @if (phone.errors?.["maxlength"]) {
+                            <small class="validation-message">El teléfono tiene un máximo de 15 caracteres.</small>
+                        }
+                        @if (phone.errors?.["pattern"]) {
+                            <small class="validation-message">Usa solo números, espacios, el signo + y guiones.</small>
+                        }
+                    }
                 </div>
 
                 <div class="form-group">
                     <label for="email">Correo electrónico</label>
-                    <input id="email" type="email" name="email" [(ngModel)]="newSupplier.email" required>
+                    <input id="email" type="email" name="email" [(ngModel)]="newSupplier.email" #email="ngModel"
+                        maxlength="100" required>
+
+                    @if (email.invalid && email.touched) {
+                        @if (email.errors?.["required"]) {
+                            <small class="validation-message">El correo electrónico es obligatorio.</small>
+                        }
+                        @if (email.errors?.["email"]) {
+                            <small class="validation-message">Introduce un correo electrónico válido.</small>
+                        }
+                        @if (email.errors?.["maxlength"]) {
+                            <small class="validation-message">El correo no puede superar los 100 caracteres.</small>
+                        }
+                    }
                 </div>
 
                 <div class="form-group">
                     <label for="address">Dirección</label>
-                    <input id="address" type="text" name="address" [(ngModel)]="newSupplier.address" required>
+                    <input id="address" type="text" name="address" [(ngModel)]="newSupplier.address" #address="ngModel"
+                        maxlength="200" required>
+
+                    @if (address.errors?.["maxlength"] && address.touched) {
+                        <small class="validation-message">La dirección no puede superar los 200 caracteres.</small>
+                    }
                 </div>
 
                 <div class="form-actions">

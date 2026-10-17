@@ -23,6 +23,7 @@ export class SuppliersComponent implements OnInit {
   showForm = false;
   editingSupplierId: number | null = null;
   errorMessage = "";
+  errorMessageForm = "";
 
   currentPage: number = 0;
   pageSize: number = 10;
@@ -40,7 +41,7 @@ export class SuppliersComponent implements OnInit {
     address: ""
   };
 
-  constructor(private readonly supplierService: SupplierService, private readonly roleAuthService: RoleAuthService) { 
+  constructor(private readonly supplierService: SupplierService, private readonly roleAuthService: RoleAuthService) {
 
   }
 
@@ -138,15 +139,44 @@ export class SuppliersComponent implements OnInit {
     });
   }
 
+
   saveSupplier(): void {
-    this.errorMessage = "";
+    this.errorMessageForm = "";
+
+    if (
+      !this.newSupplier.documentNumber.trim() ||
+      !this.newSupplier.businessName.trim() ||
+      !this.newSupplier.phone.trim() ||
+      !this.newSupplier.email.trim()
+    ) {
+      this.errorMessageForm = "Completa todos los campos obligatorios.";
+      return;
+    }
+
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailPattern.test(this.newSupplier.email.trim())) {
+      this.errorMessageForm = "Ingresa un correo electrónico válido.";
+      return;
+    }
+
+    if (this.newSupplier.email.length > 100) {
+      this.errorMessageForm = "El correo no puede superar los 100 caracteres.";
+      return;
+    }
 
     if (this.editingSupplierId === null) {
+      if (!this.newSupplier.supplierCode.trim()) {
+        this.errorMessageForm = "El código del proveedor es obligatorio.";
+        return;
+      }
+
       this.createSupplier();
     } else {
       this.updateSupplier();
     }
   }
+
 
   changeStatus(supplier: SupplierResponse): void {
     const newStatus = supplier.status === "ACTIVO"
@@ -171,6 +201,7 @@ export class SuppliersComponent implements OnInit {
     this.showForm = true;
     this.editingSupplierId = null;
     this.errorMessage = "";
+    this.errorMessageForm = "";
     this.resetForm();
   }
 
