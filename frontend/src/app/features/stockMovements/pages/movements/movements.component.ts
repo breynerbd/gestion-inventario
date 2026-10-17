@@ -30,6 +30,7 @@ export class MovementsComponent implements OnInit {
   showForm = false;
   editingMovementId: number | null = null;
   errorMessage = "";
+  errorMessageForm = "";
 
   currentPage: number = 0;
   pageSize: number = 10;
@@ -107,15 +108,15 @@ export class MovementsComponent implements OnInit {
     }
 
     this.userService.getUsers().subscribe({
-        next: (response) => {
-            this.users = response;
-        },
-        error: (error) => {
-            console.error(error);
-            this.errorMessage = "No se pudieron cargar los usuarios";
-        }
+      next: (response) => {
+        this.users = response;
+      },
+      error: (error) => {
+        console.error(error);
+        this.errorMessage = "No se pudieron cargar los usuarios";
+      }
     });
-}
+  }
 
   changePage(page: number): void {
     if (page >= 0 && page < this.totalPages) {
@@ -200,14 +201,37 @@ export class MovementsComponent implements OnInit {
   }
 
   saveMovement(): void {
-    this.errorMessage = "";
+    this.errorMessageForm = "";
 
-    if (
-      this.newMovement.movementType === "" ||
-      this.newMovement.productId === 0
+    if (this.newMovement.movementType === "" || this.newMovement.productId === 0
     ) {
-      this.errorMessage = "Completa la información del movimiento";
+      this.errorMessageForm = "Selecciona el tipo de movimiento y el producto.";
       return;
+    }
+
+    if (this.newMovement.quantity === null || this.newMovement.quantity === undefined ||
+      !Number.isInteger(this.newMovement.quantity) || this.newMovement.quantity < 1
+    ) {
+      this.errorMessageForm = "La cantidad debe ser un número entero mayor que cero.";
+      return;
+    }
+
+    if (this.newMovement.referenceDocument && this.newMovement.referenceDocument.length > 30
+    ) {
+      this.errorMessageForm = "El documento de referencia tiene un máximo de 30 caracteres.";
+      return;
+    }
+
+    if (this.newMovement.reason && this.newMovement.reason.length > 250
+    ) {
+      this.errorMessageForm = "El motivo tiene un máximo de 250 caracteres.";
+      return;
+    }
+
+    if (this.editingMovementId === null) {
+      this.createMovement();
+    } else {
+      this.updateMovement();
     }
 
     if (this.editingMovementId === null) {
@@ -240,6 +264,7 @@ export class MovementsComponent implements OnInit {
     this.showForm = true;
     this.editingMovementId = null;
     this.errorMessage = "";
+    this.errorMessageForm = "";
     this.resetForm();
   }
 

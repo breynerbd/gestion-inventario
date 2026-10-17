@@ -184,6 +184,19 @@
     flex-shrink: 0;
 }
 
+.error-message-form {
+    margin-bottom: 20px;
+    color: #dc2626;
+    flex-shrink: 0;
+}
+
+.validation-message {
+    display: block;
+    margin-top: 4px;
+    color: #c0392b;
+    font-size: 12px;
+}
+
 .form-overlay {
     position: fixed;
     top: 0;

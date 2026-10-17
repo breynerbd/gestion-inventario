@@ -89,25 +89,32 @@
                 Editar Movimiento
                 }
             </h2>
+            @if (errorMessageForm) {
+                <p class="error-message-form">{{ errorMessageForm }}</p>
+            }
 
             <form class="movement-form" #movementForm="ngForm" (ngSubmit)="saveMovement()">
 
                 <div class="form-group">
                     <label for="movementType">Tipo de Movimiento</label>
 
-                    <select id="movementType" name="movementType" [(ngModel)]="newMovement.movementType" required>
+                    <select id="movementType" name="movementType" [(ngModel)]="newMovement.movementType" #movementType="ngModel" required>
                         <option value="">Selecciona un tipo</option>
                         <option value="ENTRADA">Entrada</option>
                         <option value="SALIDA">Salida</option>
                         <option value="AJUSTE_POSITIVO">Ajuste Positivo</option>
                         <option value="AJUSTE_NEGATIVO">Ajuste Negativo</option>
                     </select>
+
+                    @if (movementType.invalid && movementType.touched) {
+                        <small class="validation-message">Selecciona un tipo de movimiento.</small>
+                    }
                 </div>
 
                 <div class="form-group">
                     <label for="productId">Producto</label>
 
-                    <select id="productId" name="productId" [(ngModel)]="newMovement.productId" required>
+                    <select id="productId" name="productId" [(ngModel)]="newMovement.productId" #productId="ngModel" required>
                         <option [ngValue]="0">
                             Seleccione un producto
                         </option>
@@ -118,26 +125,50 @@
                         </option>
                         }
                     </select>
+
+                    @if ((productId.invalid || newMovement.productId === 0) && productId.touched) {
+                        <small class="validation-message">Selecciona un producto.</small>
+                    }
                 </div>
 
                 <div class="form-group">
                     <label for="quantity">Cantidad</label>
 
                     <input id="quantity" name="quantity" type="number" [(ngModel)]="newMovement.quantity" min="1"
-                        required>
+                        step="1" #quantity="ngModel" required>
+                    
+                    @if (quantity.invalid && quantity.touched) {
+                        @if (quantity.errors?.["required"]) {
+                            <small class="validation-message">La cantidad es obligatoria.</small>
+                        }
+                        @if (quantity.errors?.["min"]) {
+                            <small class="validation-message">La cantidad debe ser mayor que cero.</small>
+                        }
+                        @if (quantity.errors?.["step"]) {
+                            <small class="validation-message">La cantidad debe ser un número entero.</small>
+                        }
+                    }
                 </div>
 
                 <div class="form-group">
                     <label for="referenceDocument">Documento de Referencia</label>
 
                     <input id="referenceDocument" name="referenceDocument" type="text"
-                        [(ngModel)]="newMovement.referenceDocument" required>
+                        [(ngModel)]="newMovement.referenceDocument" maxlength="30" #referenceDocument="ngModel" required>
+
+                    @if (referenceDocument.errors?.["maxlength"] && referenceDocument.touched) {
+                        <small class="validation-message">El documento tiene un máximo de 30 caracteres.</small>
+                    }
                 </div>
 
                 <div class="form-group">
                     <label for="reason">Motivo</label>
 
-                    <textarea id="reason" name="reason" [(ngModel)]="newMovement.reason" rows="3" required></textarea>
+                    <textarea id="reason" name="reason" [(ngModel)]="newMovement.reason" rows="3" maxlength="250" #reason="ngModel" required></textarea>
+
+                    @if (reason.errors?.["maxlength"] && reason.touched) {
+                        <small class="validation-message">El motivo tiene un máximo de 250 caracteres.</small>
+                    }
                 </div>
 
                 <div class="form-actions">
