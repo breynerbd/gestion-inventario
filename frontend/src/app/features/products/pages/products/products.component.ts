@@ -27,6 +27,7 @@ export class ProductsComponent implements OnInit {
   showForm = false;
   editingProductId: number | null = null;
   errorMessage = "";
+  errorMessageForm = "";
 
   searchProductCode = "";
   searchProductName = "";
@@ -200,10 +201,34 @@ export class ProductsComponent implements OnInit {
   }
 
   saveProduct(): void {
-    this.errorMessage = "";
+    this.errorMessageForm = "";
 
-    if (this.newProduct.categoryId === 0 || this.newProduct.supplierId === 0 || this.newProduct.unitOfMeasure === "") {
-      this.errorMessage = "Completa la informacion del producto";
+    if (!this.newProduct.productName.trim() || (this.editingProductId === null && !this.newProduct.productCode.trim()) ||
+        this.newProduct.categoryId === 0 || this.newProduct.supplierId === 0 || this.newProduct.unitOfMeasure === ""
+    ) {
+        this.errorMessageForm = "Completa todos los campos obligatorios.";
+        return;
+    }
+
+    if (this.newProduct.purchasePrice <= 0 || this.newProduct.salePrice <= 0) {
+      this.errorMessageForm = "Los precios tienen que ser mayores a cero.";
+      return;
+    }
+
+    if (this.newProduct.salePrice < this.newProduct.purchasePrice) {
+      this.errorMessageForm = "El precio de venta no puede ser menor que el precio de compra.";
+      return;
+    }
+
+    if (this.newProduct.minimumStock < 0 || this.newProduct.maximumStock < 0) {
+      this.errorMessageForm = "Las cantidades de stock no pueden ser negativas.";
+      return;
+    }
+
+    if (this.newProduct.maximumStock !== null && this.newProduct.maximumStock !== undefined &&
+        this.newProduct.maximumStock !== 0 && this.newProduct.maximumStock <= this.newProduct.minimumStock
+    ) {
+      this.errorMessageForm = "El stock máximo debe ser mayor que el stock mínimo.";
       return;
     }
 
@@ -237,6 +262,7 @@ export class ProductsComponent implements OnInit {
     this.showForm = true;
     this.editingProductId = null;
     this.errorMessage = '';
+    this.errorMessageForm = "";
     this.resetForm();
   }
 

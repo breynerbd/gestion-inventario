@@ -183,6 +183,12 @@
     flex-shrink: 0;
 }
 
+.error-message-form {
+    margin-bottom: 20px;
+    color: #dc2626;
+    flex-shrink: 0;
+}
+
 .form-overlay {
     position: fixed;
     top: 0;
@@ -302,6 +308,13 @@
 .pagination-container span {
     color: #2F4550;
     font-weight: 500;
+}
+
+.validation-message {
+    display: block;
+    margin-top: 4px;
+    color: #c0392b;
+    font-size: 12px;
 }
 
 @media (max-width: 1400px) {

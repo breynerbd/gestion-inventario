@@ -80,26 +80,63 @@
     @if (showForm) {
     <div class="form-overlay">
         <div class="product-form-container">
-
-            <h2>Nuevo Producto</h2>
+            
+            <h2>
+                @if (editingProductId === null) {
+                    Nuevo Producto
+                } @else {
+                    Editar Producto
+                }
+            </h2>
+            @if (errorMessageForm) {
+                <p class="error-message-form">{{ errorMessageForm }}</p>
+            }
 
             <form class="product-form" #productForm="ngForm" (ngSubmit)="saveProduct()">
 
                 <div class="form-group">
                     <label for="productCode">Código</label>
                     <input id="productCode" type="text" name="productCode" [(ngModel)]="newProduct.productCode"
-                        [disabled]="editingProductId !== null" required>
+                        maxlength="20" pattern="[A-Za-z0-9_-]+" #productCode="ngModel" [disabled]="editingProductId !== null" required>
+
+                    @if (productCode.invalid && productCode.touched) {
+                        @if (productCode.errors?.["required"]) {
+                            <small class="validation-message">El código es obligatorio.</small>
+                        }
+                        @if (productCode.errors?.["maxLength"]) {
+                            <small class="validation-message">El código tiene máximo de 20 caracteres.</small>
+                        }
+                        @if (productCode.errors?.["pattern"]) {
+                            <small class="validation-message">Usa solo letras, números, guión bajo o alto.</small>
+                        }
+                    }
                 </div>
 
                 <div class="form-group">
                     <label for="productName">Nombre</label>
                     <input id="productName" type="text" name="productName" [(ngModel)]="newProduct.productName"
-                        required>
+                        maxlength="120" pattern="[A-Za-zÁÉÍÓÚÑáéíóúñ0-9 ]+" #productName="ngModel" required>
+
+                    @if (productName.invalid && productName.touched) {
+                        @if (productName.errors?.["required"]) {
+                            <small class="validation-message">El nombre es obligatorio.</small>
+                        }
+                        @if (productName.errors?.["maxlength"]) {
+                            <small class="validation-message">El nombre tiene máximo de 120 caracteres.</small>
+                        }
+                        @if (productName.errors?.["pattern"]) {
+                            <small class="validation-message">Usa solo letras, números y espacios.</small>
+                        }
+                    }
                 </div>
 
                 <div class="form-group">
                     <label for="description">Descripción</label>
-                    <textarea id="description" name="description" [(ngModel)]="newProduct.description"></textarea>
+                    <textarea id="description" name="description" [(ngModel)]="newProduct.description" maxlength="500" #description="ngModel"></textarea>
+
+                    @if (description.errors?.["maxLength"] && description.touched) {
+                        <small class="validation-message">La descripción tiene máximo de 500 caracteres.</small>
+                    }
                 </div>
 
                 <div class="form-group">
@@ -145,25 +182,67 @@
                 <div class="form-group">
                     <label for="purchasePrice">Precio de compra</label>
                     <input id="purchasePrice" type="number" name="purchasePrice" [(ngModel)]="newProduct.purchasePrice"
-                        min="0.01" step="0.01" required>
+                        min="0.01" step="0.01" #purchasePrice="ngModel" required>
+
+                    @if (purchasePrice.invalid && purchasePrice.touched) {
+                        @if (purchasePrice.errors?.["required"]) {
+                            <small class="validation-message">El precio de compra es obligatorio.</small>
+                        }
+                        @if (purchasePrice.errors?.["min"]) {
+                            <small class="validation-message">El precio debe ser mayor que cero.</small>
+                        }
+                    }
                 </div>
 
                 <div class="form-group">
                     <label for="salePrice">Precio de venta</label>
                     <input id="salePrice" type="number" name="salePrice" [(ngModel)]="newProduct.salePrice" min="0.01"
-                        step="0.01" required>
+                        step="0.01" #salePrice="ngModel" required>
+
+                    @if (salePrice.invalid && salePrice.touched) {
+                        @if (salePrice.errors?.["required"]) {
+                            <small class="validation-message">El precio de venta es obligatorio.</small>
+                        }
+                        @if (salePrice.errors?.["min"]) {
+                            <small class="validation-message">El precio debe ser mayor que cero.</small>
+                        }
+                    }
+
+                    @if (newProduct.salePrice > 0 && newProduct.purchasePrice > 0 && newProduct.salePrice < newProduct.purchasePrice) {
+                        <small class="validation-message">El precio de venta no puede ser menor que el precio de compra.</small>
+                    }
                 </div>
 
                 <div class="form-group">
                     <label for="minimumStock">Stock mínimo</label>
                     <input id="minimumStock" type="number" name="minimumStock" [(ngModel)]="newProduct.minimumStock"
-                        min="0" required>
+                        min="0" step="1" #minimumStock="ngModel" required>
+                    
+                    @if (minimumStock.invalid && minimumStock.touched) {
+                        @if (minimumStock.errors?.["required"]) {
+                            <small class="validation-message">El stock mínimo es obligatorio.</small>
+                        }
+                        @if (minimumStock.errors?.["min"]) {
+                            <small class="validation-message">El stock mínimo no puede ser negativo.</small>
+                        }
+                    }
                 </div>
 
                 <div class="form-group">
                     <label for="maximumStock">Stock máximo</label>
                     <input id="maximumStock" type="number" name="maximumStock" [(ngModel)]="newProduct.maximumStock"
-                        min="0">
+                        min="0" step="1" #maximumStock="ngModel">
+
+                    @if (maximumStock.invalid && maximumStock.touched) {
+                        <small class="validation-message">El stock máximo no puede ser negativo.</small>
+                    }
+
+                    @if (newProduct.maximumStock !== null &&
+                        newProduct.maximumStock !== undefined &&
+                        newProduct.maximumStock !== 0 &&
+                        newProduct.maximumStock <= newProduct.minimumStock) {
+                        <small class="validation-message">El stock máximo debe ser mayor que el stock mínimo.</small>
+                    }
                 </div>
 
                 <div class="form-actions">
