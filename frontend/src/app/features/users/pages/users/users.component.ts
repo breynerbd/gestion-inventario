@@ -24,6 +24,7 @@ export class UsersComponent implements OnInit {
   showForm = false;
   editingUserId: number | null = null;
   errorMessage = "";
+  errorMessageForm = "";
 
   currentPage = 1;
   pageSize = 10;
@@ -147,13 +148,47 @@ export class UsersComponent implements OnInit {
     });
   }
 
+
   saveUser(): void {
+    this.errorMessageForm = "";
+
+    if (
+      !this.newUser.firstNames.trim() ||
+      !this.newUser.lastNames.trim() ||
+      !this.newUser.email.trim() ||
+      this.newUser.roleId <= 0
+    ) {
+      this.errorMessageForm = "Completa todos los campos obligatorios.";
+      return;
+    }
+
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailPattern.test(this.newUser.email.trim())) {
+      this.errorMessageForm = "Ingresa un correo electrónico válido.";
+      return;
+    }
+
+    if (this.newUser.email.length > 100) {
+      this.errorMessageForm = "El correo no puede superar los 100 caracteres.";
+      return;
+    }
+
     if (this.editingUserId === null) {
+      if (
+        !this.newUser.username.trim() ||
+        !this.newUser.password
+      ) {
+        this.errorMessageForm = "El nombre de usuario y la contraseña son obligatorios.";
+        return;
+      }
+
       this.createUser();
     } else {
       this.updateUser();
     }
   }
+
 
   changeStatus(user: UserResponse): void {
     const newStatus = user.status === "ACTIVO"
@@ -178,6 +213,7 @@ export class UsersComponent implements OnInit {
     this.showForm = true;
     this.editingUserId = null;
     this.errorMessage = "";
+    this.errorMessageForm = "";
     this.resetForm();
   }
 
