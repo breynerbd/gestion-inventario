@@ -92,12 +92,45 @@
     <section class="alerts-section">
         <div class="section-header">
             <div>
-                <h3>Alertas de stock bajo</h3>
-                <p>Productos que necesitan atención</p>
+                <h3>Últimos movimientos de inventario</h3>
+                <p>Actividad reciente del inventario</p>
             </div>
+
+            <button class="view-all-button" type="button" (click)="viewAllMovements()">Ver todos</button>
         </div>
 
-        <div class="empty-alerts">
+        <div class="movements-table-container">
+            <table class="movements-table">
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Producto</th>
+                        <th>Tipo</th>
+                        <th>Cantidad</th>
+                        <th>Usuario</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr *ngFor="let movement of latestMovements">
+                        <td>{{ movement.movementDate | date: "dd/MM/yyyy HH:mm" }}</td>
+                        <td>{{ movement.productName }}</td>
+                        <td>
+                            <span class="movement-type">
+                                {{ movement.movementType.replace('_', ' ') }}
+                            </span>
+                        </td>
+                        <td>{{ movement.quantity }}</td>
+                        <td>{{ movement.username }}</td>
+                    </tr>
+
+                    <tr *ngIf="latestMovements.length === 0">
+                        <td colspan="5" class="empty-movements">
+                            No hay movimientos registrados.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </section>
 
