@@ -230,11 +230,6 @@
     background-color: #586F7C;
 }
 
-.form-actions button:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-}
-
 @media (max-width: 1200px) {
     .roles-container {
         padding: 20px;

@@ -216,6 +216,12 @@ export class MovementsComponent implements OnInit {
       return;
     }
 
+    if (!this.newMovement.referenceDocument?.trim() || !this.newMovement.reason?.trim()
+    ) {
+      this.errorMessageForm = "El documento de referencia o motivo no pueden ser nulos."
+      return;
+    }
+
     if (this.newMovement.referenceDocument && this.newMovement.referenceDocument.length > 30
     ) {
       this.errorMessageForm = "El documento de referencia tiene un máximo de 30 caracteres.";
@@ -226,12 +232,6 @@ export class MovementsComponent implements OnInit {
     ) {
       this.errorMessageForm = "El motivo tiene un máximo de 250 caracteres.";
       return;
-    }
-
-    if (this.editingMovementId === null) {
-      this.createMovement();
-    } else {
-      this.updateMovement();
     }
 
     if (this.editingMovementId === null) {

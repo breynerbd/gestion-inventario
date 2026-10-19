@@ -132,11 +132,6 @@
     background-color: #586F7C;
 }
 
-.form-actions button:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-}
-
 .suppliers-table-container {
     overflow: auto;
     background-color: #F4F4F9;

@@ -156,8 +156,14 @@
                     <input id="referenceDocument" name="referenceDocument" type="text"
                         [(ngModel)]="newMovement.referenceDocument" maxlength="30" #referenceDocument="ngModel" required>
 
-                    @if (referenceDocument.errors?.["maxlength"] && referenceDocument.touched) {
-                        <small class="validation-message">El documento tiene un máximo de 30 caracteres.</small>
+                    @if (referenceDocument.invalid && referenceDocument.touched) {
+                        @if (referenceDocument.errors?.["maxlength"] && referenceDocument.touched) {
+                            <small class="validation-message">El documento tiene un máximo de 30 caracteres.</small>
+                        }
+
+                        @if (referenceDocument.errors?.["required"]) {
+                            <small class="validation-message">El documento de referencia es obligatorio.</small>
+                        }
                     }
                 </div>
 
@@ -165,9 +171,15 @@
                     <label for="reason">Motivo</label>
 
                     <textarea id="reason" name="reason" [(ngModel)]="newMovement.reason" rows="3" maxlength="250" #reason="ngModel" required></textarea>
+                    
+                    @if (reason.invalid && reason.touched) {
+                        @if (reason.errors?.["required"]) {
+                            <small class="validation-message">El motivo es obligatorio.</small>
+                        }
 
-                    @if (reason.errors?.["maxlength"] && reason.touched) {
-                        <small class="validation-message">El motivo tiene un máximo de 250 caracteres.</small>
+                        @if (reason.errors?.["maxlength"] && reason.touched) {
+                            <small class="validation-message">El motivo tiene un máximo de 250 caracteres.</small>
+                        }
                     }
                 </div>
 
@@ -175,7 +187,7 @@
                     <button type="button" (click)="cancelForm()">
                         Cancelar
                     </button>
-                    <button type="submit" [disabled]="movementForm.invalid">
+                    <button type="submit">
                         Guardar Movimiento
                     </button>
                 </div>
