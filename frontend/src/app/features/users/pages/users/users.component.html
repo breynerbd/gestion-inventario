@@ -132,6 +132,9 @@
                         #phone="ngModel" pattern="^[0-9+ -]*$" required>
                     
                     @if (phone.invalid && phone.touched) {
+                        @if (phone.errors?.["required"]) {
+                            <small class="validation-message">El teléfono es obligatorio.</small>
+                        }
                         @if (phone.errors?.["maxlength"]) {
                             <small class="validation-message">El teléfono tiene un máximo de 15 caracteres.</small>
                         }
@@ -144,7 +147,7 @@
                 <div class="form-group">
                     <label for="roleId">Rol</label>
                     <select name="roleId" id="roleId" [(ngModel)]="newUser.roleId" 
-                        #roleId="ngModel" min="1" required>
+                        #roleId="ngModel" required>
                         <option [ngValue]="0">Seleccione un rol</option>
                         @for (role of roles; track role.roleId) {
                         <option [ngValue]="role.roleId">
@@ -153,10 +156,8 @@
                         }
                     </select>
 
-                    @if (roleId.invalid && roleId.touched) {
-                        @if (roleId.errors?.["required"] || roleId.errors?.["min"]) {
-                            <small class="validation-message">Selecciona un rol.</small>
-                        }
+                    @if ((roleId.invalid || newUser.roleId === 0) && roleId.touched) {
+                        <small class="validation-message">Selecciona un rol.</small>
                     }
                 </div>
 

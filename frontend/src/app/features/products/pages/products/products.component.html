@@ -141,7 +141,7 @@
 
                 <div class="form-group">
                     <label for="categoryId">Categoría</label>
-                    <select id="categoryId" name="categoryId" [(ngModel)]="newProduct.categoryId" required>
+                    <select id="categoryId" name="categoryId" [(ngModel)]="newProduct.categoryId" #categoryId="ngModel" required>
                         <option [ngValue]="0">Seleccione una categoría</option>
 
                         @for (category of categories; track category.categoryId) {
@@ -150,11 +150,15 @@
                         </option>
                         }
                     </select>
+
+                    @if ((categoryId.invalid || newProduct.categoryId === 0) && categoryId.touched) {
+                        <small class="validation-message">Selecciona una categoria.</small>
+                    }
                 </div>
 
                 <div class="form-group">
                     <label for="supplierId">Proveedor</label>
-                    <select id="supplierId" name="supplierId" [(ngModel)]="newProduct.supplierId" required>
+                    <select id="supplierId" name="supplierId" [(ngModel)]="newProduct.supplierId" #supplierId="ngModel" required>
                         <option [ngValue]="0">Seleccione un proveedor</option>
 
                         @for (supplier of suppliers; track supplier.supplierId) {
@@ -163,11 +167,15 @@
                         </option>
                         }
                     </select>
+
+                    @if ((supplierId.invalid || newProduct.supplierId === 0) && supplierId.touched) {
+                        <small class="validation-message">Selecciona el proveedor.</small>
+                    }
                 </div>
 
                 <div class="form-group">
                     <label for="unitOfMeasure">Unidad de medida</label>
-                    <select id="unitOfMeasure" name="unitOfMeasure" [(ngModel)]="newProduct.unitOfMeasure" required>
+                    <select id="unitOfMeasure" name="unitOfMeasure" [(ngModel)]="newProduct.unitOfMeasure" #unitOfMeasure="ngModel" required>
                         <option value="">Seleccione una unidad</option>
                         <option value="UNIDAD">Unidad</option>
                         <option value="CAJA">Caja</option>
@@ -177,6 +185,10 @@
                         <option value="METRO">Metro</option>
                         <option value="PAQUETE">Paquete</option>
                     </select>
+
+                    @if ((unitOfMeasure.invalid || newProduct.unitOfMeasure === "") && unitOfMeasure.touched) {
+                        <small class="validation-message">Selecciona una medida.</small>
+                    }
                 </div>
 
                 <div class="form-group">

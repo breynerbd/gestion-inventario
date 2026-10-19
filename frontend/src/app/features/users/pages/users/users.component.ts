@@ -156,7 +156,8 @@ export class UsersComponent implements OnInit {
       !this.newUser.firstNames.trim() ||
       !this.newUser.lastNames.trim() ||
       !this.newUser.email.trim() ||
-      this.newUser.roleId <= 0
+      this.newUser.roleId <= 0 ||
+      !this.newUser.phone.trim()
     ) {
       this.errorMessageForm = "Completa todos los campos obligatorios.";
       return;

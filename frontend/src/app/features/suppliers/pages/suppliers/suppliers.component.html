@@ -104,9 +104,14 @@
                     <label for="contactName">Nombre de contacto</label>
                     <input id="contactName" type="text" name="contactName" [(ngModel)]="newSupplier.contactName"
                         #contactName="ngModel" maxlength="80" required>
+                    @if (contactName.invalid && contactName.touched) {
+                        @if (contactName.errors?.["required"]) {
+                            <small class="validation-message">El nombre de contacto es obligatorio.</small>
+                        }
 
-                    @if (contactName.errors?.["maxlength"] && contactName.touched) {
-                        <small class="validation-message">El nombre de contacto tiene un máximo de 100 caracteres.</small>
+                        @if (contactName.errors?.["maxlength"]) {
+                            <small class="validation-message">El nombre de contacto tiene un máximo de 100 caracteres.</small>
+                        }
                     }
                 </div>
 
@@ -151,8 +156,13 @@
                     <input id="address" type="text" name="address" [(ngModel)]="newSupplier.address" #address="ngModel"
                         maxlength="200" required>
 
-                    @if (address.errors?.["maxlength"] && address.touched) {
-                        <small class="validation-message">La dirección no puede superar los 200 caracteres.</small>
+                    @if (address.invalid && address.touched) {
+                        @if (address.errors?.["required"]) {
+                            <small class="validation-message">La dirección es obligatoria.</small>
+                        }
+                        @if (address.errors?.["maxlength"] && address.touched) {
+                            <small class="validation-message">La dirección no puede superar los 200 caracteres.</small>
+                        }
                     }
                 </div>
 

@@ -147,7 +147,8 @@ export class SuppliersComponent implements OnInit {
       !this.newSupplier.documentNumber.trim() ||
       !this.newSupplier.businessName.trim() ||
       !this.newSupplier.phone.trim() ||
-      !this.newSupplier.email.trim()
+      !this.newSupplier.email.trim() ||
+      !this.newSupplier.address.trim()
     ) {
       this.errorMessageForm = "Completa todos los campos obligatorios.";
       return;
@@ -166,11 +167,6 @@ export class SuppliersComponent implements OnInit {
     }
 
     if (this.editingSupplierId === null) {
-      if (!this.newSupplier.supplierCode.trim()) {
-        this.errorMessageForm = "El código del proveedor es obligatorio.";
-        return;
-      }
-
       this.createSupplier();
     } else {
       this.updateSupplier();

@@ -125,17 +125,17 @@ export class CategoriesComponent implements OnInit {
   saveCategory(): void {
     this.errorMessageForm = "";
 
+    if (!this.newCategory.categoryCode.trim()) {
+      this.errorMessageForm = "El codigo de la categoría es obligatorio.";
+      return;
+    }
+
     if (!this.newCategory.categoryName.trim()) {
       this.errorMessageForm = "El nombre de la categoría es obligatorio.";
       return;
     }
 
     if (this.editingCategoryId === null) {
-      if (!this.newCategory.categoryCode.trim()) {
-        this.errorMessageForm = "El código de la categoría es obligatorio.";
-        return;
-      }
-
       this.createCategory();
     } else {
       this.updateCategory();
