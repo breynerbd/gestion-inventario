@@ -2,6 +2,7 @@ export interface MovementResponse {
     movementId: number;
     movementType: string;
     productId: number;
+    productName: string;
     quantity: number;
     referenceDocument: string;
     reason: string;
