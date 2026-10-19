@@ -5,6 +5,8 @@ import { Observable } from "rxjs";
 import { LowStockProduct } from "../models/low-stock-product";
 import { MovementSummary } from "../models/movement-summary";
 import { ProductsCount } from "../models/products-category";
+import { PageResponse } from "../../../shared/models/page-response";
+import { MovementResponse } from "../../stockMovements/models/movement-response";
 
 @Injectable({
     providedIn: "root"
@@ -57,6 +59,12 @@ export class DashboardService {
     getActiveSuppliers(): Observable<number> {
         return this.http.get<number> (
             `${this.apiSuppliersUrl}/active-suppliers`
+        );
+    }
+
+    getLatestMovements(): Observable<PageResponse<MovementResponse>> {
+        return this.http.get<PageResponse<MovementResponse>>(
+            `${this.apiMovementsUrl}?page=0&size=5&short=movementDate,desc`
         );
     }
 }

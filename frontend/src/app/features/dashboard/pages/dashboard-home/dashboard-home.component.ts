@@ -7,6 +7,9 @@ import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { lucidePackage, lucideTruck, lucideAlertTriangle, lucideBanknoteArrowUp, lucideBanknoteArrowDown } from '@ng-icons/lucide';
 import { MovementSummary } from '../../models/movement-summary';
 import { ProductsCount } from '../../models/products-category';
+import { MovementResponse } from '../../../stockMovements/models/movement-response';
+import { MovementService } from '../../../stockMovements/services/movement.service';
+import { Router } from '@angular/router';
 
 Chart.register(...registerables);
 
@@ -37,7 +40,11 @@ export class DashboardHomeComponent implements AfterViewInit, OnDestroy {
   private movementChart?: Chart;
   private categoryChart?: Chart;
 
-  constructor(private readonly dashboardService: DashboardService) { }
+  latestMovements: MovementResponse[] = [];
+
+  constructor(private readonly dashboardService: DashboardService, private readonly movementService: MovementService,
+    private router: Router
+  ) { }
 
   ngAfterViewInit(): void {
     this.loadLowStockProducts();
@@ -48,6 +55,7 @@ export class DashboardHomeComponent implements AfterViewInit, OnDestroy {
     this.loadActiveSuppliers();
     this.loadInventoryValue();
     this.loadInventoryInvestment();
+    this.loadLatestMovements();
   }
 
   ngOnDestroy(): void {
@@ -110,6 +118,21 @@ export class DashboardHomeComponent implements AfterViewInit, OnDestroy {
         console.error("No se pudo obtener la inversión del inventario", error);
       }
     })
+  }
+
+  loadLatestMovements(): void {
+    this.movementService.getMovements(0, 5).subscribe({
+      next: (response) => {
+        this.latestMovements = response.content;
+      },
+      error: (error) => {
+        console.error("Error al cargar los últimos movimientos:", error);
+      }
+    });
+  }
+
+  viewAllMovements(): void {
+    this.router.navigate(["/dashboard/movements"]);
   }
 
   private createStockChart(products: LowStockProduct[]): void {
