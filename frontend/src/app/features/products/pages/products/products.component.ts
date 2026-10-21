@@ -11,10 +11,12 @@ import { ProductUpdate } from '../../models/product-update';
 import { RoleAuthService } from '../../../../core/services/role-auth.service';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { lucideBan, lucideCircleCheck, lucidePencilSparkles, lucidePlus } from '@ng-icons/lucide';
+import { DetailModalComponent } from '../../../../shared/components/detail-modal/detail-modal.component';
+import { DetailField } from '../../../../shared/models/detail-field';
 
 @Component({
   selector: 'app-products',
-  imports: [FormsModule, NgIconComponent],
+  imports: [FormsModule, NgIconComponent, DetailModalComponent],
   templateUrl: './products.component.html',
   styleUrl: './products.component.css',
   viewProviders: [provideIcons({ lucideBan, lucideCircleCheck, lucidePencilSparkles, lucidePlus })]
@@ -23,7 +25,10 @@ export class ProductsComponent implements OnInit {
   products: ProductResponse[] = [];
   categories: CategoryResponse[] = [];
   suppliers: SupplierResponse[] = [];
+  selectedProductDetails: DetailField[] = [];
 
+  showDetails = false;
+  detailTitle = "";
   showForm = false;
   editingProductId: number | null = null;
   errorMessage = "";
@@ -52,6 +57,41 @@ export class ProductsComponent implements OnInit {
     minimumStock: 0,
     maximumStock: 0
   };
+
+  viewProductDetails(product: ProductResponse): void {
+    this.detailTitle = "Detalles del producto";
+
+    const category = this.categories.find(
+      category => category.categoryId === product.categoryId
+    );
+
+    const supplier = this.suppliers.find(
+      supplier => supplier.supplierId === product.supplierId
+    );
+
+    this.selectedProductDetails = [
+      { label: "ID", value: product.productId },
+      { label: "Código", value: product.productCode },
+      { label: "Nombre", value: product.productName },
+      { label: "Categoría", value: category?.categoryName ?? "No disponible" },
+      { label: "Proveedor", value: supplier?.businessName ?? "No disponible" },
+      { label: "Unidad de medida", value: product.unitOfMeasure },
+      { label: "Precio de compra", value: `Q ${product.purchasePrice}` },
+      { label: "Precio de venta", value: `Q ${product.salePrice}` },
+      { label: "Stock actual", value: product.currentStock },
+      { label: "Stock mínimo", value: product.minimumStock },
+      { label: "Stock máximo", value: product.maximumStock },
+      { label: "Estado", value: product.status },
+      { label: "Descripción", value: product.description },
+    ];
+
+    this.showDetails = true;
+  }
+
+  closeProductDetails(): void {
+    this.showDetails = false;
+    this.selectedProductDetails = [];
+  }
 
   editProduct(product: ProductResponse): void {
     this.editingProductId = product.productId;

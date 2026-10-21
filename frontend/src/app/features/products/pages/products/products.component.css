@@ -312,6 +312,10 @@
     font-size: 12px;
 }
 
+.clickable-row {
+    cursor: pointer;
+}
+
 @media (max-width: 1400px) {
     .products-container {
         padding: 20px;

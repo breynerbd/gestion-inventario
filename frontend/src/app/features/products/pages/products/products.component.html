@@ -78,8 +78,8 @@
     </div>
 
     @if (showForm) {
-    <div class="form-overlay">
-        <div class="product-form-container">
+    <div class="form-overlay" (click)="cancelForm()">
+        <div class="product-form-container" (click)="$event.stopPropagation()">
             
             <h2>
                 @if (editingProductId === null) {
@@ -298,7 +298,8 @@
             <tbody>
 
                 @for (product of products; track product.productId) {
-                <tr>
+                <tr class="clickable-row" (click)="viewProductDetails(product)" tabindex="0"
+                    (keydown.enter)="viewProductDetails(product)">
                     <td>{{ product.productCode }}</td>
                     <td>{{ product.productName }}</td>
                     <td>{{ product.unitOfMeasure }}</td>
@@ -335,6 +336,9 @@
         }
 
     </div>
+
+    <app-detail-modal [title]="detailTitle" [fields]="selectedProductDetails" [visible]="showDetails"
+        (closed)="closeProductDetails()"></app-detail-modal>
 
     @if (totalPages > 1) {
     <div class="pagination-container">
