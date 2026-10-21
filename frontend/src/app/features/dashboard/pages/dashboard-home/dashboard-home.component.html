@@ -7,7 +7,7 @@
         </div>
     </div>
 
-    <section class="indicators">
+    <section class="indicators" [class.operator-indicators]="!showDashboardDetails()">
 
         <article class="indicator-card">
             <div class="indicator-icon products-icon">
@@ -39,6 +39,7 @@
             </div>
         </article>
 
+        @if (showDashboardDetails()) {
         <article class="indicator-card">
             <div class="indicator-icon investment-icon">
                 <ng-icon name="lucideBanknoteArrowDown"></ng-icon>
@@ -58,7 +59,7 @@
                 <h3>{{ inventoryValue | currency: "Q " : "symbol" : "1.2-2" }}</h3>
             </div>
         </article>
-
+        }
     </section>
 
     <section class="charts-section">

@@ -10,6 +10,7 @@ import { ProductsCount } from '../../models/products-category';
 import { MovementResponse } from '../../../stockMovements/models/movement-response';
 import { MovementService } from '../../../stockMovements/services/movement.service';
 import { Router } from '@angular/router';
+import { RoleAuthService } from '../../../../core/services/role-auth.service';
 
 Chart.register(...registerables);
 
@@ -43,7 +44,7 @@ export class DashboardHomeComponent implements AfterViewInit, OnDestroy {
   latestMovements: MovementResponse[] = [];
 
   constructor(private readonly dashboardService: DashboardService, private readonly movementService: MovementService,
-    private router: Router
+    private router: Router, private readonly roleService: RoleAuthService
   ) { }
 
   ngAfterViewInit(): void {
@@ -62,6 +63,10 @@ export class DashboardHomeComponent implements AfterViewInit, OnDestroy {
     this.stockChart?.destroy();
     this.movementChart?.destroy();
     this.categoryChart?.destroy();
+  }
+
+  showDashboardDetails(): boolean {
+    return !this.roleService.isOperator();
   }
 
   private loadLowStockProducts(): void {
