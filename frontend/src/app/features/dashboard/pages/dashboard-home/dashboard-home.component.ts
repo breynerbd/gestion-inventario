@@ -121,7 +121,7 @@ export class DashboardHomeComponent implements AfterViewInit, OnDestroy {
   }
 
   loadLatestMovements(): void {
-    this.movementService.getMovements(0, 5).subscribe({
+    this.movementService.getLatestMovements().subscribe({
       next: (response) => {
         this.latestMovements = response.content;
       },

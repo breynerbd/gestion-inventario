@@ -61,10 +61,4 @@ export class DashboardService {
             `${this.apiSuppliersUrl}/active-suppliers`
         );
     }
-
-    getLatestMovements(): Observable<PageResponse<MovementResponse>> {
-        return this.http.get<PageResponse<MovementResponse>>(
-            `${this.apiMovementsUrl}?page=0&size=5&short=movementDate,desc`
-        );
-    }
 }
