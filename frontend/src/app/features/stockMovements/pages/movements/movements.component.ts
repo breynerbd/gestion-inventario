@@ -14,10 +14,12 @@ import { DatePipe } from "@angular/common";
 import { RoleAuthService } from "../../../../core/services/role-auth.service";
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { lucideBan, lucideCircleCheck, lucidePencilSparkles, lucidePlus, lucideChevronLeft, lucideChevronRight } from '@ng-icons/lucide';
+import { DetailModalComponent } from "../../../../shared/components/detail-modal/detail-modal.component";
+import { DetailField } from "../../../../shared/models/detail-field";
 
 @Component({
   selector: "app-movements",
-  imports: [FormsModule, DatePipe, NgIconComponent],
+  imports: [FormsModule, DatePipe, NgIconComponent, DetailModalComponent],
   templateUrl: "./movements.component.html",
   styleUrl: "./movements.component.css",
   viewProviders: [provideIcons({ lucideBan, lucideCircleCheck, lucidePencilSparkles, lucidePlus, lucideChevronLeft, lucideChevronRight })]
@@ -26,7 +28,10 @@ export class MovementsComponent implements OnInit {
   movements: MovementResponse[] = [];
   products: ProductResponse[] = [];
   users: UserResponse[] = [];
+  selectedMovementDetails: DetailField[] = [];
 
+  showDetails = false;
+  detailTitle = "";
   showForm = false;
   editingMovementId: number | null = null;
   errorMessage = "";
@@ -116,6 +121,37 @@ export class MovementsComponent implements OnInit {
         this.errorMessage = "No se pudieron cargar los usuarios";
       }
     });
+  }
+
+  viewMovementDetails(movement: MovementResponse): void {
+    this.detailTitle = "Detalles del movimiento"
+
+    const user = this.users.find(
+      user => user.userId === movement.userId
+    );
+
+    const product = this.products.find(
+      product => product.productId === movement.productId
+    );
+
+    this.selectedMovementDetails = [
+      { label:  "ID", value: movement.movementId },
+      { label: "Tipo de movimiento", value: movement.movementType },
+      { label: "Producto", value: product?.productName ?? "No disponible" },
+      { label: "Cantidad", value: movement.quantity },
+      { label: "Documento de referencia", value: movement.referenceDocument },
+      { label: "Motivo", value: movement.reason },
+      { label: "Usuario", value: user?.username ?? "No disponible" },
+      { label: "Fecha", value: new DatePipe('en-US').transform(movement.movementDate, "dd/MM/yyyy HH:mm") ?? "No disponible" },
+      { label: "Estado", value: movement.status }
+    ];
+
+    this.showDetails = true;
+  }
+
+  closeMovementDetails(): void {
+    this.showDetails = false;
+    this.selectedMovementDetails = [];
   }
 
   changePage(page: number): void {

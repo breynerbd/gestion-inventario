@@ -331,6 +331,10 @@
     white-space: nowrap;
 }
 
+.clickable-row {
+    cursor: pointer;
+}
+
 @media (max-width: 1400px) {
     .movements-container {
         padding: 20px;

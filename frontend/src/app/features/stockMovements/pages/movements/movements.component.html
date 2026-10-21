@@ -79,8 +79,8 @@
     }
 
     @if (showForm && (canCreateMovements() || canEditMovements())) {
-    <div class="form-overlay">
-        <div class="movement-form-container">
+    <div class="form-overlay" (click)="cancelForm()">
+        <div class="movement-form-container" (click)="$event.stopPropagation()">
 
             <h2>
                 @if (editingMovementId === null) {
@@ -222,7 +222,8 @@
 
                 @for (movement of movements; track movement.movementId) {
 
-                <tr>
+                <tr class="clickable-row" (click)="viewMovementDetails(movement)" tabindex="0"
+                    (keydown.enter)="viewMovementDetails(movement)">
                     <td>{{ movement.movementId }}</td>
                     <td>{{ movement.movementType }}</td>
                     <td>{{ movement.productId }}</td>
@@ -263,6 +264,9 @@
         }
 
     </div>
+
+    <app-detail-modal [title]="detailTitle" [fields]="selectedMovementDetails" [visible]="showDetails"
+        (closed)="closeMovementDetails()"></app-detail-modal>
 
     @if (totalPages > 1) {
     <div class="pagination-container">
