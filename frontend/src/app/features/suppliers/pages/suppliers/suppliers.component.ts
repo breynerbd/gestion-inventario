@@ -8,10 +8,12 @@ import { SupplierService } from "../../service/supplier.service";
 import { RoleAuthService } from "../../../../core/services/role-auth.service";
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { lucideBan, lucideCircleCheck, lucidePencilSparkles, lucidePlus } from '@ng-icons/lucide';
+import { DetailField } from "../../../../shared/models/detail-field";
+import { DetailModalComponent } from "../../../../shared/components/detail-modal/detail-modal.component";
 
 @Component({
   selector: "app-suppliers",
-  imports: [FormsModule, NgIconComponent],
+  imports: [FormsModule, NgIconComponent, DetailModalComponent],
   templateUrl: "./suppliers.component.html",
   styleUrl: "./suppliers.component.css",
   viewProviders: [provideIcons({ lucideBan, lucideCircleCheck, lucidePencilSparkles, lucidePlus })]
@@ -19,7 +21,10 @@ import { lucideBan, lucideCircleCheck, lucidePencilSparkles, lucidePlus } from '
 export class SuppliersComponent implements OnInit {
 
   suppliers: SupplierResponse[] = [];
+  selectedSupplierDetails: DetailField[] = [];
 
+  showDetails = false;
+  detailTitle = "";
   showForm = false;
   editingSupplierId: number | null = null;
   errorMessage = "";
@@ -65,6 +70,29 @@ export class SuppliersComponent implements OnInit {
         this.errorMessage = "No se pudieron cargar los proveedores";
       }
     });
+  }
+
+  viewSupplierDetails(supplier: SupplierResponse): void {
+    this.detailTitle = "Detalles del proveedor";
+
+    this.selectedSupplierDetails = [
+      { label: "ID", value: supplier.supplierId },
+      { label: "Código", value: supplier.supplierCode },
+      { label: "Razón social", value: supplier.businessName },
+      { label: "Tipo de documento", value: supplier.documentType },
+      { label: "Número de documento", value: supplier.documentNumber },
+      { label: "Nombre de contacto", value: supplier.contactName },
+      { label: "Teléfono", value: supplier.phone },
+      { label: "Correo electrónico", value: supplier.email },
+      { label: "Dirección", value: supplier.address }
+    ];
+
+    this.showDetails = true;
+  }
+
+  closeSupplierDetails(): void {
+    this.showDetails = false;
+    this.selectedSupplierDetails = [];
   }
 
   changePage(page: number): void {

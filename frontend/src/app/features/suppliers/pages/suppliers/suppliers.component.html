@@ -21,8 +21,8 @@
     }
 
     @if (showForm) {
-    <div class="form-overlay">
-        <div class="supplier-form-container">
+    <div class="form-overlay" (click)="cancelForm()">
+        <div class="supplier-form-container" (click)="$event.stopPropagation()">
 
             @if (editingSupplierId === null) {
             <h2>Nuevo Proveedor</h2>
@@ -187,7 +187,6 @@
             <thead>
                 <tr>
                     <th>Código</th>
-                    <th>Documento</th>
                     <th>Razón Social</th>
                     <th>Contacto</th>
                     <th>Teléfono</th>
@@ -201,11 +200,9 @@
 
             <tbody>
                 @for (supplier of suppliers; track supplier.supplierId) {
-                <tr>
+                <tr class="clickable-row" (click)="viewSupplierDetails(supplier)" tabindex="0"
+                    (keydown.enter)="viewSupplierDetails(supplier)">
                     <td>{{ supplier.supplierCode }}</td>
-                    <td>
-                        {{ supplier.documentType }} {{ supplier.documentNumber }}
-                    </td>
                     <td>{{ supplier.businessName }}</td>
                     <td>{{ supplier.contactName }}</td>
                     <td>{{ supplier.phone }}</td>
@@ -239,6 +236,9 @@
         }
 
     </div>
+
+    <app-detail-modal [title]="detailTitle" [fields]="selectedSupplierDetails" [visible]="showDetails"
+        (closed)="closeSupplierDetails()"></app-detail-modal>
 
     @if (totalPages > 1) {
     <div class="pagination-container">

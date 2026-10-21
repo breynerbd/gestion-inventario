@@ -257,6 +257,10 @@
     font-weight: 500;
 }
 
+.clickable-row {
+    cursor: pointer;
+}
+
 @media (max-width: 1200px) {
     .suppliers-container {
         padding: 20px;
