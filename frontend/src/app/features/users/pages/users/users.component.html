@@ -17,8 +17,8 @@
     }
 
     @if (showForm) {
-    <div class="form-overlay">
-        <div class="user-form-container">
+    <div class="form-overlay" (click)="cancelForm()">
+        <div class="user-form-container" (click)="$event.stopPropagation()">
             @if (editingUserId === null) {
             <h2>Nuevo Usuario</h2>
             } @else {
@@ -176,8 +176,6 @@
                 <tr>
                     <th>ID</th>
                     <th>Usuario</th>
-                    <th>Nombres</th>
-                    <th>Apellidos</th>
                     <th>Correo</th>
                     <th>Teléfono</th>
                     <th>Rol</th>
@@ -188,11 +186,10 @@
             </thead>
             <tbody>
                 @for (user of paginatedUsers; track user.userId) {
-                <tr>
+                <tr class="clickable-row" (click)="viewUserDetails(user)" tabindex="0"
+                    (keydown.enter)="viewUserDetails(user)">
                     <td>{{ user.userId }}</td>
                     <td>{{ user.username }}</td>
-                    <td>{{ user.firstNames }}</td>
-                    <td>{{ user.lastNames }}</td>
                     <td>{{ user.email }}</td>
                     <td>{{ user.phone }}</td>
                     <td>{{ user.roleName }}</td>
@@ -216,6 +213,9 @@
                 }
             </tbody>
         </table>
+
+        <app-detail-modal [title]="detailTitle" [fields]="selectedUserDetails" [visible]="showDetails"
+            (closed)="closeUserDetails()"></app-detail-modal>
 
         @if (users.length === 0) {
         <div class="empty-users">

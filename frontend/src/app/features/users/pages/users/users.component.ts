@@ -9,10 +9,12 @@ import { RoleService } from '../../../roles/services/role.service';
 import { PaginationComponent } from '../../../../shared/components/pagination/pagination.component';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { lucideBan, lucideCircleCheck, lucidePencilSparkles, lucidePlus } from '@ng-icons/lucide';
+import { DetailField } from '../../../../shared/models/detail-field';
+import { DetailModalComponent } from '../../../../shared/components/detail-modal/detail-modal.component';
 
 @Component({
   selector: 'app-users',
-  imports: [FormsModule, PaginationComponent, NgIconComponent],
+  imports: [FormsModule, PaginationComponent, NgIconComponent, DetailModalComponent],
   templateUrl: './users.component.html',
   styleUrl: './users.component.css',
   viewProviders: [provideIcons({ lucideBan, lucideCircleCheck, lucidePencilSparkles, lucidePlus })]
@@ -20,7 +22,10 @@ import { lucideBan, lucideCircleCheck, lucidePencilSparkles, lucidePlus } from '
 export class UsersComponent implements OnInit {
   users: UserResponse[] = [];
   roles: RoleResponse[] = [];
+  selectedUserDetails: DetailField[] = [];
 
+  showDetails = false;
+  detailTitle = "";
   showForm = false;
   editingUserId: number | null = null;
   errorMessage = "";
@@ -78,6 +83,32 @@ export class UsersComponent implements OnInit {
   get paginatedUsers(): UserResponse[] {
     const startIndex = (this.currentPage - 1) * this.pageSize;
     return this.users.slice(startIndex, startIndex + this.pageSize);
+  }
+
+  viewUserDetails(user: UserResponse): void {
+    this.detailTitle = "Detalles del usuario";
+
+    const role = this.roles.find(
+      role => user.userId === role.roleId
+    );
+
+    this.selectedUserDetails = [
+      { label: "ID", value: user.userId },
+      { label: "Nombre de usuario", value: user.username },
+      { label: "Nombre", value: user.firstNames + user.lastNames },
+      { label: "Correo electrónico", value: user.email },
+      { label: "Teléfono", value: user.phone },
+      { label: "Rol", value: role?.roleName ?? "No disponible" },
+      { label: "Intentos fallidos", value: user.failedAttempts},
+      { label: "Estado", value: user.status }
+    ];
+
+    this.showDetails = true;
+  }
+
+  closeUserDetails(): void {
+    this.showDetails = false;
+    this.selectedUserDetails = [];
   }
 
   changePage(page: number): void {

@@ -227,6 +227,10 @@
     background-color: #586F7C;
 }
 
+.clickable-row {
+    cursor: pointer;
+}
+
 @media (max-width: 1200px) {
     .users-container {
         padding: 20px;
