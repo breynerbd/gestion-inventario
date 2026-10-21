@@ -43,9 +43,17 @@ public class StockMovementController {
             @RequestParam(required = false)
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
             @RequestParam(required = false) Long userId,
-            @PageableDefault(size = 10) Pageable pageable) {
+            @PageableDefault(size = 10) Pageable pageable,
+            Authentication authentication) {
 
         LOGGER.info("Solicitud para obtener todos los movimientos de stock");
+
+        if (authentication.getAuthorities().stream()
+                .anyMatch(role -> role.getAuthority().equals("ROLE_OPERADOR"))) {
+
+            userId = service.findUserIdByEmail(authentication.getName());
+        }
+
         return ResponseEntity.ok(service.findAllMovements(productId, movementType, startDate, endDate, userId, pageable));
     }
 

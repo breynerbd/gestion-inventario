@@ -119,6 +119,13 @@ public class StockMovementService {
         return movementRepository.findAll(specification, pageable).map(mapper::toResponseDTO);
     }
 
+    public Long findUserIdByEmail(String email) {
+        User user = userRepository.findByEmail(email)
+            .orElseThrow(() -> new ResourceNotFoundException("El usuario logueado no existe"));
+
+        return user.getUserId();
+    }
+
     public StockMovementResponseDTO findMovementById(Long movementId) {
         LOGGER.debug("Buscando movimiento: {}", movementId);
 
