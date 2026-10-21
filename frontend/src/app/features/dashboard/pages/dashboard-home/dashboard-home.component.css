@@ -143,6 +143,23 @@
     margin-top: 20px;
 }
 
+.alerts-panel {
+    padding: 22px;
+    background-color: #FFFFFF;
+    border: 1px solid #E1E5EB;
+    border-radius: 12px;
+    margin-bottom: 20px;
+}
+
+.empty-alerts {
+    margin-top: 20px;
+    padding: 25px;
+    text-align: center;
+    background-color: #F4F6FA;
+    border-radius: 8px;
+    color: #586F7C;
+}
+
 .alerts-section {
     padding: 22px;
     background-color: #FFFFFF;

@@ -140,10 +140,10 @@ export class MovementsComponent implements OnInit {
       { label: "Producto", value: product?.productName ?? "No disponible" },
       { label: "Cantidad", value: movement.quantity },
       { label: "Documento de referencia", value: movement.referenceDocument },
-      { label: "Motivo", value: movement.reason },
       { label: "Usuario", value: user?.username ?? "No disponible" },
       { label: "Fecha", value: new DatePipe('en-US').transform(movement.movementDate, "dd/MM/yyyy HH:mm") ?? "No disponible" },
-      { label: "Estado", value: movement.status }
+      { label: "Estado", value: movement.status },
+      { label: "Motivo", value: movement.reason },
     ];
 
     this.showDetails = true;

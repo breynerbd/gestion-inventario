@@ -205,10 +205,7 @@
                 <tr>
                     <th>ID</th>
                     <th>Tipo</th>
-                    <th>Producto</th>
                     <th>Cantidad</th>
-                    <th>Documento</th>
-                    <th>Motivo</th>
                     <th>Usuario</th>
                     <th>Fecha</th>
                     <th>Estado</th>
@@ -226,10 +223,7 @@
                     (keydown.enter)="viewMovementDetails(movement)">
                     <td>{{ movement.movementId }}</td>
                     <td>{{ movement.movementType }}</td>
-                    <td>{{ movement.productId }}</td>
                     <td>{{ movement.quantity }}</td>
-                    <td>{{ movement.referenceDocument }}</td>
-                    <td>{{ movement.reason }}</td>
                     <td>{{ movement.username }}</td>
                     <td>{{ movement.movementDate | date:"dd/MM/yyyy HH:mm" }}</td>
                     <td>{{ movement.status }}</td>
