@@ -1,0 +1,132 @@
+.detail-modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(4px);
+}
+
+.detail-modal {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 650px;
+    max-height: 85vh;
+    overflow: hidden;
+    background: #F4F4F9;
+    border-radius: 12px;
+    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.2);
+}
+
+.detail-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    flex-shrink: 0;
+    padding: 20px 24px;
+    background: #2F4550;
+    color: #F4F4F9;
+}
+
+.detail-modal-header h2 {
+    margin: 0;
+    font-size: 21px;
+    font-weight: 600;
+}
+
+.close-button {
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: #F4F4F9;
+    font-size: 30px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.detail-modal-content {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+    padding: 24px;
+    overflow-y: auto;
+    min-height: 0;
+    flex: 1;
+    overscroll-behavior: contain;
+}
+
+.detail-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+    padding: 12px;
+    border: 1px solid #DDE3E8;
+    border-radius: 8px;
+    background: #FFFFFF;
+}
+
+.detail-field-label {
+    color: #586F7C;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.detail-field-value {
+    overflow-wrap: anywhere;
+    color: #2F4550;
+    font-size: 15px;
+}
+
+.detail-field.full-width {
+    grid-column: 1 / -1;
+}
+
+@media (max-width: 600px) {
+    .detail-modal-overlay {
+        padding: 12px;
+    }
+
+    .detail-modal {
+        width: 80%;
+        max-height: 60vh;
+    }
+
+    .detail-modal-header {
+        padding: 16px;
+    }
+
+    .detail-modal-header h2 {
+        font-size: 17px;
+    }
+
+    .detail-modal-content {
+        gap: 10px;
+        padding: 12px;
+    }
+
+    .detail-field-label {
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+    .detail-field-value {
+        overflow-wrap: anywhere;
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .detail-modal {
+        max-height: 70vh;
+    }
+
+    .detail-modal-content {
+        grid-template-columns: 1fr;
+    }
+}
