@@ -37,6 +37,15 @@ export class MovementService {
         );
     }
 
+    getLatestMovements(): Observable<PageResponse<MovementResponse>> {
+        const params = new HttpParams().set("page", "0").set("size", "5")
+            .set("sort", "movementDate,desc");
+
+        return this.http.get<PageResponse<MovementResponse>>(
+            this.apiUrl, { params }
+        );
+    }
+
     createMovement(movement: MovementCreate): Observable<MovementResponse> {
         return this.http.post<MovementResponse>(
             this.apiUrl,
