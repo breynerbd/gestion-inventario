@@ -95,3 +95,24 @@
         padding-bottom: 1px;
     }
 }
+
+@media (max-width: 360px) {
+    .pagination-container {
+        gap: 8px;
+        padding-top: 6px;
+        padding-bottom: 2px;
+    }
+
+    .pagination-container button {
+        padding: 5px 8px;
+        border-radius: 5px;
+    }
+
+    .pagination-container button .action-icon {
+        font-size: 12px;
+    }
+
+    .pagination-container span {
+        font-size: 11px;
+    }
+}
