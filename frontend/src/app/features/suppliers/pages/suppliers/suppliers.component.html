@@ -210,11 +210,11 @@
                     <td>{{ supplier.status }}</td>
                     @if(canManageSuppliers()) {
                     <td>
-                        <button type="button" class="icon-action-btn" (click)="editSupplier(supplier)" title="Editar">
+                        <button type="button" class="icon-action-btn" (click)="$event.stopPropagation(); editSupplier(supplier)" title="Editar">
                             <ng-icon name="lucidePencilSparkles" class="action-icon"></ng-icon>
                         </button>
 
-                        <button type="button" class="icon-action-btn" (click)="changeStatus(supplier)"
+                        <button type="button" class="icon-action-btn" (click)="$event.stopPropagation(); changeStatus(supplier)"
                             [title]="supplier.status === 'ACTIVO' ? 'Desactivar' : 'Activar'">
                             @if (supplier.status === 'ACTIVO') {
                             <ng-icon name="lucideBan" class="action-icon"></ng-icon>
