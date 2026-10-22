@@ -3,14 +3,14 @@ import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/rou
 import { AuthService } from '../../../auth/services/auth.service';
 import { RoleAuthService } from '../../../../core/services/role-auth.service';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
-import { lucideMenu } from '@ng-icons/lucide';
+import { lucideMenu, lucideUser } from '@ng-icons/lucide';
 
 @Component({
   selector: 'app-dashboard',
   imports: [RouterLink, RouterOutlet, RouterLinkActive, NgIconComponent],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css',
-  viewProviders: [provideIcons({ lucideMenu })]
+  viewProviders: [provideIcons({ lucideMenu, lucideUser })]
 })
 export class DashboardComponent {
   username = "";
