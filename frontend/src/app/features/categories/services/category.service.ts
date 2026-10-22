@@ -17,8 +17,8 @@ export class CategoryService {
 
     constructor(private readonly http: HttpClient) { }
 
-    getCategories(page: number = 0, size: number = 10): Observable<PageResponse<CategoryResponse>> {
-        const params = new HttpParams().set("page", page.toString()).set("size", size.toString());
+    getCategories(page: number = 0, size: number = 10, sort: string = "categoryCode,asc"): Observable<PageResponse<CategoryResponse>> {
+        const params = new HttpParams().set("page", page.toString()).set("size", size.toString()).set("sort", sort);
         return this.http.get<PageResponse<CategoryResponse>>(this.apiUrl, { params });
     }
 
