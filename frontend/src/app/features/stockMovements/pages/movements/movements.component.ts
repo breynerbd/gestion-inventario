@@ -107,6 +107,14 @@ export class MovementsComponent implements OnInit {
     });
   }
 
+  getSelectedProductStock(): number {
+    const product = this.products.find(
+      product => product.productId === this.newMovement.productId
+    );
+
+    return product ? product.currentStock : 0;
+  }
+
   loadUsers(): void {
     if(!this.isAdmin()) {
       return;
@@ -135,7 +143,7 @@ export class MovementsComponent implements OnInit {
     );
 
     this.selectedMovementDetails = [
-      { label:  "ID", value: movement.movementId },
+      { label: "ID", value: movement.movementId },
       { label: "Tipo de movimiento", value: movement.movementType },
       { label: "Producto", value: product?.productName ?? "No disponible" },
       { label: "Cantidad", value: movement.quantity },
@@ -250,6 +258,14 @@ export class MovementsComponent implements OnInit {
     ) {
       this.errorMessageForm = "La cantidad debe ser un número entero mayor que cero.";
       return;
+    }
+
+    if ((this.newMovement.movementType === "SALIDA" ||
+        this.newMovement.movementType === "AJUSTE_NEGATIVO") &&
+        this.newMovement.quantity > this.getSelectedProductStock()) 
+    {
+        this.errorMessageForm = "La cantidad no puede superar el stock disponible.";
+        return;
     }
 
     if (!this.newMovement.referenceDocument?.trim() || !this.newMovement.reason?.trim()
