@@ -4,22 +4,26 @@ import { DashboardService } from '../../services/dashboard.service';
 import { LowStockProduct } from '../../models/low-stock-product';
 import { Chart, ChartConfiguration, registerables } from "chart.js";
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
-import { lucidePackage, lucideTruck, lucideAlertTriangle, lucideBanknoteArrowUp, lucideBanknoteArrowDown } from '@ng-icons/lucide';
+import { lucidePackage, lucideTruck, lucideAlertTriangle, lucideBanknoteArrowUp, lucideBanknoteArrowDown, lucidePackageSearch } from '@ng-icons/lucide';
 import { MovementSummary } from '../../models/movement-summary';
 import { ProductsCount } from '../../models/products-category';
 import { MovementResponse } from '../../../stockMovements/models/movement-response';
 import { MovementService } from '../../../stockMovements/services/movement.service';
 import { Router } from '@angular/router';
 import { RoleAuthService } from '../../../../core/services/role-auth.service';
+import { PaginationComponent } from '../../../../shared/components/pagination/pagination.component';
 
 Chart.register(...registerables);
 
 @Component({
   selector: 'app-dashboard-home',
-  imports: [CommonModule, NgIconComponent],
+  imports: [CommonModule, NgIconComponent, PaginationComponent],
   templateUrl: './dashboard-home.component.html',
   styleUrl: './dashboard-home.component.css',
-  viewProviders: [provideIcons({ lucidePackage, lucideTruck, lucideAlertTriangle, lucideBanknoteArrowUp, lucideBanknoteArrowDown })]
+  viewProviders: [provideIcons({
+    lucidePackage, lucideTruck, lucideAlertTriangle,
+    lucideBanknoteArrowUp, lucideBanknoteArrowDown, lucidePackageSearch
+  })]
 })
 export class DashboardHomeComponent implements AfterViewInit, OnDestroy {
   totalProducts = 0;
@@ -42,6 +46,29 @@ export class DashboardHomeComponent implements AfterViewInit, OnDestroy {
   private categoryChart?: Chart;
 
   latestMovements: MovementResponse[] = [];
+  lowStockProductsList: LowStockProduct[] = [];
+
+  alertPageSize = 8;
+  currentAlertPage = 1;
+
+  get paginatedLowStockProducts(): LowStockProduct[] {
+    const start = (this.currentAlertPage - 1) * this.alertPageSize;
+
+    return this.lowStockProductsList.slice(
+      start,
+      start + this.alertPageSize
+    );
+  }
+
+  get totalAlertPages(): number {
+    return Math.ceil(
+      this.lowStockProductsList.length / this.alertPageSize
+    );
+  }
+
+  changeAlertPage(page: number): void {
+    this.currentAlertPage = page;
+  }
 
   constructor(private readonly dashboardService: DashboardService, private readonly movementService: MovementService,
     private router: Router, private readonly roleService: RoleAuthService
@@ -72,6 +99,7 @@ export class DashboardHomeComponent implements AfterViewInit, OnDestroy {
   private loadLowStockProducts(): void {
     this.dashboardService.getLowStockProducts().subscribe({
       next: (products: LowStockProduct[]) => {
+        this.lowStockProductsList = products;
         this.lowStockProducts = products.length;
         this.createStockChart(products);
       },

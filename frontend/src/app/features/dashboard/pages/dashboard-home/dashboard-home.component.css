@@ -4,7 +4,7 @@
     display: block;
     height: 100%;
     overflow-y: auto;
-    overflow-x: hidden;      
+    overflow-x: hidden;
 }
 
 .dashboard-home {
@@ -156,12 +156,103 @@
 }
 
 .empty-alerts {
+    display: flex;
     margin-top: 20px;
-    padding: 25px;
-    text-align: center;
+    padding: 20px;
+    gap: 15px;
     background-color: #F4F6FA;
     border-radius: 8px;
     color: #586F7C;
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
+.alert-card {
+    display: flex;
+    flex: 0 0 220px;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 14px;
+    padding: 20px 30px;
+    background-color: #FFFFFF;
+    border: 1px solid #E1E5EB;
+    border-radius: 12px;
+    box-sizing: border-box;
+}
+
+.alert-icon-indicator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 68px;
+    height: 58px;
+    flex-shrink: 0;
+    border-radius: 10px;
+}
+
+.alert-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #eef2fdea;
+    font-size: 22px;
+    font-weight: 600;
+}
+
+.alert-warning {
+    background-color: #eef2fdea;
+    color: #D97706;
+}
+
+.alert-danger {
+    background-color: #eef2fdea;
+    color: #DC2626;
+}
+
+.alert-info {
+    min-width: 0;
+}
+
+.alert-info p {
+    margin: 0 0 8px;
+    color: #586F7C;
+    font-size: 14px;
+    overflow-wrap: anywhere;
+}
+
+.alert-info h3 {
+    margin: 0 0 10px;
+    font-size: 18px;
+    overflow-wrap: anywhere;
+}
+
+.alerts-pagination {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 12px;
+    margin-top: 12px;
+    color: #586F7C;
+    font-size: 14px;
+}
+
+.alerts-pagination button {
+    padding: 8px 12px;
+    background-color: #2F4550;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.alerts-pagination button:disabled {
+    background-color: #B8C3C9;
+    cursor: not-allowed;
+}
+
+.pagination-section {
+    margin-top: 10px;
 }
 
 .alerts-section {
@@ -341,6 +432,47 @@
     .alerts-section {
         padding: 18px;
     }
+
+    .alerts-panel {
+        padding: 18px;
+        min-width: 0;
+    }
+
+    .alerts-panel .section-header {
+        align-items: flex-start;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .pagination-section {
+        margin-top: 0;
+        margin-left: auto;
+    }
+
+    .empty-alerts {
+        margin-top: 15px;
+        padding: 14px;
+        gap: 12px;
+    }
+
+    .alert-card {
+        flex-basis: 190px;
+        padding: 18px;
+        gap: 12px;
+    }
+
+    .alert-icon-indicator {
+        width: 56px;
+        height: 52px;
+    }
+
+    .alert-info h3 {
+        font-size: 16px;
+    }
+
+    .alert-info p {
+        font-size: 13px;
+    }
 }
 
 @media (max-width: 480px) {
@@ -438,6 +570,52 @@
     .movement-type {
         font-size: 11px;
     }
+
+    .alerts-panel {
+        padding: 14px;
+    }
+
+    .alerts-panel .section-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    .pagination-section {
+        margin-left: 0;
+        width: 100%;
+        display: flex;
+        justify-content: flex-start;
+    }
+
+    .empty-alerts {
+        padding: 10px;
+        gap: 10px;
+    }
+
+    .alert-card {
+        flex-basis: 170px;
+        padding: 14px;
+        gap: 10px;
+    }
+
+    .alert-icon-indicator {
+        width: 48px;
+        height: 46px;
+    }
+
+    .alert-icon {
+        font-size: 20px;
+    }
+
+    .alert-info h3 {
+        font-size: 15px;
+    }
+
+    .alert-info p {
+        font-size: 12px;
+        margin-bottom: 6px;
+    }
 }
 
 @media (max-width: 360px) {
@@ -467,5 +645,24 @@
 
     .charts-section {
         grid-template-columns: minmax(0, 1fr);
+    }
+
+    .alerts-panel {
+        padding: 12px;
+    }
+
+    .empty-alerts {
+        padding: 8px;
+        gap: 8px;
+    }
+
+    .alert-card {
+        flex-basis: 155px;
+        padding: 12px;
+    }
+
+    .view-all-button {
+        padding: 6px 13px;
+        font-size: 11px;
     }
 }

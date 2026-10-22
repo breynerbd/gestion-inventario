@@ -96,9 +96,32 @@
                 <h3>Alertas de stock bajo</h3>
                 <p>Productos que necesitan atención</p>
             </div>
+            <div class="pagination-section">
+                <app-pagination [currentPage]="currentAlertPage" [totalPages]="totalAlertPages"
+                    (pageChange)="changeAlertPage($event)">
+            </app-pagination>
+        </div>
         </div>
 
         <div class="empty-alerts">
+            @for (product of paginatedLowStockProducts; track product.productId) {
+            <article class="alert-card">
+                <div class="alert-icon-indicator alert-icon"
+                    [class.alert-warning]="product.currentStock <= product.minimumStock"
+                    [class.alert-danger]="product.currentStock === 0">
+
+                    <ng-icon name="lucidePackageSearch"></ng-icon>
+                </div>
+
+                <div class="alert-info">
+                    <h3>{{ product.productName }}</h3>
+                    <p>Stock actual: {{ product.currentStock }}</p>
+                    <p>Stock mínimo: {{ product.minimumStock }}</p>
+                </div>
+            </article>
+            } @empty {
+            <p>No hay productos con stock bajo.</p>
+            }
         </div>
     </section>
 
