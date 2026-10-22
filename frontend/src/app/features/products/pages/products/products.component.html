@@ -309,11 +309,11 @@
                     <td>{{ product.status }}</td>
                     @if(canManageProducts()) {
                     <td>
-                        <button type="button" class="icon-action-btn" (click)="editProduct(product)" title="Editar">
+                        <button type="button" class="icon-action-btn" (click)="$event.stopPropagation(); editProduct(product)" title="Editar">
                             <ng-icon name="lucidePencilSparkles" class="action-icon"></ng-icon>
                         </button>
 
-                        <button type="button" class="icon-action-btn" (click)="changeStatus(product)"
+                        <button type="button" class="icon-action-btn" (click)="$event.stopPropagation(); editProduct(product)"
                             [title]="product.status === 'ACTIVO' ? 'Desactivar' : 'Activar'">
                             @if (product.status === 'ACTIVO') {
                             <ng-icon name="lucideBan" class="action-icon"></ng-icon>
@@ -343,11 +343,11 @@
     @if (totalPages > 1) {
     <div class="pagination-container">
         <button type="button" (click)="changePage(currentPage - 1)" [disabled]="currentPage === 0">
-            Anterior
+            <ng-icon name="lucideChevronLeft" class="action-icon"></ng-icon>
         </button>
         <span>Página {{ currentPage + 1 }} de {{ totalPages }}</span>
         <button type="button" (click)="changePage(currentPage + 1)" [disabled]="currentPage === totalPages - 1">
-            Siguiente
+            <ng-icon name="lucideChevronRight" class="action-icon"></ng-icon>
         </button>
     </div>
     }

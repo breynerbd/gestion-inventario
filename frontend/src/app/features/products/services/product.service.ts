@@ -19,9 +19,9 @@ export class ProductService {
 
     getProducts(page: number = 0, size: number = 10, 
         productCode: string = "", productName: string = "", categoryId?: number, 
-        supplierId?: number, status?: string
+        supplierId?: number, status?: string, sort: string = "productCode,asc"
     ): Observable<PageResponse<ProductResponse>> {
-        let params = new HttpParams().set("page", page.toString()).set("size", size.toString());
+        let params = new HttpParams().set("page", page.toString()).set("size", size.toString()).set("sort", sort);
 
         if(productCode?.trim()) params = params.set("productCode", productCode.trim());
         if(productName?.trim()) params = params.set("productName", productName.trim());

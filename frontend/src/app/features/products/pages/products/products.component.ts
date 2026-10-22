@@ -10,7 +10,7 @@ import { ProductCreate } from '../../models/product-create';
 import { ProductUpdate } from '../../models/product-update';
 import { RoleAuthService } from '../../../../core/services/role-auth.service';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
-import { lucideBan, lucideCircleCheck, lucidePencilSparkles, lucidePlus } from '@ng-icons/lucide';
+import { lucideBan, lucideCircleCheck, lucidePencilSparkles, lucidePlus, lucideChevronLeft, lucideChevronRight } from '@ng-icons/lucide';
 import { DetailModalComponent } from '../../../../shared/components/detail-modal/detail-modal.component';
 import { DetailField } from '../../../../shared/models/detail-field';
 
@@ -19,7 +19,7 @@ import { DetailField } from '../../../../shared/models/detail-field';
   imports: [FormsModule, NgIconComponent, DetailModalComponent],
   templateUrl: './products.component.html',
   styleUrl: './products.component.css',
-  viewProviders: [provideIcons({ lucideBan, lucideCircleCheck, lucidePencilSparkles, lucidePlus })]
+  viewProviders: [provideIcons({ lucideBan, lucideCircleCheck, lucidePencilSparkles, lucidePlus, lucideChevronLeft, lucideChevronRight })]
 })
 export class ProductsComponent implements OnInit {
   products: ProductResponse[] = [];
