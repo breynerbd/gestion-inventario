@@ -14,7 +14,7 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
     @Query ("SELECT p FROM Product p WHERE p.status = :status AND p.currentStock <= p.minimumStock")
     List<Product> findLowStockProducts(@Param ("status") Product.Status status);
 
-    @Query("select p.category.categoryName, count(p) from Product p where p.status = :status group by p.category.categoryName")
+    @Query("select p.category.categoryName, count(p) from Product p where p.status = :status and p.currentStock > 0 group by p.category.categoryName")
     List<Object[]> findProductCountInCategory(@Param("status") Product.Status status);
 
     long countProductsByStatus(Product.Status status);
