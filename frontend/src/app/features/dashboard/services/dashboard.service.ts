@@ -1,7 +1,7 @@
 
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { Observable } from "rxjs";
+import { groupBy, Observable } from "rxjs";
 import { LowStockProduct } from "../models/low-stock-product";
 import { MovementSummary } from "../models/movement-summary";
 import { ProductsCount } from "../models/products-category";
@@ -27,9 +27,20 @@ export class DashboardService {
         );
     }
 
-    getMovementsSummary(): Observable<MovementSummary[]> {
+    getMovementsSummary(startDate?: string, endDate?: string, groupBy: string = "MONTH"): Observable<MovementSummary[]> {
+        let params = new HttpParams().set('groupBy', groupBy);
+
+        if (startDate) {
+            params = params.set('startDate', startDate);
+        }
+
+        if (endDate) {
+            params = params.set('endDate', endDate);
+        }
+
         return this.http.get<MovementSummary[]> (
-            `${this.apiMovementsUrl}/summary`
+            `${this.apiMovementsUrl}/summary`,
+            { params }
         );
     }
 
