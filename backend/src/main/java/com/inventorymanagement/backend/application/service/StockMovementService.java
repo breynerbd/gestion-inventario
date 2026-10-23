@@ -24,6 +24,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
@@ -193,6 +194,28 @@ public class StockMovementService {
 
             case SALIDA, AJUSTE_NEGATIVO -> product.setCurrentStock(product.getCurrentStock() + movement.getQuantity());
         }
+    }
+
+    public BigDecimal getMovementsValue(Long userId) {
+        LOGGER.debug("Obteniendo la ganancia del usuario {}", userId);
+
+        BigDecimal value = movementRepository.calculateMovementsValueByUser(userId, StockMovement.MovementType.SALIDA,
+            StockMovement.Status.ACTIVO
+        );
+
+        LOGGER.info("Se obtuvo la ganancia del usuario con exito");
+        return value;
+    }
+
+    public long countProductsByMovement(Long userId) {
+        LOGGER.debug("Obteniendo la suma de productos del usuario {}", userId);
+
+        long countProducts = movementRepository.countProductsByMovement(userId, StockMovement.MovementType.ENTRADA, 
+            StockMovement.Status.ACTIVO
+        );
+
+        LOGGER.info("Se obtuvo la suma de productos de los movimientos");
+        return countProducts;
     }
 
     @Transactional
