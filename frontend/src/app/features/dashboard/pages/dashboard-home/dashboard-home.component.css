@@ -34,10 +34,6 @@
     margin-bottom: 20px;
 }
 
-.indicators.operator-indicators {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-
 .indicator-card {
     display: flex;
     align-items: center;

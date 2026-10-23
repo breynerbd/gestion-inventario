@@ -60,6 +60,28 @@
             </div>
         </article>
         }
+
+        @if (showDashboardIndicatorsOperator()) {
+        <article class="indicator-card">
+            <div class="indicator-icon value-icon">
+                <ng-icon name="lucideBanknoteArrowUp"></ng-icon>
+            </div>
+            <div class="indicator-info">
+                <p>Ganancia en ventas</p>
+                <h3>{{ movementsValue | currency: "Q " : "symbol" : "1.2-2"}}</h3>
+            </div>
+        </article>
+
+        <article class="indicator-card">
+            <div class="indicator-icon value-icon">
+                <ng-icon name="lucideShoppingCart"></ng-icon>
+            </div>
+            <div class="indicator-info">
+                <p>Unidades ingresadas</p>
+                <h3>{{ countProducts }}</h3>
+            </div>
+        </article>
+        }
     </section>
 
     <section class="charts-section">
