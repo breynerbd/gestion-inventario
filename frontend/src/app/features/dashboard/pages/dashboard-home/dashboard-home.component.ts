@@ -4,7 +4,7 @@ import { DashboardService } from '../../services/dashboard.service';
 import { LowStockProduct } from '../../models/low-stock-product';
 import { Chart, ChartConfiguration, registerables } from "chart.js";
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
-import { lucidePackage, lucideTruck, lucideAlertTriangle, lucideBanknoteArrowUp, lucideBanknoteArrowDown, lucidePackageSearch } from '@ng-icons/lucide';
+import { lucidePackage, lucideTruck, lucideAlertTriangle, lucideBanknoteArrowUp, lucideBanknoteArrowDown, lucidePackageSearch, lucideShoppingCart } from '@ng-icons/lucide';
 import { MovementSummary } from '../../models/movement-summary';
 import { ProductsCount } from '../../models/products-category';
 import { MovementResponse } from '../../../stockMovements/models/movement-response';
@@ -21,7 +21,7 @@ Chart.register(...registerables);
   templateUrl: './dashboard-home.component.html',
   styleUrl: './dashboard-home.component.css',
   viewProviders: [provideIcons({
-    lucidePackage, lucideTruck, lucideAlertTriangle,
+    lucidePackage, lucideTruck, lucideAlertTriangle, lucideShoppingCart,
     lucideBanknoteArrowUp, lucideBanknoteArrowDown, lucidePackageSearch
   })]
 })
@@ -31,6 +31,8 @@ export class DashboardHomeComponent implements AfterViewInit, OnDestroy {
   lowStockProducts = 0;
   inventoryValue = 0;
   inventoryInvestment = 0;
+  movementsValue = 0;
+  countProducts = 0;
 
   @ViewChild("stockChart")
   private stockChartCanvas!: ElementRef<HTMLCanvasElement>;
@@ -84,6 +86,8 @@ export class DashboardHomeComponent implements AfterViewInit, OnDestroy {
     this.loadInventoryValue();
     this.loadInventoryInvestment();
     this.loadLatestMovements();
+    this.loadMovementsValue();
+    this.loadProductsByMovements();
   }
 
   ngOnDestroy(): void {
@@ -94,6 +98,10 @@ export class DashboardHomeComponent implements AfterViewInit, OnDestroy {
 
   showDashboardDetails(): boolean {
     return !this.roleService.isOperator();
+  }
+
+  showDashboardIndicatorsOperator(): boolean {
+    return !this.roleService.isAdmin() && !this.roleService.isSupervisor();
   }
 
   private loadLowStockProducts(): void {
@@ -160,6 +168,28 @@ export class DashboardHomeComponent implements AfterViewInit, OnDestroy {
       },
       error: (error) => {
         console.error("Error al cargar los últimos movimientos:", error);
+      }
+    });
+  }
+
+  private loadMovementsValue(): void {
+    this.dashboardService.getMovementsValue().subscribe({
+      next: (value: number) => {
+        this.movementsValue = value;
+      },
+      error: (error) => {
+        console.error("No se pudo obtener la ganancia de los movimientos", error);
+      }
+    });
+  }
+
+  private loadProductsByMovements(): void {
+    this.dashboardService.getProductsByMovements().subscribe({
+      next: (sumProducts: number) => {
+        this.countProducts = sumProducts;
+      },
+      error: (error) => {
+        console.error("No se pudo obtener la suma de productos", error);
       }
     });
   }

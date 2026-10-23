@@ -56,6 +56,18 @@ export class DashboardService {
         )
     }
 
+    getMovementsValue(): Observable<number> {
+        return this.http.get<number> (
+            `${this.apiMovementsUrl}/movements-value`
+        );
+    }
+
+    getProductsByMovements(): Observable<number> {
+        return this.http.get<number> (
+            `${this.apiMovementsUrl}/products-movement`
+        );
+    }
+
     getActiveSuppliers(): Observable<number> {
         return this.http.get<number> (
             `${this.apiSuppliersUrl}/active-suppliers`
