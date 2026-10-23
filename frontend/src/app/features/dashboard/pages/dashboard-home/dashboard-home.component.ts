@@ -37,6 +37,9 @@ export class DashboardHomeComponent implements AfterViewInit, OnDestroy {
   inventoryInvestment = 0;
   movementsValue = 0;
   countProducts = 0;
+  startDate = '';
+  endDate = '';
+  groupBy = 'DAY';
 
   @ViewChild("stockChart")
   private stockChartCanvas!: ElementRef<HTMLCanvasElement>;
@@ -262,7 +265,11 @@ export class DashboardHomeComponent implements AfterViewInit, OnDestroy {
   }
 
   private loadMovementSummary(): void {
-    this.dashboardService.getMovementsSummary().subscribe({
+    this.dashboardService.getMovementsSummary(
+      this.startDate || undefined,
+      this.endDate || undefined,
+      this.groupBy
+    ).subscribe({
       next: (movements: MovementSummary[]) => {
         this.createMovementChart(movements);
       },
@@ -272,33 +279,45 @@ export class DashboardHomeComponent implements AfterViewInit, OnDestroy {
     });
   }
 
-  private createMovementChart(movements: MovementSummary[]): void {
-    const context = this.movementChartCanvas.nativeElement.getContext("2d");
+  applyMovementFilters(): void {
+    if (
+      this.startDate &&
+      this.endDate &&
+      this.startDate > this.endDate
+    ) {
+      return;
+    }
 
-    if (!context) {
+    this.loadMovementSummary();
+  }
+
+  private createMovementChart(movements: MovementSummary[]): void {
+    const canvas = this.movementChartCanvas?.nativeElement;
+
+    if (!canvas) {
       return;
     }
 
     this.movementChart?.destroy();
 
-    this.movementChart = new Chart(context, {
-      type: "line",
+    this.movementChart = new Chart(canvas, {
+      type: 'line',
       data: {
         labels: movements.map(movement => movement.date),
         datasets: [
           {
-            label: "Entradas",
+            label: 'Entradas',
             data: movements.map(movement => movement.entries),
-            borderColor: "#709eb7",
-            backgroundColor: "#709eb7",
+            borderColor: '#709eb7',
+            backgroundColor: '#709eb7',
             tension: 0.3,
             fill: false
           },
           {
-            label: "Salidas",
+            label: 'Salidas',
             data: movements.map(movement => movement.exits),
-            borderColor: "#B8DBD9",
-            backgroundColor: "#B8DBD9",
+            borderColor: '#B8DBD9',
+            backgroundColor: '#B8DBD9',
             tension: 0.3,
             fill: false
           }
@@ -308,11 +327,29 @@ export class DashboardHomeComponent implements AfterViewInit, OnDestroy {
         responsive: true,
         maintainAspectRatio: false,
         scales: {
+          x: {
+            title: {
+              display: true,
+            }
+          },
           y: {
             beginAtZero: true,
             ticks: {
               precision: 0
+            },
+            title: {
+              display: true,
+              text: 'Cantidad de movimientos'
             }
+          }
+        },
+        plugins: {
+          legend: {
+            position: 'bottom'
+          },
+          tooltip: {
+            mode: 'index',
+            intersect: false
           }
         }
       }
@@ -429,7 +466,7 @@ export class DashboardHomeComponent implements AfterViewInit, OnDestroy {
     this.dashboardService.getProductsByCategory(this.selectedCategoryId).subscribe({
       next: (response) => {
         const productsWithStock = response.content.filter(
-            product => product.currentStock > 0
+          product => product.currentStock > 0
         );
         this.createProductsCategoryChart(productsWithStock);
       },

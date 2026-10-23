@@ -96,8 +96,32 @@
 
         <article class="chart-card">
             <h3>Movimientos de inventario</h3>
-            <p>Entradas y salidas por periodo</p>
-            <div class="chart-placeholder">
+
+            <div class="movement-filters">
+                <div class="filter-field">
+                    <label for="startDate">Fecha inicial</label>
+                    <input id="startDate" type="date" [(ngModel)]="startDate" [max]="endDate || null"
+                        (ngModelChange)="applyMovementFilters()" />
+                </div>
+
+                <div class="filter-field">
+                    <label for="endDate">Fecha final</label>
+                    <input id="endDate" type="date" [(ngModel)]="endDate" [min]="startDate || null"
+                        (ngModelChange)="applyMovementFilters()" />
+                </div>
+
+                <div class="filter-field">
+                    <label for="groupBy">Agrupar por</label>
+                    <select id="groupBy" [(ngModel)]="groupBy" (ngModelChange)="applyMovementFilters()">
+                        <option value="DAY">Día</option>
+                        <option value="WEEK">Semana</option>
+                        <option value="MONTH">Mes</option>
+                        <option value="YEAR">Año</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="movement-chart-container">
                 <canvas #movementChart></canvas>
             </div>
         </article>
@@ -146,7 +170,7 @@
             <div class="pagination-section">
                 <app-pagination [currentPage]="currentAlertPage" [totalPages]="totalAlertPages"
                     (pageChange)="changeAlertPage($event)">
-            </app-pagination>
+                </app-pagination>
         </div>
         </div>
 
