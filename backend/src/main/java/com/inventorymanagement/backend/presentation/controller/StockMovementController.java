@@ -22,6 +22,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -61,6 +62,26 @@ public class StockMovementController {
     public ResponseEntity<List<StockMovementSummaryDTO>> getMovementSummary() {
         LOGGER.info("Solicitud para obtener el resumen de movimientos");
         return ResponseEntity.ok(service.getMovementSummary());
+    }
+
+    @GetMapping("/movements-value")
+    public ResponseEntity<BigDecimal> getMovementsValue(Authentication authentication) {
+        LOGGER.info("Solicitud para obtener la ganancia del usuario autenticado");
+
+        Long userId = service.findUserIdByEmail(authentication.getName());
+
+        BigDecimal value = service.getMovementsValue(userId);
+        return ResponseEntity.ok(value);
+    }
+
+    @GetMapping("/products-movement")
+    public ResponseEntity<Long> getProductsByMovement(Authentication authentication) {
+        LOGGER.info("Solicitud para obtener la suma de productos de movimientos");
+
+        Long userId = service.findUserIdByEmail(authentication.getName());
+
+        Long countProducts = service.countProductsByMovement(userId);
+        return ResponseEntity.ok(countProducts);
     }
 
     @GetMapping("/{movementId}")
