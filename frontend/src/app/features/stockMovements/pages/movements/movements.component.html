@@ -120,11 +120,9 @@
                         </option>
 
                         @for (product of products; track product.productId) {
-                            @if (product.currentStock > 0) {
-                                <option [ngValue]="product.productId">
-                                    {{ product.productCode }} - {{ product.productName }} - {{product.currentStock}}
-                                </option>
-                            }
+                            <option [ngValue]="product.productId">
+                                {{ product.productCode }} - {{ product.productName }} - {{product.currentStock}}
+                            </option>
                         }
                     </select>
 
@@ -137,7 +135,7 @@
                     <label for="quantity">Cantidad</label>
 
                     <input id="quantity" name="quantity" type="number" [(ngModel)]="newMovement.quantity" min="1"
-                        step="1" #quantity="ngModel" [max]="getSelectedProductStock()" required>
+                        step="1" #quantity="ngModel" required>
                     
                     @if (quantity.invalid && quantity.touched) {
                         @if (quantity.errors?.["required"]) {
