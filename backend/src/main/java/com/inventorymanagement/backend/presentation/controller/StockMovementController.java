@@ -59,9 +59,18 @@ public class StockMovementController {
     }
 
     @GetMapping("/summary")
-    public ResponseEntity<List<StockMovementSummaryDTO>> getMovementSummary() {
+    public ResponseEntity<List<StockMovementSummaryDTO>> getMovementSummary(
+        @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+        @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+        @RequestParam(defaultValue = "DAY") String groupBy
+    ) {
         LOGGER.info("Solicitud para obtener el resumen de movimientos");
-        return ResponseEntity.ok(service.getMovementSummary());
+
+        if (startDate != null && endDate != null && startDate.isAfter(endDate)) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        return ResponseEntity.ok(service.getMovementSummary(startDate, endDate, groupBy));
     }
 
     @GetMapping("/movements-value")

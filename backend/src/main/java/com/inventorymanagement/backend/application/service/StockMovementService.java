@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
@@ -139,25 +140,45 @@ public class StockMovementService {
         return mapper.toResponseDTO(movement);
     }
 
-    public List<StockMovementSummaryDTO> getMovementSummary() {
+    private LocalDate getPeriodDate(LocalDate date, String groupBy) {
+        return switch (groupBy.toUpperCase()) {
+            case "WEEK" -> date.with(DayOfWeek.MONDAY);
+            case "MONTH" -> date.withDayOfMonth(1);
+            case "YEAR" -> date.withDayOfYear(1);
+            default -> date;
+        };
+    }
+
+    public List<StockMovementSummaryDTO> getMovementSummary(LocalDate startDate, LocalDate endDate, String groupBy) {
         List<StockMovement> movements = movementRepository.findActiveMovements(StockMovement.Status.ACTIVO);
 
-        Map<LocalDate, long[]> dailyMovements = new TreeMap<>();
+        Map<LocalDate, long[]> groupedMovements = new TreeMap<>();
 
-        for(StockMovement movement : movements) {
+        for (StockMovement movement : movements) {
             LocalDate date = movement.getMovementDate().toLocalDate();
 
-            dailyMovements.putIfAbsent(date, new long[2]);
+            if (startDate != null && date.isBefore(startDate)) {
+                continue;
+            }
 
-            if(movement.getMovementType() == StockMovement.MovementType.ENTRADA) {
-                dailyMovements.get(date)[0]++;
+            if (endDate != null && date.isAfter(endDate)) {
+                continue;
+            }
+
+            LocalDate periodDate = getPeriodDate(date, groupBy);
+
+            groupedMovements.putIfAbsent(periodDate, new long[2]);
+
+            if (movement.getMovementType() == StockMovement.MovementType.ENTRADA) {
+                groupedMovements.get(periodDate)[0]++;
             } else if (movement.getMovementType() == StockMovement.MovementType.SALIDA) {
-                dailyMovements.get(date)[1]++;
+                groupedMovements.get(periodDate)[1]++;
             }
         }
-        return dailyMovements.entrySet().stream().map(entry -> new StockMovementSummaryDTO(
-            entry.getKey(), entry.getValue()[0], entry.getValue()[1]
-        )).toList();
+
+        return groupedMovements.entrySet().stream()
+            .map(entry -> new StockMovementSummaryDTO(entry.getKey(), entry.getValue()[0],
+                entry.getValue()[1])).toList();
     }
 
     private void applyMovement(StockMovement movement, Product product) {
