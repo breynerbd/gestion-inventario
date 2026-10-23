@@ -110,6 +110,31 @@
             </div>
         </article>
 
+        <article class="chart-card">
+            <div class="chart-header">
+                <div class="chart-title">
+                    <h3>Stock por producto</h3>
+                    <p>Existencias actuales según la categoría seleccionada</p>
+                </div>
+
+                <div class="category-selector">
+                    <label for="categorySelect">Categoría</label>
+                    <select id="categorySelect" [(ngModel)]="selectedCategoryId" (ngModelChange)="onCategoryChange()">
+
+                        @for (category of categories; track category.categoryId) {
+                        <option [ngValue]="category.categoryId">
+                            {{ category.categoryName }}
+                        </option>
+                        }
+                    </select>
+                </div>
+            </div>
+
+            <div class="chart-placeholder">
+                <canvas #productsCategoryChart></canvas>
+            </div>
+        </article>
+
     </section>
 
     <section class="alerts-panel">

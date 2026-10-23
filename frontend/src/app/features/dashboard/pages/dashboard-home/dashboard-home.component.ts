@@ -12,12 +12,16 @@ import { MovementService } from '../../../stockMovements/services/movement.servi
 import { Router } from '@angular/router';
 import { RoleAuthService } from '../../../../core/services/role-auth.service';
 import { PaginationComponent } from '../../../../shared/components/pagination/pagination.component';
+import { FormsModule } from '@angular/forms';
+import { CategoryResponse } from '../../../categories/models/category-response';
+import { CategoryService } from '../../../categories/services/category.service';
+import { ProductResponse } from '../../../products/models/product-response';
 
 Chart.register(...registerables);
 
 @Component({
   selector: 'app-dashboard-home',
-  imports: [CommonModule, NgIconComponent, PaginationComponent],
+  imports: [CommonModule, NgIconComponent, PaginationComponent, FormsModule],
   templateUrl: './dashboard-home.component.html',
   styleUrl: './dashboard-home.component.css',
   viewProviders: [provideIcons({
@@ -43,12 +47,18 @@ export class DashboardHomeComponent implements AfterViewInit, OnDestroy {
   @ViewChild("categoryChart")
   private categoryChartCanvas!: ElementRef<HTMLCanvasElement>;
 
+  @ViewChild("productsCategoryChart")
+  private productsCategoryChartCanvas!: ElementRef<HTMLCanvasElement>;
+
   private stockChart?: Chart;
   private movementChart?: Chart;
   private categoryChart?: Chart;
+  private productsCategoryChart?: Chart;
 
   latestMovements: MovementResponse[] = [];
   lowStockProductsList: LowStockProduct[] = [];
+  categories: CategoryResponse[] = [];
+  selectedCategoryId: number | null = null;
 
   alertPageSize = 8;
   currentAlertPage = 1;
@@ -73,7 +83,7 @@ export class DashboardHomeComponent implements AfterViewInit, OnDestroy {
   }
 
   constructor(private readonly dashboardService: DashboardService, private readonly movementService: MovementService,
-    private router: Router, private readonly roleService: RoleAuthService
+    private router: Router, private readonly roleService: RoleAuthService, private readonly categoryService: CategoryService
   ) { }
 
   ngAfterViewInit(): void {
@@ -88,12 +98,14 @@ export class DashboardHomeComponent implements AfterViewInit, OnDestroy {
     this.loadLatestMovements();
     this.loadMovementsValue();
     this.loadProductsByMovements();
+    this.loadActiveCategories();
   }
 
   ngOnDestroy(): void {
     this.stockChart?.destroy();
     this.movementChart?.destroy();
     this.categoryChart?.destroy();
+    this.productsCategoryChart?.destroy();
   }
 
   showDashboardDetails(): boolean {
@@ -356,6 +368,121 @@ export class DashboardHomeComponent implements AfterViewInit, OnDestroy {
         plugins: {
           legend: {
             position: "bottom"
+          }
+        }
+      }
+    });
+  }
+
+  private loadActiveCategories(): void {
+    this.categoryService.getCategories(0, 100).subscribe({
+      next: (response) => {
+        this.categories = response.content.filter(
+          category => category.status === "ACTIVO"
+        );
+
+        this.loadCategoriesWithStock();
+      },
+      error: (error) => {
+        console.error("No se pudieron cargar las categorías", error);
+      }
+    });
+  }
+
+  private loadCategoriesWithStock(): void {
+    this.dashboardService.getProductsCount().subscribe({
+      next: (categoriesWithProducts: ProductsCount[]) => {
+        const categoryNames = categoriesWithProducts.map(
+          category => category.categoryName
+        );
+
+        this.categories = this.categories.filter(
+          category => categoryNames.includes(category.categoryName)
+        );
+
+        if (this.categories.length > 0) {
+          this.selectedCategoryId = this.categories[0].categoryId;
+          this.loadProductsByCategory();
+        } else {
+          this.selectedCategoryId = null;
+          this.productsCategoryChart?.destroy();
+          this.productsCategoryChart = undefined;
+        }
+      },
+      error: (error) => {
+        console.error("No se pudieron cargar las categorías con stock", error);
+      }
+    });
+  }
+
+  onCategoryChange(): void {
+    this.loadProductsByCategory();
+  }
+
+  private loadProductsByCategory(): void {
+    if (this.selectedCategoryId === null) {
+      this.productsCategoryChart?.destroy();
+      this.productsCategoryChart = undefined;
+      return;
+    }
+
+    this.dashboardService.getProductsByCategory(this.selectedCategoryId).subscribe({
+      next: (response) => {
+        const productsWithStock = response.content.filter(
+            product => product.currentStock > 0
+        );
+        this.createProductsCategoryChart(productsWithStock);
+      },
+      error: (error) => {
+        console.error("No se pudieron cargar los productos de la categoría", error);
+      }
+    });
+  }
+
+  private createProductsCategoryChart(products: ProductResponse[]): void {
+    const canvas = this.productsCategoryChartCanvas?.nativeElement;
+
+    if (!canvas) {
+      return;
+    }
+
+    this.productsCategoryChart?.destroy();
+
+    this.productsCategoryChart = new Chart(canvas, {
+      type: "pie",
+      data: {
+        labels: products.map(product => product.productName),
+        datasets: [
+          {
+            label: "Stock actual",
+            data: products.map(product => product.currentStock),
+            backgroundColor: [
+              "#709eb7",
+              "#B8DBD9",
+              "#586F7C",
+              "#F4B860",
+              "#E07A5F",
+              "#81B29A",
+              "#9B8EC4",
+              "#E6A4B4"
+            ],
+            borderWidth: 2,
+            borderColor: "#FFFFFF"
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: "bottom"
+          },
+          tooltip: {
+            callbacks: {
+              label: (context) =>
+                ` ${context.parsed} unidades`
+            }
           }
         }
       }
