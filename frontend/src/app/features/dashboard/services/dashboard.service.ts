@@ -1,7 +1,6 @@
-
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { groupBy, Observable } from "rxjs";
+import { Observable } from "rxjs";
 import { LowStockProduct } from "../models/low-stock-product";
 import { MovementSummary } from "../models/movement-summary";
 import { ProductsCount } from "../models/products-category";

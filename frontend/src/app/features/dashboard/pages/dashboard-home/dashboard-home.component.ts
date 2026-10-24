@@ -62,6 +62,8 @@ export class DashboardHomeComponent implements AfterViewInit, OnDestroy {
   lowStockProductsList: LowStockProduct[] = [];
   categories: CategoryResponse[] = [];
   selectedCategoryId: number | null = null;
+  stockFilter = 0;
+  stockLimit = 0;
 
   alertPageSize = 8;
   currentAlertPage = 1;
@@ -222,20 +224,39 @@ export class DashboardHomeComponent implements AfterViewInit, OnDestroy {
 
     this.stockChart?.destroy();
 
+    let filteredProducts = products;
+
+    if (this.stockFilter === 1) {
+        filteredProducts = products.filter(
+            product => product.currentStock === 0
+        );
+    } else if (this.stockFilter === 2) {
+        filteredProducts = products.filter(
+            product => product.currentStock > 0
+        );
+    }
+
+    const sortedProducts = [...filteredProducts].sort(
+      (a, b) => a.currentStock - b.currentStock);
+
+    const displayedProducts = this.stockLimit > 0
+      ? sortedProducts.slice(0, this.stockLimit)
+      : sortedProducts;
+
     const configuration: ChartConfiguration<"bar"> = {
       type: "bar",
       data: {
-        labels: products.map(product => product.productName),
+        labels: displayedProducts.map(product => product.productName),
         datasets: [
           {
             label: "Stock actual",
-            data: products.map(product => product.currentStock),
+            data: displayedProducts.map(product => product.currentStock),
             backgroundColor: "#709eb7",
             borderRadius: 5
           },
           {
             label: "Stock mínimo",
-            data: products.map(product => product.minimumStock),
+            data: displayedProducts.map(product => product.minimumStock),
             backgroundColor: "#B8DBD9",
             borderRadius: 5
           }
@@ -262,6 +283,10 @@ export class DashboardHomeComponent implements AfterViewInit, OnDestroy {
     };
 
     this.stockChart = new Chart(canvas, configuration);
+  }
+
+  onStockFilterChange(): void {
+    this.createStockChart(this.lowStockProductsList);
   }
 
   private loadMovementSummary(): void {
@@ -355,6 +380,7 @@ export class DashboardHomeComponent implements AfterViewInit, OnDestroy {
       }
     });
   }
+
 
   private loadProductsCountCategory(): void {
     this.dashboardService.getProductsCount().subscribe({

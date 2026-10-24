@@ -87,8 +87,34 @@
     <section class="charts-section">
 
         <article class="chart-card">
-            <h3>Productos con menor stock</h3>
-            <p>Productos que necesitan reposición</p>
+            <div class="chart-header">
+                <div class="chart-title">
+                    <h3>Productos con stock bajo</h3>
+                    <p>Productos que necesitan reposición</p>
+                </div>
+
+                <div class="stock-filters">
+                    <div class="stock-filter">
+                        <label for="stockLimit">Límite</label>
+                        <select id="stockLimit" [(ngModel)]="stockLimit" (ngModelChange)="onStockFilterChange()">
+                            <option [ngValue]="5">5</option>
+                            <option [ngValue]="10">10</option>
+                            <option [ngValue]="15">15</option>
+                            <option [ngValue]="20">20</option>
+                            <option [ngValue]="0">Todos</option>
+                        </select>
+                    </div>
+
+                    <div class="stock-filter">
+                        <label for="stockFilter">Mostrar</label>
+                        <select id="stockFilter" [(ngModel)]="stockFilter" (ngModelChange)="onStockFilterChange()">
+                            <option [ngValue]="0">Todos</option>
+                            <option [ngValue]="1">Stock vacío</option>
+                            <option [ngValue]="2">Excluir stock vacío</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
             <div class="chart-container">
                 <canvas #stockChart></canvas>
             </div>
@@ -96,7 +122,7 @@
 
         <article class="chart-card">
             <h3>Movimientos de inventario</h3>
-
+            <p>Entradas y salidas por periodo</p>
             <div class="movement-filters">
                 <div class="filter-field">
                     <label for="startDate">Fecha inicial</label>
@@ -171,7 +197,7 @@
                 <app-pagination [currentPage]="currentAlertPage" [totalPages]="totalAlertPages"
                     (pageChange)="changeAlertPage($event)">
                 </app-pagination>
-        </div>
+            </div>
         </div>
 
         <div class="empty-alerts">
