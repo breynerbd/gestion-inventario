@@ -47,21 +47,17 @@ export class DashboardHomeComponent implements AfterViewInit, OnDestroy {
   @ViewChild("movementChart")
   private movementChartCanvas!: ElementRef<HTMLCanvasElement>;
 
-  @ViewChild("categoryChart")
-  private categoryChartCanvas!: ElementRef<HTMLCanvasElement>;
-
   @ViewChild("productsCategoryChart")
   private productsCategoryChartCanvas!: ElementRef<HTMLCanvasElement>;
 
   private stockChart?: Chart;
   private movementChart?: Chart;
-  private categoryChart?: Chart;
   private productsCategoryChart?: Chart;
 
   latestMovements: MovementResponse[] = [];
   lowStockProductsList: LowStockProduct[] = [];
   categories: CategoryResponse[] = [];
-  selectedCategoryId: number | null = null;
+  selectedCategoryId: number | null = 0;
   stockFilter = 0;
   stockLimit = 0;
 
@@ -94,7 +90,6 @@ export class DashboardHomeComponent implements AfterViewInit, OnDestroy {
   ngAfterViewInit(): void {
     this.loadLowStockProducts();
     this.loadMovementSummary();
-    this.loadProductsCountCategory();
 
     this.loadActiveProducts();
     this.loadActiveSuppliers();
@@ -109,7 +104,6 @@ export class DashboardHomeComponent implements AfterViewInit, OnDestroy {
   ngOnDestroy(): void {
     this.stockChart?.destroy();
     this.movementChart?.destroy();
-    this.categoryChart?.destroy();
     this.productsCategoryChart?.destroy();
   }
 
@@ -381,62 +375,6 @@ export class DashboardHomeComponent implements AfterViewInit, OnDestroy {
     });
   }
 
-
-  private loadProductsCountCategory(): void {
-    this.dashboardService.getProductsCount().subscribe({
-      next: (categories: ProductsCount[]) => {
-        this.createCategoryChart(categories);
-      },
-      error: (error) => {
-        console.error("Error al cargar la agrupacion por categoría", error);
-      }
-    });
-  }
-
-  private createCategoryChart(categories: ProductsCount[]): void {
-    const canvas = this.categoryChartCanvas?.nativeElement;
-
-    if (!canvas) {
-      return;
-    }
-
-    this.categoryChart?.destroy();
-
-    this.categoryChart = new Chart(canvas, {
-      type: "pie",
-      data: {
-        labels: categories.map(category => category.categoryName),
-        datasets: [
-          {
-            label: "Productos",
-            data: categories.map(category => category.productCount),
-            backgroundColor: [
-              "#709eb7",
-              "#B8DBD9",
-              "#586F7C",
-              "#F4B860",
-              "#E07A5F",
-              "#81B29A",
-              "#9B8EC4",
-              "#E6A4B4"
-            ],
-            borderWidth: 2,
-            borderColor: "#FFFFFF"
-          }
-        ]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: {
-            position: "bottom"
-          }
-        }
-      }
-    });
-  }
-
   private loadActiveCategories(): void {
     this.categoryService.getCategories(0, 100).subscribe({
       next: (response) => {
@@ -463,14 +401,8 @@ export class DashboardHomeComponent implements AfterViewInit, OnDestroy {
           category => categoryNames.includes(category.categoryName)
         );
 
-        if (this.categories.length > 0) {
-          this.selectedCategoryId = this.categories[0].categoryId;
-          this.loadProductsByCategory();
-        } else {
-          this.selectedCategoryId = null;
-          this.productsCategoryChart?.destroy();
-          this.productsCategoryChart = undefined;
-        }
+        this.selectedCategoryId = 0;
+        this.loadProductsByCategory();
       },
       error: (error) => {
         console.error("No se pudieron cargar las categorías con stock", error);
@@ -486,6 +418,19 @@ export class DashboardHomeComponent implements AfterViewInit, OnDestroy {
     if (this.selectedCategoryId === null) {
       this.productsCategoryChart?.destroy();
       this.productsCategoryChart = undefined;
+      return;
+    }
+
+    if (this.selectedCategoryId === 0) {
+      this.dashboardService.getProductsCount().subscribe({
+        next: (categories: ProductsCount[]) => {
+          this.createCategoryCountChart(categories);
+        },
+        error: (error) => {
+          console.error("Error al cargar la agrupacion por categoría", error);
+        }
+      });
+
       return;
     }
 
@@ -512,7 +457,7 @@ export class DashboardHomeComponent implements AfterViewInit, OnDestroy {
     this.productsCategoryChart?.destroy();
 
     this.productsCategoryChart = new Chart(canvas, {
-      type: "pie",
+      type: "doughnut",
       data: {
         labels: products.map(product => product.productName),
         datasets: [
@@ -545,6 +490,55 @@ export class DashboardHomeComponent implements AfterViewInit, OnDestroy {
             callbacks: {
               label: (context) =>
                 ` ${context.parsed} unidades`
+            }
+          }
+        }
+      }
+    });
+  }
+
+  private createCategoryCountChart(categories: ProductsCount[]): void {
+    const canvas = this.productsCategoryChartCanvas?.nativeElement;
+
+    if (!canvas) {
+      return;
+    }
+
+    this.productsCategoryChart?.destroy();
+
+    this.productsCategoryChart = new Chart(canvas, {
+      type: "doughnut",
+      data: {
+        labels: categories.map(category => category.categoryName),
+        datasets: [
+          {
+            label: "Productos registrados",
+            data: categories.map(category => category.productCount),
+            backgroundColor: [
+              "#709eb7",
+              "#B8DBD9",
+              "#586F7C",
+              "#F4B860",
+              "#E07A5F",
+              "#81B29A",
+              "#9B8EC4",
+              "#E6A4B4"
+            ],
+            borderWidth: 2,
+            borderColor: "#FFFFFF"
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: "bottom"
+          },
+          tooltip: {
+            callbacks: {
+              label: context => `${context.parsed} productos`
             }
           }
         }
