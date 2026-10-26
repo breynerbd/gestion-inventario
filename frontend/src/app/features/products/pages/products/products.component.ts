@@ -306,6 +306,12 @@ export class ProductsComponent implements OnInit {
     this.resetForm();
   }
 
+  onFormDialogClick(event: MouseEvent): void {
+    if (event.target === event.currentTarget) {
+      this.cancelForm();
+    }
+  }
+
   cancelForm(): void {
     this.showForm = false;
     this.editingProductId = null;

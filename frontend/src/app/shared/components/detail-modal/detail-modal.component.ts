@@ -17,4 +17,10 @@ export class DetailModalComponent {
   close(): void {
     this.closed.emit();
   }
+
+  onDialogClick(event: MouseEvent): void {
+    if (event.target === event.currentTarget) {
+      this.close();
+    }
+  }
 }
