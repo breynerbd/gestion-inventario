@@ -78,8 +78,11 @@
     </div>
 
     @if (showForm) {
-    <div class="form-overlay" (click)="cancelForm()">
-        <div class="product-form-container" (click)="$event.stopPropagation()">
+    <div class="form-overlay">
+        <button type="button" class="form-backdrop" (click)="cancelForm()">
+        </button>
+        <dialog class="product-form-container" open aria-modal="true" aria-labelledby="product-form-title" (click)="onFormDialogClick($event)"
+            (keydown.escape)="cancelForm()">
             
             <h2>
                 @if (editingProductId === null) {
@@ -269,7 +272,7 @@
 
             </form>
 
-        </div>
+        </dialog>
     </div>
     }
 

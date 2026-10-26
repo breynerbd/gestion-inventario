@@ -13,11 +13,17 @@
 .detail-modal {
     display: flex;
     flex-direction: column;
+    position: relative;
+    inset: auto;
     width: 100%;
     max-width: 650px;
     max-height: 85vh;
+    margin: 0;
+    padding: 0;
+    border: none;
     overflow: hidden;
     background: #F4F4F9;
+    color: #2F4550;
     border-radius: 12px;
     box-shadow: 0 10px 35px rgba(0, 0, 0, 0.2);
 }
@@ -85,6 +91,17 @@
 
 .detail-field.full-width {
     grid-column: 1 / -1;
+}
+
+.detail-modal-backdrop {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    border: none;
+    background: transparent;
+    cursor: default;
 }
 
 @media (max-width: 600px) {

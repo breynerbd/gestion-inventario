@@ -1,7 +1,10 @@
 @if (visible) {
-<div class="detail-modal-overlay" (click)="close()">
-    <section class="detail-modal" role="dialog" aria-modal="true" [attr.aria-label]="title"
-        (click)="$event.stopPropagation()">
+<div class="detail-modal-overlay">
+    <button type="button" class="detail-modal-backdrop" aria-label="Cerrar detalles" (click)="close()">
+    </button>
+
+    <dialog class="detail-modal" open aria-modal="true" [attr.aria-label]="title" (keydown.escape)="close()">
+
         <header class="detail-modal-header">
             <h2>{{ title }}</h2>
 
@@ -12,7 +15,7 @@
 
         <div class="detail-modal-content">
             @for (field of fields; track field.label) {
-            <div class="detail-field" [class.full-width]="field.label === 'Descripción'" [class.full-width]="field.label === 'Motivo'">
+            <div class="detail-field" [class.full-width]="field.label === 'Descripción' || field.label === 'Motivo'">
                 <span class="detail-field-label">{{ field.label }}</span>
                 <span class="detail-field-value">
                     {{ field.value ?? '—' }}
@@ -20,6 +23,6 @@
             </div>
             }
         </div>
-    </section>
+    </dialog>
 </div>
 }

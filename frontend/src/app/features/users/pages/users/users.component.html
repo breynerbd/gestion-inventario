@@ -17,8 +17,11 @@
     }
 
     @if (showForm) {
-    <div class="form-overlay" (click)="cancelForm()">
-        <div class="user-form-container" (click)="$event.stopPropagation()">
+    <div class="form-overlay">
+        <button type="button" class="form-backdrop" (click)="cancelForm()">
+        </button>
+        <dialog class="user-form-container" open aria-modal="true" aria-labelledby="user-form-title" (click)="onFormDialogClick($event)"
+            (keydown.escape)="cancelForm()">
             @if (editingUserId === null) {
             <h2>Nuevo Usuario</h2>
             } @else {
@@ -166,7 +169,7 @@
                     <button type="submit">Guardar Usuario</button>
                 </div>
             </form>
-        </div>
+        </dialog>
     </div>
     }
 

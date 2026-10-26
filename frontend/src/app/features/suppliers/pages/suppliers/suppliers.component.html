@@ -21,8 +21,11 @@
     }
 
     @if (showForm) {
-    <div class="form-overlay" (click)="cancelForm()">
-        <div class="supplier-form-container" (click)="$event.stopPropagation()">
+    <div class="form-overlay">
+        <button type="button" class="form-backdrop" (click)="cancelForm()">
+        </button>
+        <dialog class="supplier-form-container" open aria-modal="true" aria-labelledby="supplier-form-title" (click)="onFormDialogClick($event)"
+            (keydown.escape)="cancelForm()">
 
             @if (editingSupplierId === null) {
             <h2>Nuevo Proveedor</h2>
@@ -177,7 +180,7 @@
                 </div>
 
             </form>
-        </div>
+        </dialog>
     </div>
     }
 

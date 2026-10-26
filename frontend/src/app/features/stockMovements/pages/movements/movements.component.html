@@ -79,8 +79,11 @@
     }
 
     @if (showForm && (canCreateMovements() || canEditMovements())) {
-    <div class="form-overlay" (click)="cancelForm()">
-        <div class="movement-form-container" (click)="$event.stopPropagation()">
+    <div class="form-overlay">
+        <button type="button" class="form-backdrop" (click)="cancelForm()">
+        </button>
+        <dialog class="movement-form-container" open aria-modal="true" aria-labelledby="movement-form-title" (click)="onFormDialogClick($event)"
+            (keydown.escape)="cancelForm()">
 
             <h2>
                 @if (editingMovementId === null) {
@@ -194,7 +197,7 @@
 
             </form>
 
-        </div>
+        </dialog>
     </div>
     }
 
