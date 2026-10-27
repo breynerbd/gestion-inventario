@@ -1,16 +1,30 @@
 <div class="permissions-container">
     <div class="permissions-header">
-        <div>
-            <h1>Permisos</h1>
-            <p>Gestión de permisos del sistema</p>
+        <div class="permissions-title">
+            <div>
+                <h1>Permisos</h1>
+                <p>Gestión de permisos del sistema</p>
+            </div>
         </div>
 
-        <button type="button" (click)="openForm()">
-            <span class="text-desktop">Nuevo Permiso</span>
-            <span class="text-mobile">
-                <ng-icon name="lucidePlus" class="icon-add"></ng-icon>
-            </span>
-        </button>
+        <div class="permissions-actions">
+            <div class="permissions-filters">
+                <div class="search-container">
+                    <label for="searchPermissions">Buscar permisos</label>
+                    <input id="searchPermissions" name="searchPermissions" type="text" placeholder="Id, código o módulo."
+                    [ngModel]="searchTerm" (ngModelChange)="onSearchChange($event)">
+                </div>
+
+                <button type="button" class="clear-search" (click)="onSearchChange('')">Limpiar</button>
+            </div>
+            
+            <button type="button" class="new-permission-button" (click)="openForm()">
+                <span class="text-desktop">Nuevo Permiso</span>
+                <span class="text-mobile">
+                    <ng-icon name="lucidePlus" class="icon-add"></ng-icon>
+                </span>
+            </button>
+        </div>
     </div>
 
     @if (errorMessage) {
@@ -154,9 +168,13 @@
             </tbody>
         </table>
 
-        @if (permissions.length === 0) {
+        @if (filteredPermissions.length === 0) {
         <div class="empty-permissions">
-            <p>No hay permisos registrados.</p>
+            @if (permissions.length === 0) {
+                <p>No hay permisos registrados.</p>
+            } @else {
+                <p>No se encontraron resultados con la busqueda.</p>
+            }
         </div>
         }
     </div>

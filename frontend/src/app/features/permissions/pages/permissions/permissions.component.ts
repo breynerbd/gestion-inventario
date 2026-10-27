@@ -24,6 +24,7 @@ export class PermissionsComponent implements OnInit {
   editingPermissionId: number | null = null;
   errorMessage = "";
   errorMessageForm = "";
+  searchTerm = "";
 
   currentPage = 1;
   pageSize = 10;
@@ -53,13 +54,28 @@ export class PermissionsComponent implements OnInit {
     });
   }
 
+  get filteredPermissions(): PermissionResponse[] {
+    const search = this.searchTerm.toLowerCase();
+
+    return this.permissions.filter(permission => 
+      permission.permissionId.toString().includes(search) ||
+      permission.permissionCode.toLowerCase().includes(search) ||
+      permission.module.toLowerCase().includes(search)
+    )
+  }
+
   get totalPages(): number {
-    return Math.ceil(this.permissions.length / this.pageSize);
+    return Math.ceil(this.filteredPermissions.length / this.pageSize);
   }
 
   get paginatedPermissions(): PermissionResponse[] {
     const startIndex = (this.currentPage - 1) * this.pageSize;
-    return this.permissions.slice(startIndex, startIndex + this.pageSize);
+    return this.filteredPermissions.slice(startIndex, startIndex + this.pageSize);
+  }
+
+  onSearchChange(value: string) {
+    this.searchTerm = value;
+    this.currentPage = 1;
   }
 
   changePage(page: number): void {

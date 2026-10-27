@@ -14,10 +14,14 @@
 .permissions-header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-end;
+    gap: 20px;
     margin-bottom: 25px;
     flex-shrink: 0;
-    position: relative;
+}
+
+.permissions-title {
+    flex-shrink: 0;
 }
 
 .permissions-header h1 {
@@ -30,15 +34,62 @@
     color: #586F7C;
 }
 
-.text-mobile {
-    display: none;
+.permissions-actions {
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+    gap: 10px;
+    flex: 1;
+    min-width: 0;
 }
 
-.text-desktop {
-    display: inline;
+.permissions-filters {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
 }
 
-.permissions-header button {
+.search-container {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.search-container input {
+    width: 150px;
+    padding: 9px 9px;
+    border: 1px solid #B8DBD9;
+    border-radius: 6px;
+    background-color: #F4F4F9;
+    box-sizing: border-box;
+}
+
+.search-container input:focus {
+    outline: none;
+    border-color: #697c889a;
+}
+
+.search-container label {
+    font-size: 14px;
+    color: #586F7C;
+}
+
+.clear-search {
+    padding: 10px 14px;
+    border: none;
+    border-radius: 7px;
+    background-color: #2F4550;
+    color: #F4F4F9;
+    cursor: pointer;
+    white-space: nowrap;
+    align-self: flex-end;
+}
+
+.clear-search:hover {
+    background-color: #586F7C;
+}
+
+.new-permission-button {
     padding: 10px 16px;
     border: none;
     border-radius: 7px;
@@ -46,11 +97,18 @@
     color: #F4F4F9;
     cursor: pointer;
     white-space: nowrap;
-    margin-top: 25px;
 }
 
-.permissions-header button:hover {
+.new-permission-button:hover {
     background-color: #586F7C;
+}
+
+.text-mobile {
+    display: none;
+}
+
+.text-desktop {
+    display: inline;
 }
 
 .permissions-table-container {
@@ -234,32 +292,72 @@
         padding-bottom: 16px;
     }
 
-    .permissions-header button {
+    .permissions-actions {
+        display: flex;
+        align-items: flex-end;
+        justify-content: flex-end;
+        gap: 8px;
+        width: 100%;
+        min-width: 0;
+        overflow-x: auto;
+        scrollbar-width: none;
+    }
+
+    .permissions-actions::-webkit-scrollbar {
+        display: none;
+    }
+
+    .permissions-filters {
+        display: flex;
+        align-items: center;
+        flex: 0 0 auto;
+        gap: 6px;
+        min-width: 0;
+    }
+
+    .search-container input {
+        width: 140px;
+        padding: 9px 9px;
+        font-size: 12px;
+    }
+
+    .search-container input:focus {
+        outline: none;
+        border-color: #697c889a;
+    }
+
+    .clear-search {
+        padding: 8px 12px;
+        font-size: 12px;
+    }
+
+    .new-permission-button {
         position: fixed;
         bottom: 25px;
         right: 20px;
         z-index: 999;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
-        border-radius: 50%; 
-        width: 38px;  
-        height: 38px; 
-        padding: 0;   
+        border-radius: 50%;
+        width: 38px;
+        height: 38px;
+        padding: 0;
         display: flex;
         align-items: center;
         justify-content: center;
+        flex: 0 0 auto;
     }
 
-    .permissions-header button .text-desktop {
+    .new-permission-button .text-desktop {
         display: none;
     }
 
-    .permissions-header button .text-mobile {
+    .new-permission-button .text-mobile {
         display: inline-flex;
         align-items: center;
         justify-content: center;
     }
 
-    .permissions-header button .icon-add {
+    .new-permission-button .icon-add {
         font-size: 20px;
         color: #F4F4F9;
     }
@@ -301,6 +399,56 @@
     .permissions-container {
         padding: 14px;
         padding-bottom: 14px;
+    }
+
+    .permissions-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    .permissions-actions {
+        width: 100%;
+        overflow-x: visible;
+        gap: 6px;
+    }
+
+    .permissions-filters {
+        flex: 1 1 auto;
+        min-width: 0;
+        gap: 5px;
+    }
+
+    .search-container {
+        flex: 1 1 auto;
+        min-width: 0;
+    }
+
+    .search-container input {
+        width: 100%;
+        min-width: 0;
+        height: 22px;
+        padding: 0 6px;
+        font-size: 10px;
+    }
+
+    .search-container label {
+        font-size: 11px;
+        white-space: nowrap;
+    }
+
+    .clear-search {
+        position: static;
+        display: inline-flex;
+        flex: 0 0 auto;
+        align-items: center;
+        justify-content: center;
+        width: auto;
+        min-width: max-content;
+        height: 20px;
+        padding: 0 8px;
+        border-radius: 6px;
+        font-size: 10px;
     }
 
     .permissions-header h1 {
@@ -368,7 +516,7 @@
         margin-bottom: 5px;
     }
 
-    .permissions-header button {
+    .new-permission-button {
         position: fixed;
         bottom: 25px;
         right: 20px;
@@ -381,17 +529,17 @@
         font-size: 10px;
     }
 
-    .permissions-header button .text-desktop {
+    .new-permission-button .text-desktop {
         display: none;
     }
 
-    .permissions-header button .text-mobile {
-        display: inline-flex; 
+    .new-permission-button .text-mobile {
+        display: inline-flex;
         align-items: center;
         justify-content: center;
     }
 
-    .permissions-header button .icon-add {
+    .new-permission-button .icon-add {
         font-size: 20px;
         color: #F4F4F9;
     }
