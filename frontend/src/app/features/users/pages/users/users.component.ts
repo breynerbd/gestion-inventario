@@ -30,6 +30,7 @@ export class UsersComponent implements OnInit {
   editingUserId: number | null = null;
   errorMessage = "";
   errorMessageForm = "";
+  searchTerm = "";
 
   currentPage = 1;
   pageSize = 10;
@@ -76,13 +77,28 @@ export class UsersComponent implements OnInit {
     })
   }
 
+  get filteredUsers(): UserResponse[] {
+    const search = this.searchTerm.trim().toLowerCase();
+
+    return this.users.filter(user => 
+      `${user.firstNames} ${user.lastNames}`.toLowerCase().includes(search) ||
+      user.username.toLowerCase().includes(search) ||
+      user.email.toLowerCase().includes(search)
+    );
+  }
+
   get totalPages(): number {
-    return Math.ceil(this.users.length / this.pageSize);
+    return Math.ceil(this.filteredUsers.length / this.pageSize);
   }
 
   get paginatedUsers(): UserResponse[] {
     const startIndex = (this.currentPage - 1) * this.pageSize;
-    return this.users.slice(startIndex, startIndex + this.pageSize);
+    return this.filteredUsers.slice(startIndex, startIndex + this.pageSize);
+  }
+
+  onSearchChange(value: string): void {
+    this.searchTerm = value;
+    this.currentPage = 1;
   }
 
   viewUserDetails(user: UserResponse): void {

@@ -1,15 +1,30 @@
 <div class="users-container">
     <div class="users-header">
-        <div>
-            <h1>Usuarios</h1>
-            <p>Gestión de usuarios del sistema</p>
+        <div class="users-title">
+            <div>
+                <h1>Usuarios</h1>
+                <p>Gestión de usuarios del sistema</p>
+            </div>
         </div>
-        <button type="button" (click)="openForm()">
-            <span class="text-desktop">Nuevo Usuario</span>
-            <span class="text-mobile">
-                <ng-icon name="lucidePlus" class="icon-add"></ng-icon>
-            </span>
-        </button>
+
+        <div class="users-actions">
+            <div class="users-filters">
+                <div class="search-container">
+                    <label for="searchUsers">Buscar usuarios</label>
+                    <input id="searchUsers" name="searchUsers" type="text" placeholder="Nombre, apellido, usuario o correo."
+                    [ngModel]="searchTerm" (ngModelChange)="onSearchChange($event)">
+                </div>
+
+                <button type="button" class="clear-search" (click)="onSearchChange('')">Limpiar</button>
+            </div>
+
+            <button type="button" class="new-user-button" (click)="openForm()">
+                <span class="text-desktop">Nuevo Usuario</span>
+                <span class="text-mobile">
+                    <ng-icon name="lucidePlus" class="icon-add"></ng-icon>
+                </span>
+            </button>
+        </div>
     </div>
 
     @if (errorMessage) {
@@ -220,9 +235,13 @@
         <app-detail-modal [title]="detailTitle" [fields]="selectedUserDetails" [visible]="showDetails"
             (closed)="closeUserDetails()"></app-detail-modal>
 
-        @if (users.length === 0) {
+        @if (filteredUsers.length === 0) {
         <div class="empty-users">
-            <p>No hay usuarios registrados.</p>
+            @if (users.length === 0) {
+                <p>No hay usuarios registrados.</p>
+            } @else {
+                <p>No se encontraron resultados con la busqueda.</p>
+            }
         </div>
         }
     </div>
