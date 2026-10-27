@@ -14,10 +14,14 @@
 .suppliers-header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-end;
+    gap: 20px;
     margin-bottom: 25px;
     flex-shrink: 0;
-    position: relative;
+}
+
+.suppliers-title {
+    flex-shrink: 0;
 }
 
 .suppliers-header h1 {
@@ -30,15 +34,62 @@
     color: #586F7C;
 }
 
-.text-mobile {
-    display: none;
+.suppliers-actions {
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+    gap: 10px;
+    flex: 1;
+    min-width: 0;
 }
 
-.text-desktop {
-    display: inline;
+.suppliers-filters {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
 }
 
-.suppliers-header button {
+.search-container {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.search-container input {
+    width: 240px;
+    padding: 9px 9px;
+    border: 1px solid #B8DBD9;
+    border-radius: 6px;
+    background-color: #F4F4F9;
+    box-sizing: border-box;
+}
+
+.search-container input:focus {
+    outline: none;
+    border-color: #697c889a;
+}
+
+.search-container label {
+    font-size: 14px;
+    color: #586F7C;
+}
+
+.clear-search {
+    padding: 10px 14px;
+    border: none;
+    border-radius: 7px;
+    background-color: #2F4550;
+    color: #F4F4F9;
+    cursor: pointer;
+    white-space: nowrap;
+    align-self: flex-end;
+}
+
+.clear-search:hover {
+    background-color: #586F7C;
+}
+
+.new-supplier-button {
     padding: 10px 16px;
     border: none;
     border-radius: 7px;
@@ -46,11 +97,18 @@
     color: #F4F4F9;
     cursor: pointer;
     white-space: nowrap;
-    margin-top: 25px;
 }
 
-.suppliers-header button:hover {
+.new-supplier-button:hover {
     background-color: #586F7C;
+}
+
+.text-mobile {
+    display: none;
+}
+
+.text-desktop {
+    display: inline;
 }
 
 .form-overlay {
@@ -275,37 +333,72 @@
 }
 
 @media (max-width: 1200px) {
-    .suppliers-container {
-        padding: 20px;
-        padding-bottom: 16px;
+    .suppliers-actions {
+        display: flex;
+        align-items: flex-end;
+        justify-content: flex-end;
+        gap: 8px;
+        width: 100%;
+        min-width: 0;
+        overflow-x: auto;
+        scrollbar-width: none;
     }
 
-    .suppliers-header button {
+    .suppliers-actions::-webkit-scrollbar {
+        display: none;
+    }
+
+    .suppliers-filters {
+        display: flex;
+        align-items: center;
+        flex: 0 0 auto;
+        gap: 6px;
+        min-width: 0;
+    }
+
+    .search-container input {
+        width: 220px;
+        padding: 9px 9px;
+        font-size: 12px;
+    }
+
+    .search-container input:focus {
+        outline: none;
+        border-color: #697c889a;
+    }
+
+    .clear-search {
+        padding: 8px 12px;
+        font-size: 12px;
+    }
+
+    .new-supplier-button {
         position: fixed;
         bottom: 25px;
         right: 20px;
         z-index: 999;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
-        border-radius: 50%; 
-        width: 38px;  
-        height: 38px; 
-        padding: 0;   
+        border-radius: 50%;
+        width: 38px;
+        height: 38px;
+        padding: 0;
         display: flex;
         align-items: center;
         justify-content: center;
+        flex: 0 0 auto;
     }
 
-    .suppliers-header button .text-desktop {
+    .new-supplier-button .text-desktop {
         display: none;
     }
 
-    .suppliers-header button .text-mobile {
+    .new-supplier-button .text-mobile {
         display: inline-flex;
         align-items: center;
         justify-content: center;
     }
 
-    .suppliers-header button .icon-add {
+    .new-supplier-button .icon-add {
         font-size: 20px;
         color: #F4F4F9;
     }
@@ -347,6 +440,57 @@
     .suppliers-container {
         padding: 14px;
         padding-bottom: 14px;
+    }
+
+    
+    .suppliers-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    .suppliers-actions {
+        width: 100%;
+        overflow-x: visible;
+        gap: 6px;
+    }
+
+    .suppliers-filters {
+        flex: 1 1 auto;
+        min-width: 0;
+        gap: 5px;
+    }
+
+    .search-container {
+        flex: 1 1 auto;
+        min-width: 0;
+    }
+
+    .search-container input {
+        width: 100%;
+        min-width: 0;
+        height: 22px;
+        padding: 0 6px;
+        font-size: 10px;
+    }
+
+    .search-container label {
+        font-size: 11px;
+        white-space: nowrap;
+    }
+
+    .clear-search {
+        position: static;
+        display: inline-flex;
+        flex: 0 0 auto;
+        align-items: center;
+        justify-content: center;
+        width: auto;
+        min-width: max-content;
+        height: 20px;
+        padding: 0 8px;
+        border-radius: 6px;
+        font-size: 10px;
     }
 
     .suppliers-header h1 {
@@ -424,7 +568,7 @@
         margin-bottom: 5px;
     }
 
-    .suppliers-header button {
+    .new-supplier-button {
         position: fixed;
         bottom: 25px;
         right: 20px;
@@ -437,17 +581,17 @@
         font-size: 10px;
     }
 
-    .suppliers-header button .text-desktop {
+    .new-supplier-button .text-desktop {
         display: none;
     }
 
-    .suppliers-header button .text-mobile {
-        display: inline-flex; 
+    .new-supplier-button .text-mobile {
+        display: inline-flex;
         align-items: center;
         justify-content: center;
     }
 
-    .suppliers-header button .icon-add {
+    .new-supplier-button .icon-add {
         font-size: 20px;
         color: #F4F4F9;
     }

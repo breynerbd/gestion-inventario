@@ -1,18 +1,32 @@
 <div class="suppliers-container">
 
     <div class="suppliers-header">
-        <div>
-            <h1>Proveedores</h1>
-            <p>Gestión de proveedores del inventario</p>
+        <div class="suppliers-title">
+            <div>
+                <h1>Proveedores</h1>
+                <p>Gestión de proveedores del inventario</p>
+            </div>
         </div>
-
+        
         @if(canManageSuppliers()) {
-        <button type="button" (click)="openForm()">
-            <span class="text-desktop">Nuevo Proveedor</span>
-            <span class="text-mobile">
-                <ng-icon name="lucidePlus" class="icon-add"></ng-icon>
-            </span>
-        </button>
+            <div class="suppliers-actions">
+                <div class="suppliers-filters">
+                    <div class="search-container">
+                        <label for="searchSuppliers">Buscar proveedores</label>
+                        <input id="searchSuppliers" name="searchSuppliers" type="text" placeholder="Codigo, empresa, nombre o correo."
+                        [ngModel]="searchTerm" (ngModelChange)="onSearchChange($event)">
+                    </div>
+
+                    <button type="button" class="clear-search" (click)="onSearchChange('')">Limpiar</button>
+                </div>
+
+                <button type="button" class="new-supplier-button" (click)="openForm()">
+                    <span class="text-desktop">Nuevo Proveedor</span>
+                    <span class="text-mobile">
+                        <ng-icon name="lucidePlus" class="icon-add"></ng-icon>
+                    </span>
+                </button>
+            </div>
         }
     </div>
 
@@ -202,7 +216,7 @@
             </thead>
 
             <tbody>
-                @for (supplier of suppliers; track supplier.supplierId) {
+                @for (supplier of filteredSuppliers; track supplier.supplierId) {
                 <tr class="clickable-row" (click)="viewSupplierDetails(supplier)" tabindex="0"
                     (keydown.enter)="viewSupplierDetails(supplier)">
                     <td>{{ supplier.supplierCode }}</td>
@@ -232,9 +246,13 @@
             </tbody>
         </table>
 
-        @if (suppliers.length === 0) {
+        @if (filteredSuppliers.length === 0) {
         <div class="empty-suppliers">
-            <p>No hay proveedores registrados.</p>
+            @if (suppliers.length === 0) {
+                <p>No hay proveedores registrados.</p>
+            } @else {
+                <p>No se encontraron resultados con la busqueda.</p>
+            }
         </div>
         }
 

@@ -29,6 +29,7 @@ export class SuppliersComponent implements OnInit {
   editingSupplierId: number | null = null;
   errorMessage = "";
   errorMessageForm = "";
+  searchTerm = "";
 
   currentPage: number = 0;
   pageSize: number = 10;
@@ -70,6 +71,21 @@ export class SuppliersComponent implements OnInit {
         this.errorMessage = "No se pudieron cargar los proveedores";
       }
     });
+  }
+
+  get filteredSuppliers(): SupplierResponse[] {
+    const search = this.searchTerm.trim().toLowerCase();
+
+    return this.suppliers.filter(supplier => 
+      supplier.supplierCode.toLowerCase().includes(search) ||
+      supplier.businessName.toLowerCase().includes(search) ||
+      supplier.contactName.toLowerCase().includes(search) ||
+      supplier.email.toLowerCase().includes(search)
+    );
+  }
+
+  onSearchChange(value: string): void {
+    this.searchTerm = value;
   }
 
   viewSupplierDetails(supplier: SupplierResponse): void {
