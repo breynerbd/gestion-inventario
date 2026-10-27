@@ -7,14 +7,14 @@ import { PermissionUpdate } from "../../models/permission-update";
 import { PermissionService } from "../../services/permission.service";
 import { PaginationComponent } from "../../../../shared/components/pagination/pagination.component";
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
-import { lucideBan, lucideCircleCheck, lucidePencilSparkles, lucidePlus } from '@ng-icons/lucide';
+import { lucideBan, lucideCircleCheck, lucidePencil, lucidePlus } from '@ng-icons/lucide';
 
 @Component({
   selector: "app-permissions",
   imports: [FormsModule, PaginationComponent, NgIconComponent],
   templateUrl: "./permissions.component.html",
   styleUrl: "./permissions.component.css",
-  viewProviders: [provideIcons({ lucideBan, lucideCircleCheck, lucidePencilSparkles, lucidePlus })]
+  viewProviders: [provideIcons({ lucideBan, lucideCircleCheck, lucidePencil, lucidePlus })]
 })
 export class PermissionsComponent implements OnInit {
 

@@ -7,7 +7,7 @@ import { SupplierUpdate } from "../../models/supplier-update";
 import { SupplierService } from "../../service/supplier.service";
 import { RoleAuthService } from "../../../../core/services/role-auth.service";
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
-import { lucideBan, lucideCircleCheck, lucidePencilSparkles, lucidePlus } from '@ng-icons/lucide';
+import { lucideBan, lucideCircleCheck, lucidePencil, lucidePlus } from '@ng-icons/lucide';
 import { DetailField } from "../../../../shared/models/detail-field";
 import { DetailModalComponent } from "../../../../shared/components/detail-modal/detail-modal.component";
 
@@ -16,7 +16,7 @@ import { DetailModalComponent } from "../../../../shared/components/detail-modal
   imports: [FormsModule, NgIconComponent, DetailModalComponent],
   templateUrl: "./suppliers.component.html",
   styleUrl: "./suppliers.component.css",
-  viewProviders: [provideIcons({ lucideBan, lucideCircleCheck, lucidePencilSparkles, lucidePlus })]
+  viewProviders: [provideIcons({ lucideBan, lucideCircleCheck, lucidePencil, lucidePlus })]
 })
 export class SuppliersComponent implements OnInit {
 

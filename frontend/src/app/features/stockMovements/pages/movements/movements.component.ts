@@ -13,7 +13,7 @@ import { UserService } from "../../../users/services/user.service";
 import { DatePipe } from "@angular/common";
 import { RoleAuthService } from "../../../../core/services/role-auth.service";
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
-import { lucideBan, lucideCircleCheck, lucidePencilSparkles, lucidePlus, lucideChevronLeft, lucideChevronRight } from '@ng-icons/lucide';
+import { lucideBan, lucideCircleCheck, lucidePencil, lucidePlus, lucideChevronLeft, lucideChevronRight } from '@ng-icons/lucide';
 import { DetailModalComponent } from "../../../../shared/components/detail-modal/detail-modal.component";
 import { DetailField } from "../../../../shared/models/detail-field";
 
@@ -22,7 +22,7 @@ import { DetailField } from "../../../../shared/models/detail-field";
   imports: [FormsModule, DatePipe, NgIconComponent, DetailModalComponent],
   templateUrl: "./movements.component.html",
   styleUrl: "./movements.component.css",
-  viewProviders: [provideIcons({ lucideBan, lucideCircleCheck, lucidePencilSparkles, lucidePlus, lucideChevronLeft, lucideChevronRight })]
+  viewProviders: [provideIcons({ lucideBan, lucideCircleCheck, lucidePencil, lucidePlus, lucideChevronLeft, lucideChevronRight })]
 })
 export class MovementsComponent implements OnInit {
   movements: MovementResponse[] = [];

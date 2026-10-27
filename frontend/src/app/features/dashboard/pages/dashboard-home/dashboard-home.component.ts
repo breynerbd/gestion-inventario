@@ -4,7 +4,7 @@ import { DashboardService } from '../../services/dashboard.service';
 import { LowStockProduct } from '../../models/low-stock-product';
 import { Chart, ChartConfiguration, registerables } from "chart.js";
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
-import { lucidePackage, lucideTruck, lucideAlertTriangle, lucideBanknoteArrowUp, lucideBanknoteArrowDown, lucidePackageSearch, lucideShoppingCart } from '@ng-icons/lucide';
+import { lucidePackage, lucideTruck, lucideTriangle, lucideArrowUpFromLine, lucideArrowDownToLine, lucidePackageSearch, lucideShoppingCart } from '@ng-icons/lucide';
 import { MovementSummary } from '../../models/movement-summary';
 import { ProductsCount } from '../../models/products-category';
 import { MovementResponse } from '../../../stockMovements/models/movement-response';
@@ -25,8 +25,8 @@ Chart.register(...registerables);
   templateUrl: './dashboard-home.component.html',
   styleUrl: './dashboard-home.component.css',
   viewProviders: [provideIcons({
-    lucidePackage, lucideTruck, lucideAlertTriangle, lucideShoppingCart,
-    lucideBanknoteArrowUp, lucideBanknoteArrowDown, lucidePackageSearch
+    lucidePackage, lucideTruck, lucideTriangle, lucideShoppingCart,
+    lucideArrowUpFromLine, lucideArrowDownToLine, lucidePackageSearch
   })]
 })
 export class DashboardHomeComponent implements AfterViewInit, OnDestroy {

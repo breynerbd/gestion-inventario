@@ -8,7 +8,7 @@ import { RoleResponse } from '../../../roles/models/role-response';
 import { RoleService } from '../../../roles/services/role.service';
 import { PaginationComponent } from '../../../../shared/components/pagination/pagination.component';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
-import { lucideBan, lucideCircleCheck, lucidePencilSparkles, lucidePlus } from '@ng-icons/lucide';
+import { lucideBan, lucideCircleCheck, lucidePencil, lucidePlus } from '@ng-icons/lucide';
 import { DetailField } from '../../../../shared/models/detail-field';
 import { DetailModalComponent } from '../../../../shared/components/detail-modal/detail-modal.component';
 
@@ -17,7 +17,7 @@ import { DetailModalComponent } from '../../../../shared/components/detail-modal
   imports: [FormsModule, PaginationComponent, NgIconComponent, DetailModalComponent],
   templateUrl: './users.component.html',
   styleUrl: './users.component.css',
-  viewProviders: [provideIcons({ lucideBan, lucideCircleCheck, lucidePencilSparkles, lucidePlus })]
+  viewProviders: [provideIcons({ lucideBan, lucideCircleCheck, lucidePencil, lucidePlus })]
 })
 export class UsersComponent implements OnInit {
   users: UserResponse[] = [];
