@@ -18,6 +18,11 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
     List<Object[]> findProductCountInCategory(@Param("status") Product.Status status);
 
     long countProductsByStatus(Product.Status status);
+
+    boolean existsByCategory_CategoryId(Long categoryId);
+
+    boolean existsBySupplier_SupplierId(Long supplierId);
+
     @Query("select coalesce(sum(p.currentStock * p.salePrice), 0) from Product p where p.status = :status")
     BigDecimal calculateInventoryValue(@Param("status") Product.Status status);
 
