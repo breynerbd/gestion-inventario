@@ -1,18 +1,32 @@
 <div class="categories-container">
 
     <div class="categories-header">
-        <div>
-            <h1>Categorías</h1>
-            <p>Gestión de categorías del inventario</p>
+        <div class="categories-title">
+            <div>
+                <h1>Categorías</h1>
+                <p>Gestión de categorías del inventario</p>
+            </div>
         </div>
 
         @if(canManageCategories()) {
-        <button type="button" (click)="openForm()">
-            <span class="text-desktop">Nueva Categoría</span>
-            <span class="text-mobile">
-                <ng-icon name="lucidePlus" class="icon-add"></ng-icon>
-            </span>
-        </button>
+            <div class="categories-actions">
+                <div class="categories-filters">
+                    <div class="search-container">
+                        <label for="categorySearch">Buscar categorías</label>
+                        <input id="categorySearch" name="categorySearch" type="text" placeholder="Codigo o nombre."
+                        [ngModel]="searchTerm" (ngModelChange)="onSearchChange($event)">
+                    </div>
+
+                    <button type="button" class="clear-search" (click)="onSearchChange('')">Limpiar</button>
+                </div>
+
+                <button type="button" class="new-category-button" (click)="openForm()">
+                    <span class="text-desktop">Nueva Categoría</span>
+                    <span class="text-mobile">
+                        <ng-icon name="lucidePlus" class="icon-add"></ng-icon>
+                    </span>
+                </button>
+            </div>
         }
     </div>
 
@@ -57,7 +71,7 @@
                     <label for="categoryName">Nombre</label>
                     <input id="categoryName" type="text" name="categoryName" [(ngModel)]="newCategory.categoryName"
                         #categoryName="ngModel" maxlength="60" pattern="^[A-Za-zÁÉÍÓÚÑáéíóúñ ]+$" required>
-                    
+
                     @if (categoryName.invalid && categoryName.touched) {
                         @if (categoryName.errors?.["required"]) {
                             <small class="validation-message">El nombre de la categoría es obligatorio.</small>
@@ -73,7 +87,7 @@
 
                 <div class="form-group description-group">
                     <label for="description">Descripción</label>
-                    <textarea id="description" name="description" [(ngModel)]="newCategory.description" #description="ngModel" 
+                    <textarea id="description" name="description" [(ngModel)]="newCategory.description" #description="ngModel"
                         maxlength="250" rows="4"></textarea>
 
                         @if (description.errors?.['maxlength'] && description.touched) {
@@ -112,7 +126,7 @@
             </thead>
 
             <tbody>
-                @for (category of categories; track category.categoryId) {
+                @for (category of filteredCategories; track category.categoryId) {
                 <tr>
                     <td>{{ category.categoryCode }}</td>
                     <td>{{ category.categoryName }}</td>
@@ -139,9 +153,13 @@
             </tbody>
         </table>
 
-        @if (categories.length === 0) {
+        @if (filteredCategories.length === 0) {
         <div class="empty-categories">
-            <p>No hay categorías registradas.</p>
+            @if (categories.length === 0) {
+                <p>No hay categorías registradas.</p>
+            } @else {
+                <p>No se encontraron resultados con la busqueda.</p>
+            }
         </div>
         }
 

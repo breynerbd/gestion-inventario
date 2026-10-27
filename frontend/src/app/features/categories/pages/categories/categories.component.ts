@@ -27,6 +27,7 @@ export class CategoriesComponent implements OnInit {
   pageSize: number = 10;
   totalPages: number = 0;
   totalElements: number = 0;
+  searchTerm = "";
 
   newCategory: CategoryCreate = {
     categoryCode: "",
@@ -70,6 +71,19 @@ export class CategoriesComponent implements OnInit {
         this.errorMessage = "No se pudieron cargar las categorias"
       }
     });
+  }
+
+  get filteredCategories(): CategoryResponse[] {
+    const search = this.searchTerm.trim().toLowerCase();
+
+    return this.categories.filter(categorie => 
+      categorie.categoryCode.toLowerCase().includes(search) ||
+      categorie.categoryName.toLowerCase().includes(search)
+    );
+  }
+
+  onSearchChange(value: string): void {
+    this.searchTerm = value;
   }
 
   changePage(page: number): void {
