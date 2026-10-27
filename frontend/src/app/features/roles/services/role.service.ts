@@ -11,7 +11,7 @@ import { RoleStatus } from "../models/role-status";
     providedIn: 'root'
 })
 export class RoleService {
-    private readonly apiUrl = 'http://localhost:8080/api/roles';
+    private readonly apiUrl = '/api/roles';
 
     constructor(private readonly http: HttpClient){
     }

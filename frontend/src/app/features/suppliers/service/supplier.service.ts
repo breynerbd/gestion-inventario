@@ -13,7 +13,7 @@ import { SupplierStatus } from '../models/supplier-status';
 })
 export class SupplierService {
 
-    private readonly apiUrl = 'http://localhost:8080/api/suppliers';
+    private readonly apiUrl = '/api/suppliers';
 
     constructor(private readonly http: HttpClient) { }
 

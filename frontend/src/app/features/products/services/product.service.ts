@@ -13,7 +13,7 @@ import { ProductStatus } from '../models/product-status';
 })
 export class ProductService {
 
-    private readonly apiUrl = 'http://localhost:8080/api/products';
+    private readonly apiUrl = '/api/products';
 
     constructor(private readonly http: HttpClient) { }
 

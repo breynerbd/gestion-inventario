@@ -13,9 +13,9 @@ import { ProductResponse } from "../../products/models/product-response";
 })
 export class DashboardService {
 
-    private apiProductsUrl = "http://localhost:8080/api/products";
-    private apiMovementsUrl = "http://localhost:8080/api/movements"
-    private apiSuppliersUrl = "http://localhost:8080/api/suppliers"
+    private apiProductsUrl = "/api/products";
+    private apiMovementsUrl = "/api/movements"
+    private apiSuppliersUrl = "/api/suppliers"
 
     constructor(private http: HttpClient){
     }

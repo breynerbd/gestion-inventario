@@ -9,7 +9,7 @@ import { PermissionStatus } from "../models/permission-status";
     providedIn: 'root'
 })
 export class PermissionService {
-    private readonly apiUrl = 'http://localhost:8080/api/permissions';
+    private readonly apiUrl = '/api/permissions';
 
     constructor(private readonly http: HttpClient){
     }

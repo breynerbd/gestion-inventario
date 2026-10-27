@@ -10,7 +10,7 @@ import { RefreshTokenRequest } from '../models/refresh-token-request';
   providedIn: 'root'
 })
 export class AuthService {
-  private readonly apiUrl = "http://localhost:8080/api/auth"
+  private readonly apiUrl = "/api/auth"
 
   constructor(private readonly http: HttpClient) {
 

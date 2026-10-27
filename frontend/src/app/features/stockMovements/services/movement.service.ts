@@ -12,7 +12,7 @@ import { MovementStatus } from "../models/movement-status";
 })
 export class MovementService {
 
-    private readonly apiUrl = 'http://localhost:8080/api/movements'
+    private readonly apiUrl = '/api/movements'
 
     constructor(private readonly http: HttpClient){
     }
