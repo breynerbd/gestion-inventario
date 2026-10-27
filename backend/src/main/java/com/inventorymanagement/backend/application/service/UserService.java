@@ -151,6 +151,10 @@ public class UserService {
             validateActiveRole(user.getRole());
         }
 
+        if (status == User.Status.ACTIVO) {
+            user.setFailedAttempts(0);
+        }
+
         user.setStatus(status);
 
         User updatedUser = repository.save(user);

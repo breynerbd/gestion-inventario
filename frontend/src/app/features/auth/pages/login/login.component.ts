@@ -33,7 +33,16 @@ export class LoginComponent {
       },
       error: error => {
         console.error(error);
-        this.errorMessage = "Credenciales incorrectas"
+
+        const message = error.error?.error?.toLowerCase();
+
+        if (message?.includes('bloqueado')) {
+          this.errorMessage = 'Tu cuenta está bloqueada.';
+        } else if (message?.includes('inactivo')) {
+          this.errorMessage = 'Tu cuenta está inactiva.';
+        } else {
+          this.errorMessage = 'Usuario o contraseña incorrectos.';
+        }
       }
     });
   }  

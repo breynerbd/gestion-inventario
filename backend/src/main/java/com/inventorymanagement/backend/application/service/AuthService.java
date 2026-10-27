@@ -150,8 +150,7 @@ public class AuthService {
             user.setFailedAttempts(attempts);
 
             if (attempts >= MAX_ATTEMPTS) {
-                user.setStatus(
-                        User.Status.BLOQUEADO);
+                user.setStatus(User.Status.BLOQUEADO);
             }
 
             userRepository.save(user);
@@ -160,6 +159,8 @@ public class AuthService {
 
             throw new InvalidCredentialsException("Credenciales inválidas");
         }
+
+        user.setFailedAttempts(0);
 
         userRepository.save(user);
 
