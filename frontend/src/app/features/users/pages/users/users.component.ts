@@ -11,6 +11,7 @@ import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { lucideBan, lucideCircleCheck, lucidePencil, lucidePlus } from '@ng-icons/lucide';
 import { DetailField } from '../../../../shared/models/detail-field';
 import { DetailModalComponent } from '../../../../shared/components/detail-modal/detail-modal.component';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-users',
@@ -116,7 +117,9 @@ export class UsersComponent implements OnInit {
       { label: "Teléfono", value: user.phone },
       { label: "Rol", value: role?.roleName ?? "No disponible" },
       { label: "Intentos fallidos", value: user.failedAttempts},
-      { label: "Estado", value: user.status }
+      { label: "Fecha de creación", value: new DatePipe('en-US').transform(user.creationDate, "dd/MM/yyyy HH:mm") ?? "No disponible" },
+      { label: "Última modificación", value: new DatePipe('en-US').transform(user.modificationDate, "dd/MM/yyyy HH:mm") ?? "No disponible" },
+      { label: "Estado", value: user.status },
     ];
 
     this.showDetails = true;

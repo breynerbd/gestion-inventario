@@ -10,4 +10,6 @@ export interface UserResponse {
     roleName: string;
     status: string;
     failedAttempts: number;
+    creationDate: string;
+    modificationDate: string;
 }
