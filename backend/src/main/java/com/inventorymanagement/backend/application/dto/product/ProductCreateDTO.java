@@ -20,11 +20,6 @@ import lombok.Setter;
 @NoArgsConstructor 
 public class ProductCreateDTO {
 
-    @NotBlank(message = "El código del producto es obligatorio")
-    @Size(max = 20, message = "El código del producto no puede superar los 20 caracteres")
-    @Pattern(regexp = "^[A-Za-z0-9_-]+$", message = "El código del producto solo puede tener letras, números, guiones y guiones bajos (Ejemplo: PROD001)")
-    private String productCode;
-
     @NotBlank(message = "El nombre del producto es obligatorio")
     @Size(max = 120, message = "El nombre del producto no puede superar los 120 caracteres")
     @Pattern(regexp = "^[A-Za-zÁÉÍÓÚÑáéíóúñ0-9\\s]+$", message = "El nombre del producto solo puede tener letras, números y espacios")

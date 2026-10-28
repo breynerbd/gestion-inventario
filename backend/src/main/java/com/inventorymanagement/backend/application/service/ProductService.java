@@ -21,6 +21,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -38,6 +39,7 @@ public class ProductService {
     private static final String NOT_EXIST = " no existe";
     private static final String LOGGER_NOT_FOUND = "No se encontro el producto: {}";
     private static final Logger LOGGER = LoggerFactory.getLogger(ProductService.class);
+    private final JdbcTemplate jdbcTemplate;
 
     private void validateActiveEntities(Category category, Supplier proveedor) {
         LOGGER.debug("Validando categoria y proveedor activos");
@@ -65,6 +67,15 @@ public class ProductService {
             LOGGER.warn("El stock maximo no es mayor que el stock minimo");
             throw new IllegalArgumentException("El stock máximo debe ser mayor que el stock mínimo");
         }
+    }
+
+    private String generateProductCode() {
+        Long number = jdbcTemplate.queryForObject(
+            "SELECT nextval('product_code_sequence')",
+            Long.class
+        );
+
+        return String.format("PROD%03d", number);
     }
 
     public Page<ProductResponseDTO> findAllProducts(String productCode, String productName, Long categoryId, Long supplierId, Product.Status status, Pageable pageable) {
@@ -164,6 +175,7 @@ public class ProductService {
         validateActiveEntities(category, supplier);
 
         Product product = mapper.toEntity(productDto, category, supplier);
+        product.setProductCode(generateProductCode());
          
         Product savedProduct = repository.save(product); 
 

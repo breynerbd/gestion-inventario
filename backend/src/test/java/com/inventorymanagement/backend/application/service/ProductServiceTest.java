@@ -114,7 +114,6 @@ class ProductServiceTest {
         response.setStatus(Product.Status.ACTIVO);
 
         productDTO = new ProductCreateDTO();
-        productDTO.setProductCode("PROD001");
         productDTO.setProductName("Coca Cola");
         productDTO.setDescription("Bebida refrescante sabor cola de 600ml");
         productDTO.setPurchasePrice(new BigDecimal("5.00"));

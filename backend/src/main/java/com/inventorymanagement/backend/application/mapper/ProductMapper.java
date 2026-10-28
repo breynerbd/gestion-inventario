@@ -16,7 +16,6 @@ public class ProductMapper {
 
         Product product = new Product();
 
-        product.setProductCode(dto.getProductCode());
         product.setProductName(dto.getProductName());
         product.setDescription(dto.getDescription());
         product.setCategory(category);
