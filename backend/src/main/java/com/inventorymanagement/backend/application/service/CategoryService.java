@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import com.inventorymanagement.backend.domain.entity.Category;
@@ -30,6 +31,16 @@ public class CategoryService {
     private static final String CATEGORY_NOT_EXIST = " no existe";
     private static final String LOGGER_NOT_FOUND = "No se encontro la categoria: {}";
     private static final Logger LOGGER = LoggerFactory.getLogger(CategoryService.class);
+    private final JdbcTemplate jdbcTemplate;
+
+    private String generateProductCode() {
+        Long number = jdbcTemplate.queryForObject(
+            "SELECT nextval('category_code_sequence')",
+            Long.class
+        );
+
+        return String.format("CAT%03d", number);
+    }
 
     public Page<CategoryResponseDTO> findAllCategories(Pageable pageable){
         LOGGER.debug("Obteniendo datos de categorias existentes");
@@ -52,6 +63,7 @@ public class CategoryService {
         LOGGER.debug("Creando una categoria");
 
         Category category = mapper.toEntity(categoryDTO);
+        category.setCategoryCode(generateProductCode());
 
         Category savedCategory = repository.save(category); 
         LOGGER.info("Se creo la categoria con id: {}", savedCategory.getCategoryId());

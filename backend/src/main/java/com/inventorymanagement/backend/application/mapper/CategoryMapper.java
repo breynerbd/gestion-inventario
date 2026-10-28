@@ -14,7 +14,6 @@ public class CategoryMapper {
 
         Category category = new Category();
 
-        category.setCategoryCode(dto.getCategoryCode());
         category.setCategoryName(dto.getCategoryName());
         category.setDescription(dto.getDescription());
         category.setStatus(Category.Status.ACTIVO);

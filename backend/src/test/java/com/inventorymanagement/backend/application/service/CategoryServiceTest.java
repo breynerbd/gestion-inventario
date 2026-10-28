@@ -68,7 +68,6 @@ class CategoryServiceTest {
         response.setStatus(Category.Status.ACTIVO);
 
         categoryDTO = new CategoryCreateDTO();
-        categoryDTO.setCategoryCode("CAT002");
         categoryDTO.setCategoryName("Bebidas");
         categoryDTO.setDescription("Productos de bebidas");
 
