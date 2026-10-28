@@ -1,0 +1,14 @@
+databaseChangeLog:
+    - changeSet:
+        id: 012-stock-movement-modification-date
+        author: breyner
+        changes:
+            - addColumn:
+                tableName: stock_movements
+                columns:
+                    - column:
+                        name: modification_date
+                        type: timestamp
+                        defaultValueComputed: CURRENT_TIMESTAMP
+                        constraints:
+                            nullable: false

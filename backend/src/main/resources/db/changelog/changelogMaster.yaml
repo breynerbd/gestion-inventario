@@ -38,3 +38,11 @@ databaseChangeLog:
     - include:
         file: 010_binnacle.yaml
         relativeToChangelogFile: true
+
+    - include:
+        file: 011_entity_dates.yaml
+        relativeToChangelogFile: true
+
+    - include:
+        file: 012_stock_movement_modification_date.yaml
+        relativeToChangelogFile: true
