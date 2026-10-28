@@ -7,10 +7,11 @@ import { RoleUpdate } from '../../models/role-update';
 import { PaginationComponent } from '../../../../shared/components/pagination/pagination.component';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { lucideBan, lucideCircleCheck, lucidePencil, lucidePlus } from '@ng-icons/lucide';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-roles',
-  imports: [FormsModule, PaginationComponent, NgIconComponent],
+  imports: [FormsModule, PaginationComponent, NgIconComponent, DatePipe],
   templateUrl: './roles.component.html',
   styleUrl: './roles.component.css',
   viewProviders: [provideIcons({ lucideBan, lucideCircleCheck, lucidePencil, lucidePlus })]

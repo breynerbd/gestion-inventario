@@ -3,4 +3,6 @@ export interface RoleResponse {
     roleName: string;
     description: string;
     status: string;
+    creationDate: string;
+    modificationDate: string;
 }

@@ -76,6 +76,8 @@
                     <th>ID</th>
                     <th>Nombre del Rol</th>
                     <th>Descripción</th>
+                    <th>Fecha Creación</th>
+                    <th>Última Modificación</th>
                     <th>Estado</th>
                     <th>Acciones</th>
                 </tr>
@@ -86,6 +88,8 @@
                     <td>{{ role.roleId }}</td>
                     <td>{{ role.roleName }}</td>
                     <td>{{ role.description }}</td>
+                    <td>{{ role.creationDate | date:"dd/MM/yyyy HH:mm" }}</td>
+                    <td>{{ role.modificationDate | date:"dd/MM/yyyy HH:mm" }}</td>
                     <td>{{ role.status }}</td>
                     <td>
                         <button type="button" class="icon-action-btn" (click)="editRole(role)" title="Editar">
