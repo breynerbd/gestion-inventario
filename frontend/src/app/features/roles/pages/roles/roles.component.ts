@@ -145,11 +145,19 @@ export class RolesComponent implements OnInit {
       { status: newStatus }
     ).subscribe({
       next: () => {
+        this.errorMessage = "";
         this.loadRoles();
       },
       error: (error) => {
         console.error(error);
-        this.errorMessage = "No se pudo cambiar el estado del rol";
+
+        const message = error.error?.error;
+
+        if (message?.includes("usuarios asociados")) {
+          this.errorMessage = message;
+        } else {
+          this.errorMessage = message || "No se pudo cambiar el estado del rol";
+        }
       }
     });
   }

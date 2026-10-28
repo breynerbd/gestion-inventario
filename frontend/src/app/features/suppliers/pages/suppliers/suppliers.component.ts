@@ -228,11 +228,19 @@ export class SuppliersComponent implements OnInit {
       { status: newStatus }
     ).subscribe({
       next: () => {
+        this.errorMessage = "";
         this.loadSuppliers();
       },
       error: (error) => {
         console.error(error);
-        this.errorMessage = "No se pudo cambiar el estado del proveedor";
+        
+        const message = error.error?.error;
+
+        if (message?.includes("productos asociados")) {
+          this.errorMessage = message;
+        } else {
+          this.errorMessage = message || "No se pudo cambiar el estado del proveedor";
+        }
       }
     });
   }

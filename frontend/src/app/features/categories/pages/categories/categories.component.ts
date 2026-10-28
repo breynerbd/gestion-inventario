@@ -166,11 +166,19 @@ export class CategoriesComponent implements OnInit {
       { status: newStatus }
     ).subscribe({
       next: () => {
+        this.errorMessage = "";
         this.loadCategories();
       },
       error: (error) => {
         console.error(error);
-        this.errorMessage = "No se pudo cambiar el estado de la categoria"
+        
+        const message = error.error?.error;
+
+        if (message?.includes("productos asociados")) {
+          this.errorMessage = message;
+        } else {
+          this.errorMessage = message || "No se pudo cambiar el estado de la categoria"
+        }
       }
     });
   }
