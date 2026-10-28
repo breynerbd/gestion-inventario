@@ -13,6 +13,7 @@ import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { lucideBan, lucideCircleCheck, lucidePencil, lucidePlus, lucideChevronLeft, lucideChevronRight } from '@ng-icons/lucide';
 import { DetailModalComponent } from '../../../../shared/components/detail-modal/detail-modal.component';
 import { DetailField } from '../../../../shared/models/detail-field';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-products',
@@ -82,6 +83,8 @@ export class ProductsComponent implements OnInit {
       { label: "Stock mínimo", value: product.minimumStock },
       { label: "Stock máximo", value: product.maximumStock },
       { label: "Estado", value: product.status },
+      { label: "Fecha de creación", value: new DatePipe('en-US').transform(product.creationDate, "dd/MM/yyyy HH:mm") ?? "No disponible" },
+      { label: "Última modificación", value: new DatePipe('en-US').transform(product.modificationDate, "dd/MM/yyyy HH:mm") ?? "No disponible" },
       { label: "Descripción", value: product.description },
     ];
 

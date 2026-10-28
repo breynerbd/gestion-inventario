@@ -12,4 +12,6 @@ export interface ProductResponse {
     minimumStock: number;
     maximumStock: number;
     status: string;
+    creationDate: string;
+    modificationDate: string;
 }
