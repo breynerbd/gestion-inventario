@@ -219,15 +219,31 @@
     <section class="alerts-section">
         <div class="section-header">
             <div>
-                <h3>Últimos movimientos de inventario</h3>
+                <h3>Actividades recientes</h3>
                 <p>Actividad reciente del inventario</p>
             </div>
 
-            <button class="view-all-button" type="button" (click)="viewAllMovements()">Ver todos</button>
+            <div class="table-header-actions">
+                <label for="tableOption">Mostrar</label>
+
+                <select id="tableOption" [(ngModel)]="tableOption" (ngModelChange)="onTableOptionChange()">
+                    <option value="movements">Movimientos</option>
+                    <option value="products">Productos</option>
+                    <option value="categories">Categorías</option>
+                    <option value="users">Usuarios</option>
+                    <option value="suppliers">Proveedores</option>
+                </select>
+
+                <button class="view-all-button" type="button" (click)="viewAllMovements()">
+                    Ver todos
+                </button>
+            </div>
         </div>
 
         <div class="movements-table-container">
             <table class="movements-table">
+                @switch (tableOption) {
+                @case ('movements') {
                 <thead>
                     <tr>
                         <th>Fecha</th>
@@ -237,9 +253,9 @@
                         <th>Usuario</th>
                     </tr>
                 </thead>
-
                 <tbody>
-                    <tr *ngFor="let movement of latestMovements">
+                    @for (movement of latestMovements; track movement.movementId) {
+                    <tr>
                         <td>{{ movement.movementDate | date: "dd/MM/yyyy HH:mm" }}</td>
                         <td>{{ movement.productName }}</td>
                         <td>
@@ -250,13 +266,130 @@
                         <td>{{ movement.quantity }}</td>
                         <td>{{ movement.username }}</td>
                     </tr>
-
-                    <tr *ngIf="latestMovements.length === 0">
+                    } @empty {
+                    <tr>
                         <td colspan="5" class="empty-movements">
-                            No hay movimientos registrados.
+                            No hay registros recientes.
                         </td>
                     </tr>
+                    }
                 </tbody>
+                }
+
+                @case ('products') {
+                <thead>
+                    <tr>
+                        <th>Código</th>
+                        <th>Producto</th>
+                        <th>Existencias</th>
+                        <th>Precio de venta</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (product of latestProducts; track product.productId) {
+                    <tr>
+                        <td>{{ product.productCode }}</td>
+                        <td>{{ product.productName }}</td>
+                        <td>{{ product.currentStock }}</td>
+                        <td>{{ product.salePrice | currency: "Q " : "symbol" : "1.2-2" }}</td>
+                        <td>{{ product.status }}</td>
+                    </tr>
+                    } @empty {
+                    <tr>
+                        <td colspan="5" class="empty-movements">
+                            No hay registros recientes.
+                        </td>
+                    </tr>
+                    }
+                </tbody>
+                }
+
+                @case ('categories') {
+                <thead>
+                    <tr>
+                        <th>Código</th>
+                        <th>Categoría</th>
+                        <th>Descripción</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (category of categories; track category.categoryId) {
+                    <tr>
+                        <td>{{ category.categoryCode }}</td>
+                        <td>{{ category.categoryName }}</td>
+                        <td>{{ category.description || 'Sin descripción' }}</td>
+                        <td>{{ category.status }}</td>
+                    </tr>
+                    } @empty {
+                    <tr>
+                        <td colspan="4" class="empty-movements">
+                            No hay registros recientes.
+                        </td>
+                    </tr>
+                    }
+                </tbody>
+                }
+
+                @case ('users') {
+                <thead>
+                    <tr>
+                        <th>Usuario</th>
+                        <th>Nombre completo</th>
+                        <th>Correo</th>
+                        <th>Rol</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (user of latestUsers; track user.userId) {
+                    <tr>
+                        <td>{{ user.username }}</td>
+                        <td>{{ user.firstNames }} {{ user.lastNames }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>{{ user.roleName }}</td>
+                        <td>{{ user.status }}</td>
+                    </tr>
+                    } @empty {
+                    <tr>
+                        <td colspan="5" class="empty-movements">
+                            No hay registros recientes.
+                        </td>
+                    </tr>
+                    }
+                </tbody>
+                }
+
+                @case ('suppliers') {
+                <thead>
+                    <tr>
+                        <th>Código</th>
+                        <th>Empresa</th>
+                        <th>Contacto</th>
+                        <th>Teléfono</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (supplier of latestSuppliers; track supplier.supplierId) {
+                    <tr>
+                        <td>{{ supplier.supplierCode }}</td>
+                        <td>{{ supplier.businessName }}</td>
+                        <td>{{ supplier.contactName }}</td>
+                        <td>{{ supplier.phone }}</td>
+                        <td>{{ supplier.status }}</td>
+                    </tr>
+                    } @empty {
+                    <tr>
+                        <td colspan="5" class="empty-movements">
+                            No hay registros recientes.
+                        </td>
+                    </tr>
+                    }
+                </tbody>
+                }
+                }
             </table>
         </div>
     </section>

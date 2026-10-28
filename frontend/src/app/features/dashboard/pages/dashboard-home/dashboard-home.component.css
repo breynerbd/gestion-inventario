@@ -471,6 +471,33 @@
     border-bottom: none;
 }
 
+.table-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+.table-header-actions label {
+    color: #586F7C;
+    font-size: 14px;
+}
+
+.table-header-actions select {
+    padding: 9px 12px;
+    border: 1px solid #B8DBD9;
+    border-radius: 7px;
+    background-color: #FFFFFF;
+    color: #2F4550;
+    font-family: inherit;
+    font-size: 14px;
+    outline: none;
+}
+
+.table-header-actions select:focus {
+    border-color: #586F7C;
+}
+
 .movement-type {
     display: inline-block;
     font-size: 14px;
@@ -611,6 +638,21 @@
 
     .alert-info p {
         font-size: 12px;
+    }
+
+    .alerts-section > .section-header {
+        align-items: flex-start;
+        flex-wrap: wrap;
+    }
+
+    .table-header-actions {
+        width: 100%;
+        flex-wrap: wrap;
+    }
+
+    .table-header-actions select {
+        flex: 1;
+        min-width: 120px;
     }
 }
 
@@ -812,6 +854,19 @@
     .movements-table th,
     .movements-table td {
         padding: 8px;
+        font-size: 11px;
+    }
+
+    .table-header-actions {
+        gap: 8px;
+    }
+
+    .table-header-actions label {
+        font-size: 12px;
+    }
+
+    .table-header-actions select {
+        padding: 6px;
         font-size: 11px;
     }
 

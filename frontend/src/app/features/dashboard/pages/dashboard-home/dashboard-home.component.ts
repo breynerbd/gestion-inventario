@@ -16,6 +16,11 @@ import { FormsModule } from '@angular/forms';
 import { CategoryResponse } from '../../../categories/models/category-response';
 import { CategoryService } from '../../../categories/services/category.service';
 import { ProductResponse } from '../../../products/models/product-response';
+import { UserResponse } from '../../../users/models/user-response';
+import { SupplierResponse } from '../../../suppliers/models/supplier-response';
+import { ProductService } from '../../../products/services/product.service';
+import { SupplierService } from '../../../suppliers/service/supplier.service';
+import { UserService } from '../../../users/services/user.service';
 
 Chart.register(...registerables);
 
@@ -55,11 +60,15 @@ export class DashboardHomeComponent implements AfterViewInit, OnDestroy {
   private productsCategoryChart?: Chart;
 
   latestMovements: MovementResponse[] = [];
+  latestProducts: ProductResponse[] = [];
+  latestUsers: UserResponse[] = [];
+  latestSuppliers: SupplierResponse[] = [];
   lowStockProductsList: LowStockProduct[] = [];
   categories: CategoryResponse[] = [];
   selectedCategoryId: number | null = 0;
   stockFilter = 0;
   stockLimit = 0;
+  tableOption = "movements";
 
   alertPageSize = 8;
   currentAlertPage = 1;
@@ -84,7 +93,9 @@ export class DashboardHomeComponent implements AfterViewInit, OnDestroy {
   }
 
   constructor(private readonly dashboardService: DashboardService, private readonly movementService: MovementService,
-    private router: Router, private readonly roleService: RoleAuthService, private readonly categoryService: CategoryService
+    private router: Router, private readonly roleService: RoleAuthService, private readonly categoryService: CategoryService,
+    private readonly productService: ProductService, private readonly supplierService: SupplierService,
+    private readonly userService: UserService
   ) { }
 
   ngAfterViewInit(): void {
@@ -172,6 +183,30 @@ export class DashboardHomeComponent implements AfterViewInit, OnDestroy {
     })
   }
 
+  onTableOptionChange(): void {
+    switch (this.tableOption) {
+      case 'movements':
+        this.loadLatestMovements();
+        break;
+
+      case 'products':
+        this.loadLatestProducts();
+        break;
+
+      case 'categories':
+        this.loadLatestCategories();
+        break;
+
+      case 'users':
+        this.loadLatestUsers();
+        break;
+
+      case 'suppliers':
+        this.loadLatestSuppliers();
+        break;
+    }
+  }
+
   loadLatestMovements(): void {
     this.movementService.getLatestMovements().subscribe({
       next: (response) => {
@@ -181,6 +216,38 @@ export class DashboardHomeComponent implements AfterViewInit, OnDestroy {
         console.error("Error al cargar los últimos movimientos:", error);
       }
     });
+  }
+
+  private loadLatestProducts(): void {
+    this.productService.getProducts(0, 5, '', '', undefined, undefined, undefined, 'creationDate,desc')
+      .subscribe({
+        next: response => this.latestProducts = response.content,
+        error: error => console.error('Error al cargar los productos:', error)
+      });
+  }
+
+  private loadLatestCategories(): void {
+    this.categoryService.getCategories(0, 5, 'creationDate,desc')
+      .subscribe({
+        next: response => this.categories = response.content,
+        error: error => console.error('Error al cargar las categorias:', error)
+      });
+  }
+
+  private loadLatestUsers(): void {
+    this.userService.getUsers()
+      .subscribe({
+        next: response => this.latestUsers = response.slice(0, 5),
+        error: error => console.error('Error al cargar los usuarios:', error)
+      });
+  }
+
+  private loadLatestSuppliers(): void {
+    this.supplierService.getSuppliers(0, 5, 'creationDate,desc')
+      .subscribe({
+        next: response => this.latestSuppliers = response.content,
+        error: error => console.error('Error al cargar los proveedores:', error)
+      });
   }
 
   private loadMovementsValue(): void {
@@ -206,7 +273,14 @@ export class DashboardHomeComponent implements AfterViewInit, OnDestroy {
   }
 
   viewAllMovements(): void {
-    this.router.navigate(["/dashboard/movements"]);
+    const routes: { [key: string]: string } = {
+      movements: '/dashboard/movements',
+      products: '/dashboard/products',
+      categories: '/dashboard/categories',
+      users: '/dashboard/users',
+      suppliers: '/dashboard/suppliers'
+    };
+    this.router.navigate([routes[this.tableOption]]);
   }
 
   private createStockChart(products: LowStockProduct[]): void {
