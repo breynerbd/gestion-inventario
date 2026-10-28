@@ -38,7 +38,6 @@ export class SuppliersComponent implements OnInit {
   totalElements: number = 0;
 
   newSupplier: SupplierCreate = {
-    supplierCode: "",
     documentType: "",
     documentNumber: "",
     businessName: "",
@@ -143,7 +142,6 @@ export class SuppliersComponent implements OnInit {
     this.errorMessage = "";
 
     this.newSupplier = {
-      supplierCode: supplier.supplierCode,
       documentType: supplier.documentType,
       documentNumber: supplier.documentNumber,
       businessName: supplier.businessName,
@@ -270,7 +268,6 @@ export class SuppliersComponent implements OnInit {
 
   resetForm(): void {
     this.newSupplier = {
-      supplierCode: "",
       documentType: "",
       documentNumber: "",
       businessName: "",

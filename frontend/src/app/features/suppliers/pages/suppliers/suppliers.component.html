@@ -52,24 +52,6 @@
             <form class="supplier-form" #supplierForm="ngForm" (ngSubmit)="saveSupplier()">
 
                 <div class="form-group">
-                    <label for="supplierCode">Código</label>
-                    <input id="supplierCode" type="text" name="supplierCode" [(ngModel)]="newSupplier.supplierCode"
-                        #supplierCode="ngModel" maxlength="10" pattern="^[A-Za-z0-9_-]+$" required [disabled]="editingSupplierId !== null">
-                    
-                @if (supplierCode.invalid && supplierCode.touched) {
-                    @if (supplierCode.errors?.["required"]) {
-                        <small class="validation-message">El código del proveedor es obligatorio.</small>
-                    }
-                    @if (supplierCode.errors?.["maxlength"]) {
-                        <small class="validation-message">El código tiene un máximo de 10 caracteres.</small>
-                    }
-                    @if (supplierCode.errors?.["pattern"]) {
-                        <small class="validation-message">Usa solo letras, números, guión y guión bajo.</small>
-                    }
-                }
-                </div>
-
-                <div class="form-group">
                     <label for="documentType">Tipo de documento</label>
 
                     <select id="documentType" name="documentType" [(ngModel)]="newSupplier.documentType" #documentType="ngModel" required>

@@ -1,5 +1,4 @@
 export interface SupplierCreate {
-    supplierCode: string;
     documentType: string;
     documentNumber: string;
     businessName: string;
