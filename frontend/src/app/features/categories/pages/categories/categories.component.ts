@@ -7,10 +7,11 @@ import { CategoryService } from '../../services/category.service';
 import { RoleAuthService } from '../../../../core/services/role-auth.service';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { lucideBan, lucideCircleCheck, lucidePencil, lucidePlus, lucideChevronRight, lucideChevronLeft } from '@ng-icons/lucide';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-categories',
-  imports: [FormsModule, NgIconComponent],
+  imports: [FormsModule, NgIconComponent, DatePipe],
   templateUrl: './categories.component.html',
   styleUrl: './categories.component.css',
   viewProviders: [provideIcons({ lucideBan, lucideCircleCheck, lucidePencil, lucidePlus, lucideChevronRight, lucideChevronLeft })]
