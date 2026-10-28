@@ -10,6 +10,7 @@ import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { lucideBan, lucideCircleCheck, lucidePencil, lucidePlus } from '@ng-icons/lucide';
 import { DetailField } from "../../../../shared/models/detail-field";
 import { DetailModalComponent } from "../../../../shared/components/detail-modal/detail-modal.component";
+import { DatePipe } from "@angular/common";
 
 @Component({
   selector: "app-suppliers",
@@ -100,7 +101,9 @@ export class SuppliersComponent implements OnInit {
       { label: "Nombre de contacto", value: supplier.contactName },
       { label: "Teléfono", value: supplier.phone },
       { label: "Correo electrónico", value: supplier.email },
-      { label: "Dirección", value: supplier.address }
+      { label: "Fecha de creación", value: new DatePipe('en-US').transform(supplier.creationDate, "dd/MM/yyyy HH:mm") ?? "No disponible" },
+      { label: "Última modificación", value: new DatePipe('en-US').transform(supplier.modificationDate, "dd/MM/yyyy HH:mm") ?? "No disponible" },
+      { label: "Dirección", value: supplier.address },
     ];
 
     this.showDetails = true;

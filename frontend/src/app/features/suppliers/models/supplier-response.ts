@@ -9,4 +9,6 @@ export interface SupplierResponse {
     email: string;
     address: string;
     status: string;
+    creationDate: string;
+    modificationDate: string;
 }
