@@ -151,6 +151,7 @@ export class MovementsComponent implements OnInit {
       { label: "Usuario", value: user?.username ?? "No disponible" },
       { label: "Fecha", value: new DatePipe('en-US').transform(movement.movementDate, "dd/MM/yyyy HH:mm") ?? "No disponible" },
       { label: "Estado", value: movement.status },
+      { label: "Última modificación", value: new DatePipe('en-US').transform(movement.modificationDate, "dd/MM/yyyy HH:mm") ?? "No disponible" },
       { label: "Motivo", value: movement.reason },
     ];
 

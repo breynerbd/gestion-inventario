@@ -10,4 +10,5 @@ export interface MovementResponse {
     username: string;
     movementDate: string;
     status: string;
+    modificationDate: string;
 }
