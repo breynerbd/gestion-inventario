@@ -7,8 +7,6 @@
                 <p>Gestión de categorías del inventario</p>
             </div>
         </div>
-
-        @if(canManageCategories()) {
             <div class="categories-actions">
                 <div class="categories-filters">
                     <div class="search-container">
@@ -19,15 +17,16 @@
 
                     <button type="button" class="clear-search" (click)="onSearchChange('')">Limpiar</button>
                 </div>
-
+                
+                @if(canManageCategories()) {
                 <button type="button" class="new-category-button" (click)="openForm()">
                     <span class="text-desktop">Nueva Categoría</span>
                     <span class="text-mobile">
                         <ng-icon name="lucidePlus" class="icon-add"></ng-icon>
                     </span>
                 </button>
+                }
             </div>
-        }
     </div>
 
     @if (errorMessage) {

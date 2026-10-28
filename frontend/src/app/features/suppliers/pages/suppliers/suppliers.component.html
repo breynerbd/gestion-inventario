@@ -7,8 +7,6 @@
                 <p>Gestión de proveedores del inventario</p>
             </div>
         </div>
-        
-        @if(canManageSuppliers()) {
             <div class="suppliers-actions">
                 <div class="suppliers-filters">
                     <div class="search-container">
@@ -20,14 +18,15 @@
                     <button type="button" class="clear-search" (click)="onSearchChange('')">Limpiar</button>
                 </div>
 
+                @if(canManageSuppliers()) {
                 <button type="button" class="new-supplier-button" (click)="openForm()">
                     <span class="text-desktop">Nuevo Proveedor</span>
                     <span class="text-mobile">
                         <ng-icon name="lucidePlus" class="icon-add"></ng-icon>
                     </span>
                 </button>
+                }
             </div>
-        }
     </div>
 
     @if (errorMessage) {
