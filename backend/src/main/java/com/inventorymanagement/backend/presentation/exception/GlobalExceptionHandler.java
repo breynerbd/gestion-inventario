@@ -112,4 +112,15 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(respuesta);
     }
+
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<Map<String, String>> handleIllegalState(IllegalStateException exception) {
+        LOGGER.warn("No se pudo realizar el cambio solicitado");
+
+        Map<String, String> respuesta = new HashMap<>();
+        
+        respuesta.put(ERROR_KEY, exception.getMessage());
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(respuesta);
+    }
 }
