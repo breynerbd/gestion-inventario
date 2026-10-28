@@ -7,12 +7,15 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 @Entity
 @Table(name = "categories")
@@ -20,6 +23,8 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor 
 public class Category {
+
+    private static final ZoneId ZONE_ID = ZoneId.of("America/Guatemala");
 
     public enum Status {
         ACTIVO,
@@ -49,4 +54,16 @@ public class Category {
 
     @Column(name = "modification_date", nullable = false)
     private LocalDateTime modificationDate;
+
+    @PrePersist
+    protected void onCreate() {
+        LocalDateTime now = LocalDateTime.now(ZONE_ID);
+        creationDate = now;
+        modificationDate = now;
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        modificationDate = LocalDateTime.now(ZONE_ID);
+    }
 }
