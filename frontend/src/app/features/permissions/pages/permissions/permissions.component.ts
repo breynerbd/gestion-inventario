@@ -8,10 +8,11 @@ import { PermissionService } from "../../services/permission.service";
 import { PaginationComponent } from "../../../../shared/components/pagination/pagination.component";
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { lucideBan, lucideCircleCheck, lucidePencil, lucidePlus } from '@ng-icons/lucide';
+import { DatePipe } from "@angular/common";
 
 @Component({
   selector: "app-permissions",
-  imports: [FormsModule, PaginationComponent, NgIconComponent],
+  imports: [FormsModule, PaginationComponent, NgIconComponent, DatePipe],
   templateUrl: "./permissions.component.html",
   styleUrl: "./permissions.component.css",
   viewProviders: [provideIcons({ lucideBan, lucideCircleCheck, lucidePencil, lucidePlus })]

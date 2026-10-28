@@ -5,4 +5,6 @@ export interface PermissionResponse {
     module: string;
     description: string;
     status: string;
+    creationDate: string;
+    modificationDate: string;
 }
