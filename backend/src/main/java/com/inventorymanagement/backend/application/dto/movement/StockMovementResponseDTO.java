@@ -25,4 +25,5 @@ public class StockMovementResponseDTO {
     private String username;
     private LocalDateTime movementDate;
     private Status status;
+    private LocalDateTime modificationDate;
 }

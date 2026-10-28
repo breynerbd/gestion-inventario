@@ -1,5 +1,7 @@
 package com.inventorymanagement.backend.application.dto.permission;
 
+import java.time.LocalDateTime;
+
 import com.inventorymanagement.backend.domain.entity.Permission.Module;
 import com.inventorymanagement.backend.domain.entity.Permission.Status;
 
@@ -18,4 +20,6 @@ public class PermissionResponseDTO {
     private Module module;
     private String description;
     private Status status;
+    private LocalDateTime creationDate;
+    private LocalDateTime modificationDate;
 }

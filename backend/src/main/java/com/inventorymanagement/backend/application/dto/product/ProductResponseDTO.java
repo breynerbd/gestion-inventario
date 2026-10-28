@@ -1,6 +1,7 @@
 package com.inventorymanagement.backend.application.dto.product;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 import com.inventorymanagement.backend.domain.entity.Product.Status;
 import com.inventorymanagement.backend.domain.entity.Product.UnitOfMeasure;
@@ -26,4 +27,6 @@ public class ProductResponseDTO {
     private Integer minimumStock;
     private Integer maximumStock;
     private Status status;
+    private LocalDateTime creationDate;
+    private LocalDateTime modificationDate;
 }

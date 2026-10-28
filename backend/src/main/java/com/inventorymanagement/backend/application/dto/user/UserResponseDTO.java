@@ -1,5 +1,7 @@
 package com.inventorymanagement.backend.application.dto.user;
 
+import java.time.LocalDateTime;
+
 import com.inventorymanagement.backend.domain.entity.User.Status;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,4 +22,6 @@ public class UserResponseDTO {
     private String roleName;
     private Status status;
     private Integer failedAttempts;
+    private LocalDateTime creationDate;
+    private LocalDateTime modificationDate;
 }
