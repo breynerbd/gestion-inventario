@@ -8,6 +8,7 @@ import com.inventorymanagement.backend.application.dto.role.RoleResponseDTO;
 import com.inventorymanagement.backend.application.dto.role.RoleUpdateDTO;
 import com.inventorymanagement.backend.application.mapper.RoleMapper;
 import com.inventorymanagement.backend.infrastructure.persistence.repository.RoleRepository;
+import com.inventorymanagement.backend.infrastructure.persistence.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -22,6 +23,7 @@ import java.util.List;
 public class RoleService {
 
     private final RoleRepository repository;
+    private final UserRepository userRepository;
     private final RoleMapper mapper;
     private static final String ROLE_NOT_FOUND = "El rol ";
     private static final String NOT_EXIST = " no existe";
@@ -92,6 +94,10 @@ public class RoleService {
             };
 
             throw new StatusUnchangedException(menssage);
+        }
+
+        if (status == Role.Status.INACTIVO && userRepository.existsByRole_RoleId(roleId)) {
+            throw new IllegalStateException("No se puede inactivar un rol con usuarios asociados.");
         }
 
         role.setStatus(status);

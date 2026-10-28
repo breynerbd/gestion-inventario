@@ -14,6 +14,7 @@ import com.inventorymanagement.backend.application.dto.category.CategoryResponse
 import com.inventorymanagement.backend.application.dto.category.CategoryUpdateDTO;
 import com.inventorymanagement.backend.application.mapper.CategoryMapper;
 import com.inventorymanagement.backend.infrastructure.persistence.repository.CategoryRepository;
+import com.inventorymanagement.backend.infrastructure.persistence.repository.ProductRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -22,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 public class CategoryService {
 
     private final CategoryRepository repository;
+    private final ProductRepository productRepository;
     private final CategoryMapper mapper;
 
     private static final String CATEGORY_NOT_FOUND = "La categoria ";
@@ -91,6 +93,10 @@ public class CategoryService {
             };
 
             throw new StatusUnchangedException(message);
+        }
+
+        if (status == Category.Status.INACTIVO && productRepository.existsByCategory_CategoryId(categoryId)) {
+            throw new IllegalStateException("No se puede inactivar una categoria con productos asociados.");
         }
 
         category.setStatus(status);

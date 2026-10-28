@@ -7,6 +7,7 @@ import com.inventorymanagement.backend.application.dto.supplier.SupplierCreateDT
 import com.inventorymanagement.backend.application.dto.supplier.SupplierResponseDTO;
 import com.inventorymanagement.backend.application.dto.supplier.SupplierUpdateDTO;
 import com.inventorymanagement.backend.application.mapper.SupplierMapper;
+import com.inventorymanagement.backend.infrastructure.persistence.repository.ProductRepository;
 import com.inventorymanagement.backend.infrastructure.persistence.repository.SupplierRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Service;
 public class SupplierService {
 
     private final SupplierRepository repository;
+    private final ProductRepository productRepository;
     private final SupplierMapper mapper;
     private static final String SUPPLIER_NOT_FOUND = "El proveedor ";
     private static final String NOT_EXIST = " no existe";
@@ -100,6 +102,10 @@ public class SupplierService {
             };
 
             throw new StatusUnchangedException(message);
+        }
+
+        if (status == Supplier.Status.INACTIVO && productRepository.existsBySupplier_SupplierId(supplierId)) {
+            throw new IllegalStateException("No se puede inactivar un proveedor con productos asociados.");
         }
 
         supplier.setStatus(status);
