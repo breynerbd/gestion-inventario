@@ -47,7 +47,6 @@ export class ProductsComponent implements OnInit {
   totalElements: number = 0;
 
   newProduct: ProductCreate = {
-    productCode: '',
     productName: '',
     description: '',
     categoryId: 0,
@@ -102,7 +101,6 @@ export class ProductsComponent implements OnInit {
     this.errorMessage = '';
 
     this.newProduct = {
-      productCode: product.productCode,
       productName: product.productName,
       description: product.description || '',
       categoryId: product.categoryId,
@@ -246,8 +244,8 @@ export class ProductsComponent implements OnInit {
   saveProduct(): void {
     this.errorMessageForm = "";
 
-    if (!this.newProduct.productName.trim() || (this.editingProductId === null && !this.newProduct.productCode.trim()) ||
-        this.newProduct.categoryId === 0 || this.newProduct.supplierId === 0 || this.newProduct.unitOfMeasure === ""
+    if (!this.newProduct.productName.trim() || this.newProduct.categoryId === 0 || 
+        this.newProduct.supplierId === 0 || this.newProduct.unitOfMeasure === ""
     ) {
         this.errorMessageForm = "Completa todos los campos obligatorios.";
         return;
@@ -323,7 +321,6 @@ export class ProductsComponent implements OnInit {
 
   resetForm(): void {
     this.newProduct = {
-      productCode: '',
       productName: '',
       description: '',
       categoryId: 0,

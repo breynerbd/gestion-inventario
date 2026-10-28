@@ -1,5 +1,4 @@
 export interface ProductCreate {
-    productCode: string;
     productName: string;
     description: string;
     categoryId: number;

@@ -98,24 +98,6 @@
             <form class="product-form" #productForm="ngForm" (ngSubmit)="saveProduct()">
 
                 <div class="form-group">
-                    <label for="productCode">Código</label>
-                    <input id="productCode" type="text" name="productCode" [(ngModel)]="newProduct.productCode"
-                        maxlength="20" pattern="[A-Za-z0-9_-]+" #productCode="ngModel" [disabled]="editingProductId !== null" required>
-
-                    @if (productCode.invalid && productCode.touched) {
-                        @if (productCode.errors?.["required"]) {
-                            <small class="validation-message">El código es obligatorio.</small>
-                        }
-                        @if (productCode.errors?.["maxLength"]) {
-                            <small class="validation-message">El código tiene máximo de 20 caracteres.</small>
-                        }
-                        @if (productCode.errors?.["pattern"]) {
-                            <small class="validation-message">Usa solo letras, números, guión bajo o alto.</small>
-                        }
-                    }
-                </div>
-
-                <div class="form-group">
                     <label for="productName">Nombre</label>
                     <input id="productName" type="text" name="productName" [(ngModel)]="newProduct.productName"
                         maxlength="120" pattern="[A-Za-zÁÉÍÓÚÑáéíóúñ0-9 ]+" #productName="ngModel" required>
