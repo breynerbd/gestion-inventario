@@ -31,7 +31,6 @@ export class CategoriesComponent implements OnInit {
   searchTerm = "";
 
   newCategory: CategoryCreate = {
-    categoryCode: "",
     categoryName: "",
     description: ""
   };
@@ -54,7 +53,6 @@ export class CategoriesComponent implements OnInit {
     this.errorMessage = "";
 
     this.newCategory = {
-      categoryCode: category.categoryCode,
       categoryName: category.categoryName,
       description: category.description || ""
     };
@@ -140,11 +138,6 @@ export class CategoriesComponent implements OnInit {
   saveCategory(): void {
     this.errorMessageForm = "";
 
-    if (!this.newCategory.categoryCode.trim()) {
-      this.errorMessageForm = "El codigo de la categoría es obligatorio.";
-      return;
-    }
-
     if (!this.newCategory.categoryName.trim()) {
       this.errorMessageForm = "El nombre de la categoría es obligatorio.";
       return;
@@ -200,7 +193,6 @@ export class CategoriesComponent implements OnInit {
 
   resetForm(): void {
     this.newCategory = {
-      categoryCode: "",
       categoryName: "",
       description: ""
     };
