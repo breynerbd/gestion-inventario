@@ -16,11 +16,6 @@ import lombok.Setter;
 @NoArgsConstructor 
 public class SupplierCreateDTO {
 
-    @NotBlank(message = "El código del proveedor es obligatorio")
-    @Size(max = 10, message = "El código del proveedor no puede superar los 10 caracteres")
-    @Pattern(regexp = "^[A-Za-z0-9_-]+$", message = "El código del proveedor solo puede tener letras, números, guiones y guiones bajos (PROV001)")
-    private String supplierCode;
-
     @NotNull(message = "El tipo de documento es obligatorio")
     private DocumentType documentType;
 

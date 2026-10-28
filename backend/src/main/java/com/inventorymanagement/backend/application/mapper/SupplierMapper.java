@@ -14,7 +14,6 @@ public class SupplierMapper {
 
         Supplier supplier = new Supplier();
 
-        supplier.setSupplierCode(dto.getSupplierCode());
         supplier.setDocumentType(dto.getDocumentType());
         supplier.setDocumentNumber(dto.getDocumentNumber());
         supplier.setBusinessName(dto.getBusinessName());

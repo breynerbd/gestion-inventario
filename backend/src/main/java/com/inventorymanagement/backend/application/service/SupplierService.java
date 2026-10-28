@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -27,9 +28,19 @@ public class SupplierService {
     private final SupplierMapper mapper;
     private static final String SUPPLIER_NOT_FOUND = "El proveedor ";
     private static final String NOT_EXIST = " no existe";
+    private final JdbcTemplate jdbcTemplate;
     
     private static final String LOGGER_NOT_FOUND = "No se encontro el proveedor: {}";
     private static final Logger LOGGER = LoggerFactory.getLogger(SupplierService.class);
+
+    private String generateProductCode() {
+        Long number = jdbcTemplate.queryForObject(
+            "SELECT nextval('supplier_code_sequence')",
+            Long.class
+        );
+
+        return String.format("PROV%03d", number);
+    }
 
     public Page<SupplierResponseDTO> findAllSuppliers(Pageable pageable) {
         LOGGER.debug("Obteniendo datos de proveedores existentes");
@@ -60,6 +71,7 @@ public class SupplierService {
         LOGGER.debug("Creando un proveedor");
 
         Supplier supplier = mapper.toEntity(supplierDto);
+        supplier.setSupplierCode(generateProductCode());
         
         Supplier savedSupplier = repository.save(supplier); 
 

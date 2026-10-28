@@ -66,7 +66,6 @@ class SupplierServiceTest {
         response.setStatus(Supplier.Status.ACTIVO);
 
         supplierDTO = new SupplierCreateDTO();
-        supplierDTO.setSupplierCode("PROV002");
         supplierDTO.setBusinessName("Alimentos Guatemala");
         supplierDTO.setContactName("Juan Perez");
         supplierDTO.setPhone("23694721");
