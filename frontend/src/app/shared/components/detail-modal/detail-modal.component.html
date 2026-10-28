@@ -15,7 +15,7 @@
 
         <div class="detail-modal-content">
             @for (field of fields; track field.label) {
-            <div class="detail-field" [class.full-width]="field.label === 'Descripción' || field.label === 'Motivo'">
+            <div class="detail-field" [class.full-width]="field.label === 'Descripción' || field.label === 'Motivo' || field.label === 'Dirección'">
                 <span class="detail-field-label">{{ field.label }}</span>
                 <span class="detail-field-value">
                     {{ field.value ?? '—' }}
