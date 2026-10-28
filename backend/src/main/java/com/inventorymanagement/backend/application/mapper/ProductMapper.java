@@ -62,6 +62,8 @@ public class ProductMapper {
         dto.setMinimumStock(product.getMinimumStock());
         dto.setMaximumStock(product.getMaximumStock());
         dto.setStatus(product.getStatus());
+        dto.setCreationDate(product.getCreationDate());
+        dto.setModificationDate(product.getModificationDate());
 
         return dto;
     }

@@ -1,8 +1,5 @@
 package com.inventorymanagement.backend.application.mapper;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-
 import org.springframework.stereotype.Component;
 
 import com.inventorymanagement.backend.application.dto.category.CategoryCreateDTO;
@@ -12,7 +9,6 @@ import com.inventorymanagement.backend.domain.entity.Category;
 
 @Component
 public class CategoryMapper {
-    private static final ZoneId ZONE_ID = ZoneId.of("America/Guatemala");
 
     public Category toEntity(CategoryCreateDTO dto) {
 
@@ -21,10 +17,7 @@ public class CategoryMapper {
         category.setCategoryCode(dto.getCategoryCode());
         category.setCategoryName(dto.getCategoryName());
         category.setDescription(dto.getDescription());
-        category.setStatus(Category.Status.ACTIVO); 
-        LocalDateTime now = LocalDateTime.now(ZONE_ID); 
-        category.setCreationDate(now); 
-        category.setModificationDate(now); 
+        category.setStatus(Category.Status.ACTIVO);
 
         return category;
     }
@@ -33,7 +26,6 @@ public class CategoryMapper {
 
         category.setCategoryName(dto.getCategoryName());
         category.setDescription(dto.getDescription());
-        category.setModificationDate(LocalDateTime.now(ZONE_ID));
     }
 
     public CategoryResponseDTO toResponseDTO(Category category) {

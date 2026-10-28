@@ -40,6 +40,8 @@ public class PermissionMapper {
         dto.setModule(permission.getModule());
         dto.setDescription(permission.getDescription());
         dto.setStatus(permission.getStatus());
+        dto.setCreationDate(permission.getCreationDate());
+        dto.setModificationDate(permission.getModificationDate());
 
         return dto;
     }

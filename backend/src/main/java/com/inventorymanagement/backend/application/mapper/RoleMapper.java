@@ -35,6 +35,8 @@ public class RoleMapper {
         dto.setRoleName(role.getRoleName());
         dto.setDescription(role.getDescription());
         dto.setStatus(role.getStatus());
+        dto.setCreationDate(role.getCreationDate());
+        dto.setModificationDate(role.getModificationDate());
 
         return dto;
     }

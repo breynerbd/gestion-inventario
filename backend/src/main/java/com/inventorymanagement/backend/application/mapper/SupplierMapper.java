@@ -52,6 +52,8 @@ public class SupplierMapper {
         dto.setEmail(supplier.getEmail());
         dto.setAddress(supplier.getAddress());
         dto.setStatus(supplier.getStatus());
+        dto.setCreationDate(supplier.getCreationDate());
+        dto.setModificationDate(supplier.getModificationDate());
 
         return dto;
     }

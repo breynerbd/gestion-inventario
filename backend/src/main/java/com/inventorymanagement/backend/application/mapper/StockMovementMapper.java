@@ -1,8 +1,5 @@
 package com.inventorymanagement.backend.application.mapper;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-
 import org.springframework.stereotype.Component;
 
 import com.inventorymanagement.backend.domain.entity.StockMovement;
@@ -14,7 +11,6 @@ import com.inventorymanagement.backend.domain.entity.User;
 
 @Component
 public class StockMovementMapper {
-    private static final ZoneId ZONE_ID = ZoneId.of("America/Guatemala");
 
     public StockMovement toEntity(StockMovementCreateDTO dto, Product product, User user) {
 
@@ -26,7 +22,6 @@ public class StockMovementMapper {
         movement.setReason(dto.getReason());
         movement.setProduct(product);
         movement.setUser(user);
-        movement.setMovementDate(LocalDateTime.now(ZONE_ID));
         movement.setStatus(StockMovement.Status.ACTIVO);
 
         return movement;
@@ -53,6 +48,7 @@ public class StockMovementMapper {
         dto.setReason(movement.getReason());
         dto.setMovementDate(movement.getMovementDate());
         dto.setStatus(movement.getStatus());
+        dto.setModificationDate(movement.getModificationDate());
 
         if (movement.getProduct() != null) {
             dto.setProductId(

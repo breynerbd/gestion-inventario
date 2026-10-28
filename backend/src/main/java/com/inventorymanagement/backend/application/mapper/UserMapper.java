@@ -55,6 +55,8 @@ public class UserMapper {
 
         dto.setStatus(user.getStatus());
         dto.setFailedAttempts(user.getFailedAttempts());
+        dto.setCreationDate(user.getCreationDate());
+        dto.setModificationDate(user.getModificationDate());
 
         return dto;
     }
