@@ -122,6 +122,7 @@ export class SuppliersComponent implements OnInit {
 
   createSupplier(): void {
     this.errorMessage = "";
+    this.errorMessageForm = "";
 
     this.supplierService.createSupplier(this.newSupplier).subscribe({
       next: () => {
@@ -131,7 +132,7 @@ export class SuppliersComponent implements OnInit {
       },
       error: (error) => {
         console.error(error);
-        this.errorMessage = "No se pudo crear el proveedor";
+        this.errorMessageForm = error.error?.error || "No se pudo crear el proveedor";
       }
     });
   }
@@ -153,6 +154,9 @@ export class SuppliersComponent implements OnInit {
   }
 
   updateSupplier(): void {
+    this.errorMessage = "";
+    this.errorMessageForm = "";
+
     if (this.editingSupplierId === null) {
       return;
     }
@@ -179,7 +183,7 @@ export class SuppliersComponent implements OnInit {
       },
       error: (error) => {
         console.error(error);
-        this.errorMessage = "No se pudo actualizar el proveedor";
+        this.errorMessageForm = error.error?.error || "No se pudo actualizar el proveedor";
       }
     });
   }
@@ -263,6 +267,8 @@ export class SuppliersComponent implements OnInit {
   cancelForm(): void {
     this.showForm = false;
     this.editingSupplierId = null;
+    this.errorMessage = "";
+    this.errorMessageForm = "";
     this.resetForm();
   }
 

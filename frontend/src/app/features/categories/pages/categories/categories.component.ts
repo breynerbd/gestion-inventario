@@ -94,6 +94,7 @@ export class CategoriesComponent implements OnInit {
 
   createCategory(): void {
     this.errorMessage = "";
+    this.errorMessageForm = "";
 
     this.categoryService.createCategory(this.newCategory).subscribe({
       next: () => {
@@ -103,12 +104,15 @@ export class CategoriesComponent implements OnInit {
       },
       error: (error) => {
         console.error(error);
-        this.errorMessage = "No se pudo crear la categoria"
+        this.errorMessageForm = error.error?.error || "No se pudo crear la categoria";
       }
     });
   }
 
   updateCategory(): void {
+    this.errorMessage = "";
+    this.errorMessageForm = "";
+
     if (this.editingCategoryId === null) {
       return;
     }
@@ -130,7 +134,7 @@ export class CategoriesComponent implements OnInit {
       },
       error: (error) => {
         console.error(error);
-        this.errorMessage = "No se pudo actualizar la categoria"
+        this.errorMessageForm = error.error?.error || "No se pudo actualizar la categoria";
       }
     });
   }
@@ -188,6 +192,8 @@ export class CategoriesComponent implements OnInit {
   cancelForm(): void {
     this.showForm = false;
     this.editingCategoryId = null;
+    this.errorMessage = "";
+    this.errorMessageForm = "";
     this.resetForm();
   }
 

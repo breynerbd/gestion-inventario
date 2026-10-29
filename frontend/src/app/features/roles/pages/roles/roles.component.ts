@@ -69,6 +69,7 @@ export class RolesComponent implements OnInit {
 
   createRole(): void {
     this.errorMessage = "";
+    this.errorMessageForm = "";
 
     this.roleService.createRole(this.newRole).subscribe({
       next: () => {
@@ -78,7 +79,7 @@ export class RolesComponent implements OnInit {
       },
       error: (error) => {
         console.error(error);
-        this.errorMessage = "No se pudo crear el rol"
+        this.errorMessageForm = error.error?.error || "No se pudo crear el rol";
       }
     });
   }
@@ -95,6 +96,9 @@ export class RolesComponent implements OnInit {
   }
 
   updateRole(): void {
+    this.errorMessage = "";
+    this.errorMessageForm = "";
+
     if (this.editingRoleId === null) {
       return;
     }
@@ -116,7 +120,7 @@ export class RolesComponent implements OnInit {
       },
       error: (error) => {
         console.error(error);
-        this.errorMessage = "No se pudo actualizar el rol"
+        this.errorMessageForm = error.error?.error || "No se pudo actualizar el rol";
       }
     });
   }
@@ -174,6 +178,8 @@ export class RolesComponent implements OnInit {
   cancelForm(): void {
     this.showForm = false;
     this.editingRoleId = null;
+    this.errorMessage = "";
+    this.errorMessageForm = "";
     this.resetForm();
   }
 

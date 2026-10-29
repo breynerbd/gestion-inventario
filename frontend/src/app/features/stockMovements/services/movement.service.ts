@@ -19,9 +19,9 @@ export class MovementService {
 
     getMovements(page: number = 0, size: number = 10, 
             productId: number = 0, movementType: string = "", startDate: string = "",
-            endDate: string = "", userId: number = 0
+            endDate: string = "", userId: number = 0, sort: string = "movementId,asc"
         ): Observable<PageResponse<MovementResponse>> {
-            let params = new HttpParams().set("page", page.toString()).set("size", size.toString());
+            let params = new HttpParams().set("page", page.toString()).set("size", size.toString()).set("sort", sort.toString());
     
             if(productId) params = params.set("productId", productId);
             if(movementType.trim()) params = params.set("movementType", movementType.trim());

@@ -193,6 +193,7 @@ export class ProductsComponent implements OnInit {
 
   createProduct(): void {
     this.errorMessage = '';
+    this.errorMessageForm = '';
 
     this.productService.createProduct(this.newProduct).subscribe({
       next: () => {
@@ -202,12 +203,15 @@ export class ProductsComponent implements OnInit {
       },
       error: (error) => {
         console.error(error);
-        this.errorMessage = 'No se pudo crear el producto.';
+        this.errorMessageForm = error.error?.error || 'No se pudo crear el producto.';
       }
     });
   }
 
   updateProduct(): void {
+    this.errorMessage = '';
+    this.errorMessageForm = '';
+
     if (this.editingProductId === null) {
       return;
     }
@@ -236,7 +240,7 @@ export class ProductsComponent implements OnInit {
       },
       error: (error) => {
         console.log(error);
-        this.errorMessage = "No se pudo actualizar el producto"
+        this.errorMessageForm = error.error?.error || "No se pudo actualizar el producto"
       }
     });
   }
@@ -316,6 +320,8 @@ export class ProductsComponent implements OnInit {
   cancelForm(): void {
     this.showForm = false;
     this.editingProductId = null;
+    this.errorMessage = '';
+    this.errorMessageForm = '';
     this.resetForm();
   }
 

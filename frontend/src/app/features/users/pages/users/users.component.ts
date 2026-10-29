@@ -138,6 +138,7 @@ export class UsersComponent implements OnInit {
 
   createUser(): void {
     this.errorMessage = "";
+    this.errorMessageForm = "";
 
     this.userService.createUser(this.newUser).subscribe({
       next: () => {
@@ -147,7 +148,7 @@ export class UsersComponent implements OnInit {
       },
       error: (error) => {
         console.error(error);
-        this.errorMessage = "No se pudo crear el usuario"
+        this.errorMessageForm = error.error?.error || "No se pudo crear el usuario";
       }
     });
   }
@@ -169,6 +170,9 @@ export class UsersComponent implements OnInit {
   }
 
   updateUser(): void {
+    this.errorMessage = "";
+    this.errorMessageForm = "";
+
     if (this.editingUserId === null) {
       return
     }
@@ -193,7 +197,7 @@ export class UsersComponent implements OnInit {
       },
       error: (error) => {
         console.error(error);
-        this.errorMessage = "No se pudo actualizar el usuario"
+        this.errorMessageForm = error.error?.error || "No se pudo actualizar el usuario";
       }
     });
   }
@@ -277,6 +281,8 @@ export class UsersComponent implements OnInit {
   cancelForm(): void {
     this.showForm = false;
     this.editingUserId = null;
+    this.errorMessage = "";
+    this.errorMessageForm = "";
     this.resetForm();
   }
 
