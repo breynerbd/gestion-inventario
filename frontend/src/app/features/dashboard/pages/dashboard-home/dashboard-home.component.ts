@@ -208,7 +208,7 @@ export class DashboardHomeComponent implements AfterViewInit, OnDestroy {
   }
 
   loadLatestMovements(): void {
-    this.movementService.getLatestMovements().subscribe({
+    this.movementService.getMovements(0, 5, 0, '', '', '', 0, 'modificationDate,desc').subscribe({
       next: (response) => {
         this.latestMovements = response.content;
       },
@@ -219,7 +219,7 @@ export class DashboardHomeComponent implements AfterViewInit, OnDestroy {
   }
 
   private loadLatestProducts(): void {
-    this.productService.getProducts(0, 5, '', '', undefined, undefined, undefined, 'creationDate,desc')
+    this.productService.getProducts(0, 5, '', '', undefined, undefined, undefined, 'modificationDate,desc')
       .subscribe({
         next: response => this.latestProducts = response.content,
         error: error => console.error('Error al cargar los productos:', error)
@@ -227,7 +227,7 @@ export class DashboardHomeComponent implements AfterViewInit, OnDestroy {
   }
 
   private loadLatestCategories(): void {
-    this.categoryService.getCategories(0, 5, 'creationDate,desc')
+    this.categoryService.getCategories(0, 5, 'modificationDate,desc')
       .subscribe({
         next: response => this.categories = response.content,
         error: error => console.error('Error al cargar las categorias:', error)
@@ -243,7 +243,7 @@ export class DashboardHomeComponent implements AfterViewInit, OnDestroy {
   }
 
   private loadLatestSuppliers(): void {
-    this.supplierService.getSuppliers(0, 5, 'creationDate,desc')
+    this.supplierService.getSuppliers(0, 5, 'modificationDate,desc')
       .subscribe({
         next: response => this.latestSuppliers = response.content,
         error: error => console.error('Error al cargar los proveedores:', error)
