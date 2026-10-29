@@ -23,6 +23,10 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
 
     boolean existsBySupplier_SupplierId(Long supplierId);
 
+    boolean existsByProductName(String productName);
+
+    boolean existsByProductNameAndProductIdNot(String productName, Long productId);
+
     @Query("select coalesce(sum(p.currentStock * p.salePrice), 0) from Product p where p.status = :status")
     BigDecimal calculateInventoryValue(@Param("status") Product.Status status);
 
