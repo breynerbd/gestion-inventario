@@ -60,10 +60,20 @@ public class SupplierService {
             LOGGER.warn("El correo ya esta registrado");
             throw new DuplicateResourceException("El correo electronico ya esta en uso");
         }
+
+        if (repository.existsByDocumentNumber(supplierDto.getDocumentNumber())) {
+            LOGGER.warn("El número de documento ya esta registrado");
+            throw new DuplicateResourceException("El número de documento ya esta en uso");
+        }
     }
 
     private void validateExistingDataUpdate(SupplierUpdateDTO supplierDto, Long supplierId) {
         LOGGER.debug("Validando datos del proveedor actualizado");
+
+        if (repository.existsByBusinessNameAndSupplierIdNot(supplierDto.getBusinessName(), supplierId)) {
+            LOGGER.warn("El nombre de empresa {} ya esta registrado", supplierDto.getBusinessName());
+            throw new DuplicateResourceException("El nombre de empresa ya esta registrado");
+        }
 
         if (repository.existsByEmailAndSupplierIdNot(supplierDto.getEmail(), supplierId)) {
             LOGGER.warn("El correo ya esta registrado");
@@ -73,6 +83,11 @@ public class SupplierService {
         if (repository.existsByPhoneAndSupplierIdNot(supplierDto.getPhone(), supplierId)) {
             LOGGER.warn("El telefono ya esta registrado");
             throw new DuplicateResourceException("El teléfono ya está registrado");
+        }
+
+        if (repository.existsByDocumentNumberAndSupplierIdNot(supplierDto.getDocumentNumber(), supplierId)) {
+            LOGGER.warn("El número de documento ya esta registrado");
+            throw new DuplicateResourceException("El número de documento ya esta en uso");
         }
     }
 
