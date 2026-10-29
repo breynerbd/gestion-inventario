@@ -1,0 +1,13 @@
+databaseChangeLog:
+- changeSet:
+    id: 013-code-sequences
+    author: breyner
+    changes:
+        - sql:
+            sql: CREATE SEQUENCE IF NOT EXISTS category_code_sequence START WITH 1;
+
+        - sql:
+            sql: CREATE SEQUENCE IF NOT EXISTS supplier_code_sequence START WITH 1;
+
+        - sql:
+            sql: CREATE SEQUENCE IF NOT EXISTS product_code_sequence START WITH 1;
