@@ -2,6 +2,7 @@ package com.inventorymanagement.backend.application.service;
 
 import com.inventorymanagement.backend.domain.entity.Supplier;
 import com.inventorymanagement.backend.domain.exception.StatusUnchangedException;
+import com.inventorymanagement.backend.domain.exception.DuplicateResourceException;
 import com.inventorymanagement.backend.domain.exception.ResourceNotFoundException;
 import com.inventorymanagement.backend.application.dto.supplier.SupplierCreateDTO;
 import com.inventorymanagement.backend.application.dto.supplier.SupplierResponseDTO;
@@ -42,6 +43,39 @@ public class SupplierService {
         return String.format("PROV%03d", number);
     }
 
+    private void validateExistingData(SupplierCreateDTO supplierDto) {
+        LOGGER.debug("Validando datos del proveedor");
+
+        if (repository.existsByBusinessName(supplierDto.getBusinessName())) {
+            LOGGER.warn("El nombre de empresa {} ya esta registrado", supplierDto.getBusinessName());
+            throw new DuplicateResourceException("El nombre de empresa ya esta registrado");
+        }
+
+        if (repository.existsByPhone(supplierDto.getPhone())) {
+            LOGGER.warn("El telefono ya lo posee un proveedor");
+            throw new DuplicateResourceException("El teléfono ya está registrado");
+        }
+
+        if (repository.existsByEmail(supplierDto.getEmail())) {
+            LOGGER.warn("El correo ya esta registrado");
+            throw new DuplicateResourceException("El correo electronico ya esta en uso");
+        }
+    }
+
+    private void validateExistingDataUpdate(SupplierUpdateDTO supplierDto, Long supplierId) {
+        LOGGER.debug("Validando datos del proveedor actualizado");
+
+        if (repository.existsByEmailAndSupplierIdNot(supplierDto.getEmail(), supplierId)) {
+            LOGGER.warn("El correo ya esta registrado");
+            throw new DuplicateResourceException("El correo electronico ya esta en uso");
+        }
+
+        if (repository.existsByPhoneAndSupplierIdNot(supplierDto.getPhone(), supplierId)) {
+            LOGGER.warn("El telefono ya esta registrado");
+            throw new DuplicateResourceException("El teléfono ya está registrado");
+        }
+    }
+
     public Page<SupplierResponseDTO> findAllSuppliers(Pageable pageable) {
         LOGGER.debug("Obteniendo datos de proveedores existentes");
 
@@ -70,6 +104,8 @@ public class SupplierService {
     public SupplierResponseDTO createSupplier(SupplierCreateDTO supplierDto) {
         LOGGER.debug("Creando un proveedor");
 
+        validateExistingData(supplierDto);
+
         Supplier supplier = mapper.toEntity(supplierDto);
         supplier.setSupplierCode(generateProductCode());
         
@@ -82,6 +118,8 @@ public class SupplierService {
 
     public SupplierResponseDTO updateSupplier(Long supplierId, SupplierUpdateDTO supplierDto) {
         LOGGER.debug("Actualizando proveedor: {}", supplierId);
+
+        validateExistingDataUpdate(supplierDto, supplierId);
 
         Supplier supplier = repository.findById(supplierId)
             .orElseThrow(() -> {

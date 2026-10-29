@@ -2,6 +2,7 @@ package com.inventorymanagement.backend.application.service;
 
 import com.inventorymanagement.backend.domain.entity.Role;
 import com.inventorymanagement.backend.domain.exception.StatusUnchangedException;
+import com.inventorymanagement.backend.domain.exception.DuplicateResourceException;
 import com.inventorymanagement.backend.domain.exception.ResourceNotFoundException;
 import com.inventorymanagement.backend.application.dto.role.RoleCreateDTO;
 import com.inventorymanagement.backend.application.dto.role.RoleResponseDTO;
@@ -31,6 +32,24 @@ public class RoleService {
     private static final String LOGGER_NOT_FOUND = "No se encontro el rol: {}";
     private static final Logger LOGGER = LoggerFactory.getLogger(RoleService.class);
 
+    private void validateExistingData(RoleCreateDTO roleDto) {
+        LOGGER.debug("Validando datos del rol");
+
+        if (repository.existsByRoleName(roleDto.getRoleName())) {
+            LOGGER.warn("El nombre del rol {} ya esta registrado", roleDto.getRoleName());
+            throw new DuplicateResourceException("El nombre del rol ya esta registrado");
+        }
+    }
+
+    private void validateExistingDataUpdate(RoleUpdateDTO roleDto, Long roleId) {
+        LOGGER.debug("Validando datos del rol actualizado");
+
+        if (repository.existsByRoleNameAndRoleIdNot(roleDto.getRoleName(), roleId)) {
+            LOGGER.warn("El nombre del rol {} ya esta registrado", roleDto.getRoleName());
+            throw new DuplicateResourceException("El nombre del rol ya esta registrado");
+        }
+    }
+
     public List<RoleResponseDTO> findAllRoles() {
         LOGGER.debug("Obteniendo datos de roles existentes");
         return repository.findAll().stream().map(mapper::toResponseDTO).toList();
@@ -51,6 +70,8 @@ public class RoleService {
     public RoleResponseDTO createRole(RoleCreateDTO roleDto) {
         LOGGER.debug("Creando un rol");
 
+        validateExistingData(roleDto);
+
         Role role = mapper.toEntity(roleDto);
 
         Role savedRole = repository.save(role);
@@ -62,6 +83,8 @@ public class RoleService {
 
     public RoleResponseDTO updateRole(Long roleId, RoleUpdateDTO roleDto) {
         LOGGER.debug("Actualizando rol: {}", roleId);
+
+        validateExistingDataUpdate(roleDto, roleId);
 
         Role role = repository.findById(roleId)
             .orElseThrow(() -> {

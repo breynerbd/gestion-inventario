@@ -8,6 +8,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import com.inventorymanagement.backend.domain.entity.Category;
+import com.inventorymanagement.backend.domain.exception.DuplicateResourceException;
 import com.inventorymanagement.backend.domain.exception.ResourceNotFoundException;
 import com.inventorymanagement.backend.domain.exception.StatusUnchangedException;
 import com.inventorymanagement.backend.application.dto.category.CategoryCreateDTO;
@@ -42,6 +43,24 @@ public class CategoryService {
         return String.format("CAT%03d", number);
     }
 
+    private void validateExistingData(CategoryCreateDTO categoryDto) {
+        LOGGER.debug("Validando datos de la categoria");
+
+        if (repository.existsByCategoryName(categoryDto.getCategoryName())) {
+            LOGGER.warn("El nombre la categoria {} ya esta registrado", categoryDto.getCategoryName());
+            throw new DuplicateResourceException("El nombre de la categoria ya esta registrado");
+        }
+    }
+
+    private void validateExistingDataUpdate(CategoryUpdateDTO categoryDto, Long categoryId) {
+        LOGGER.debug("Validando datos de la categoria actualizada");
+
+        if (repository.existsByCategoryNameAndCategoryIdNot(categoryDto.getCategoryName(), categoryId)) {
+            LOGGER.warn("El nombre la categoria {} ya esta registrado", categoryDto.getCategoryName());
+            throw new DuplicateResourceException("El nombre de la categoria ya esta registrado");
+        }
+    }
+
     public Page<CategoryResponseDTO> findAllCategories(Pageable pageable){
         LOGGER.debug("Obteniendo datos de categorias existentes");
         return repository.findAll(pageable).map(mapper::toResponseDTO);
@@ -62,6 +81,8 @@ public class CategoryService {
     public CategoryResponseDTO createCategory(CategoryCreateDTO categoryDTO){
         LOGGER.debug("Creando una categoria");
 
+        validateExistingData(categoryDTO);
+
         Category category = mapper.toEntity(categoryDTO);
         category.setCategoryCode(generateProductCode());
 
@@ -73,6 +94,8 @@ public class CategoryService {
 
     public CategoryResponseDTO updateCategory(Long categoryId, CategoryUpdateDTO categoryDTO){
         LOGGER.debug("Actualizando categoria: {}", categoryId);
+
+        validateExistingDataUpdate(categoryDTO, categoryId);
         
         Category category = repository.findById(categoryId)
             .orElseThrow(() -> {

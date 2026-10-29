@@ -62,6 +62,20 @@ public class UserService {
         }
     }
 
+    private void validateExistingDataUpdate(UserUpdateDTO userDto, Long userId) {
+        LOGGER.debug("Validando datos del usuario actualizado");
+
+        if (repository.existsByEmailAndUserIdNot(userDto.getEmail(), userId)) {
+            LOGGER.warn("El correo ya esta registrado");
+            throw new DuplicateResourceException("El correo electronico ya esta en uso");
+        }
+
+        if (repository.existsByPhoneAndUserIdNot(userDto.getPhone(), userId)) {
+            LOGGER.warn("El telefono ya esta registrado");
+            throw new DuplicateResourceException("El teléfono ya está registrado");
+        }
+    }
+
     public List<UserResponseDTO> findAllUsers() {
         LOGGER.debug("Obteniendo datos de usuarios existentes");
 
@@ -105,6 +119,8 @@ public class UserService {
 
     public UserResponseDTO updatedUser(Long userId, UserUpdateDTO userDto) {
         LOGGER.debug("Actualizando usuario: {}", userId);
+
+        validateExistingDataUpdate(userDto, userId);
 
         User user = repository.findById(userId)
             .orElseThrow(() -> {

@@ -4,6 +4,7 @@ import com.inventorymanagement.backend.domain.entity.Category;
 import com.inventorymanagement.backend.domain.entity.Product;
 import com.inventorymanagement.backend.domain.entity.Supplier;
 import com.inventorymanagement.backend.domain.exception.StatusUnchangedException;
+import com.inventorymanagement.backend.domain.exception.DuplicateResourceException;
 import com.inventorymanagement.backend.domain.exception.ResourceNotFoundException;
 import com.inventorymanagement.backend.application.dto.product.ProductCountCategoryDTO;
 import com.inventorymanagement.backend.application.dto.product.ProductCreateDTO;
@@ -66,6 +67,24 @@ public class ProductService {
         if (maximumStock != null && maximumStock <= minimumStock) {
             LOGGER.warn("El stock maximo no es mayor que el stock minimo");
             throw new IllegalArgumentException("El stock máximo debe ser mayor que el stock mínimo");
+        }
+    }
+
+    private void validateExistingData(ProductCreateDTO productDto) {
+        LOGGER.debug("Validando datos del producto");
+
+        if (repository.existsByProductName(productDto.getProductName())) {
+            LOGGER.warn("El nombre del producto {} ya esta registrado", productDto.getProductName());
+            throw new DuplicateResourceException("El nombre del producto ya esta registrado");
+        }
+    }
+
+    private void validateExistingDataUpdate(ProductUpdateDTO productDto, Long productId) {
+        LOGGER.debug("Validando datos del producto actualizada");
+
+        if (repository.existsByProductNameAndProductIdNot(productDto.getProductName(), productId)) {
+            LOGGER.warn("El nombre del producto {} ya esta registrado", productDto.getProductName());
+            throw new DuplicateResourceException("El nombre del producto ya esta registrado");
         }
     }
 
@@ -151,14 +170,16 @@ public class ProductService {
     }
 
     public ProductResponseDTO createProduct(ProductCreateDTO productDto) {
+        LOGGER.debug("Creando Producto");
+
+        validateExistingData(productDto);
+
         validateProductRules(
             productDto.getPurchasePrice(),
             productDto.getSalePrice(),
             productDto.getMinimumStock(),
             productDto.getMaximumStock()
         );
-
-        LOGGER.debug("Creando Producto");
 
         Category category = categoryRepository.findById(productDto.getCategoryId()) 
             .orElseThrow(() -> {
@@ -185,14 +206,16 @@ public class ProductService {
     }
 
     public ProductResponseDTO updateProduct(Long productId, ProductUpdateDTO productDto) {
+        LOGGER.debug("Actualizando producto: {}", productId);
+
+        validateExistingDataUpdate(productDto, productId);
+
         validateProductRules(
             productDto.getPurchasePrice(),
             productDto.getSalePrice(),
             productDto.getMinimumStock(),
             productDto.getMaximumStock()
         );
-
-        LOGGER.debug("Actualizando producto: {}", productId);
 
         Product product = repository.findById(productId) 
             .orElseThrow(() -> {
