@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { AuthService } from '../../../auth/services/auth.service';
 import { RoleAuthService } from '../../../../core/services/role-auth.service';
@@ -10,6 +10,7 @@ import { lucideMenu, lucideUser } from '@ng-icons/lucide';
   imports: [RouterLink, RouterOutlet, RouterLinkActive, NgIconComponent],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   viewProviders: [provideIcons({ lucideMenu, lucideUser })]
 })
 export class DashboardComponent {

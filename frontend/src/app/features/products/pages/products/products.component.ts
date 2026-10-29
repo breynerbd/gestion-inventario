@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ProductResponse } from '../../models/product-response';
 import { ProductService } from '../../services/product.service';
 import { SupplierResponse } from '../../../suppliers/models/supplier-response';
@@ -20,6 +20,7 @@ import { DatePipe } from '@angular/common';
   imports: [FormsModule, NgIconComponent, DetailModalComponent],
   templateUrl: './products.component.html',
   styleUrl: './products.component.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   viewProviders: [provideIcons({ lucideBan, lucideCircleCheck, lucidePencil, lucidePlus, lucideChevronLeft, lucideChevronRight })]
 })
 export class ProductsComponent implements OnInit {

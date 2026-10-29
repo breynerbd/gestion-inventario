@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ChangeDetectionStrategy } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 
 import { MovementCreate } from "../../models/movement-create";
@@ -22,6 +22,7 @@ import { DetailField } from "../../../../shared/models/detail-field";
   imports: [FormsModule, DatePipe, NgIconComponent, DetailModalComponent],
   templateUrl: "./movements.component.html",
   styleUrl: "./movements.component.css",
+  changeDetection: ChangeDetectionStrategy.Eager,
   viewProviders: [provideIcons({ lucideBan, lucideCircleCheck, lucidePencil, lucidePlus, lucideChevronLeft, lucideChevronRight })]
 })
 export class MovementsComponent implements OnInit {

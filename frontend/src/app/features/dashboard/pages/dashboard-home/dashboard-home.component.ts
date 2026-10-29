@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild } from "@angular/core";
+import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild, ChangeDetectionStrategy } from "@angular/core";
 import { DashboardService } from '../../services/dashboard.service';
 import { LowStockProduct } from '../../models/low-stock-product';
 import { Chart, ChartConfiguration, registerables } from "chart.js";
@@ -29,6 +29,7 @@ Chart.register(...registerables);
   imports: [CommonModule, NgIconComponent, PaginationComponent, FormsModule],
   templateUrl: './dashboard-home.component.html',
   styleUrl: './dashboard-home.component.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   viewProviders: [provideIcons({
     lucidePackage, lucideTruck, lucideTriangle, lucideShoppingCart,
     lucideArrowUpFromLine, lucideArrowDownToLine, lucidePackageSearch

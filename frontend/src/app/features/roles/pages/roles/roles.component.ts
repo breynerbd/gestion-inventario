@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RoleResponse } from '../../models/role-response';
 import { RoleCreate } from '../../models/role-create';
@@ -14,6 +14,7 @@ import { DatePipe } from '@angular/common';
   imports: [FormsModule, PaginationComponent, NgIconComponent, DatePipe],
   templateUrl: './roles.component.html',
   styleUrl: './roles.component.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   viewProviders: [provideIcons({ lucideBan, lucideCircleCheck, lucidePencil, lucidePlus })]
 })
 export class RolesComponent implements OnInit {

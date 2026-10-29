@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ChangeDetectionStrategy } from '@angular/core';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { lucideBan, lucideChevronLeft, lucideChevronRight } from '@ng-icons/lucide';
 
@@ -7,6 +7,7 @@ import { lucideBan, lucideChevronLeft, lucideChevronRight } from '@ng-icons/luci
   imports: [NgIconComponent],
   templateUrl: './pagination.component.html',
   styleUrl: './pagination.component.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   viewProviders: [provideIcons({ lucideChevronRight, lucideChevronLeft })]
 })
 export class PaginationComponent {

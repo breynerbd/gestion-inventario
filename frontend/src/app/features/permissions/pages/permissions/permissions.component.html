@@ -83,13 +83,12 @@
                     <label for="module">Módulo</label>
                     <select id="module" type="text" name="module" [(ngModel)]="newPermission.module" #module="ngModel" required>
                         <option value="" disabled>Seleccione un módulo</option>
-                        <option value="USERS">Usuarios</option>
-                        <option value="PRODUCTS">Productos</option>
-                        <option value="CATEGORIES">Categorías</option>
-                        <option value="SUPPLIERS">Proveedores</option>
-                        <option value="STOCK_MOVEMENTS">Movimientos de inventario</option>
+                        <option value="USUARIOS">Usuarios</option>
+                        <option value="PRODUCTOS">Productos</option>
+                        <option value="CATEGORIAS">Categorías</option>
+                        <option value="PROVEEDORES">Proveedores</option>
+                        <option value="MOVIMIENTOS_STOCK">Movimientos de inventario</option>
                         <option value="ROLES">Roles</option>
-                        <option value="PERMISSIONS">Permisos</option>
                     </select>
 
                     @if (module.invalid && module.touched) {

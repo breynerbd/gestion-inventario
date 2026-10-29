@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { UserResponse } from '../../models/user-response';
 import { UserCreate } from '../../models/user-create';
@@ -18,6 +18,7 @@ import { DatePipe } from '@angular/common';
   imports: [FormsModule, PaginationComponent, NgIconComponent, DetailModalComponent],
   templateUrl: './users.component.html',
   styleUrl: './users.component.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   viewProviders: [provideIcons({ lucideBan, lucideCircleCheck, lucidePencil, lucidePlus })]
 })
 export class UsersComponent implements OnInit {

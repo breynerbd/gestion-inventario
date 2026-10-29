@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ChangeDetectionStrategy } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 
 import { PermissionResponse } from "../../models/permission-response";
@@ -15,6 +15,7 @@ import { DatePipe } from "@angular/common";
   imports: [FormsModule, PaginationComponent, NgIconComponent, DatePipe],
   templateUrl: "./permissions.component.html",
   styleUrl: "./permissions.component.css",
+  changeDetection: ChangeDetectionStrategy.Eager,
   viewProviders: [provideIcons({ lucideBan, lucideCircleCheck, lucidePencil, lucidePlus })]
 })
 export class PermissionsComponent implements OnInit {

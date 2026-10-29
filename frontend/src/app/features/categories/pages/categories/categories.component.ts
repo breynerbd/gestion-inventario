@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CategoryResponse } from '../../models/category-response';
 import { CategoryCreate } from '../../models/category-create';
@@ -14,6 +14,7 @@ import { DatePipe } from '@angular/common';
   imports: [FormsModule, NgIconComponent, DatePipe],
   templateUrl: './categories.component.html',
   styleUrl: './categories.component.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   viewProviders: [provideIcons({ lucideBan, lucideCircleCheck, lucidePencil, lucidePlus, lucideChevronRight, lucideChevronLeft })]
 })
 export class CategoriesComponent implements OnInit {
