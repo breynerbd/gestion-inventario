@@ -21,6 +21,10 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
 
     boolean existsByCategory_CategoryId(Long categoryId);
 
+    boolean existsByCategory_CategoryIdAndStatus(Long categoryId, Product.Status status);
+
+    boolean existsBySupplier_SupplierIdAndStatus(Long supplierId, Product.Status status);
+
     boolean existsBySupplier_SupplierId(Long supplierId);
 
     boolean existsByProductName(String productName);
