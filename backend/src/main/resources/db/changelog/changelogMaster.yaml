@@ -46,3 +46,7 @@ databaseChangeLog:
     - include:
         file: 012_stock_movement_modification_date.yaml
         relativeToChangelogFile: true
+    
+    - include:
+        file: 013_code_sequences.yaml
+        relativeToChangelogFile: true
