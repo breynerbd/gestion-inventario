@@ -1,0 +1,75 @@
+<div class="binnacle-container">
+    <div class="binnacle-header">
+        <div class="binnacle-title">
+            <div>
+                <h1>Bitácora</h1>
+                <p>Historial de intentos de inicio de sesión</p>
+            </div>
+        </div>
+
+        <div class="binnacle-actions">
+            <div class="binnacle-filters">
+                <div class="search-container">
+                    <label for="searchBinnacle">Buscar registros</label>
+                    <input id="searchBinnacle" name="searchBinnacle" type="text" placeholder="ID, usuario o resultado."
+                        [ngModel]="searchTerm" (ngModelChange)="onSearchChange($event)">
+                </div>
+
+                <div class="search-container">
+                    <label for="filterResult">Resultado</label>
+                    <select id="filterResult" name="filterResult" [ngModel]="selectedResult"
+                        (ngModelChange)="onResultChange($event)">
+                        <option value="">Todos</option>
+                        <option value="SUCCESSFUL">Exitosos</option>
+                        <option value="FAILED">Fallidos</option>
+                    </select>
+                </div>
+
+                <button type="button" class="clear-search" (click)="onSearchChange(''); onResultChange('')">
+                    Limpiar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    @if (errorMessage) {
+    <p class="error-message">{{ errorMessage }}</p>
+    }
+
+    <div class="binnacle-table-container">
+        <table class="binnacle-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Usuario</th>
+                    <th>Fecha y hora</th>
+                    <th>Resultado</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @for (log of paginatedLogs; track log.logId) {
+                <tr>
+                    <td>{{ log.logId }}</td>
+                    <td>{{ log.username }}</td>
+                    <td>{{ log.dateTime | date:"dd/MM/yyyy HH:mm" }}</td>
+                    <td>{{ log.result === "SUCCESSFUL" ? "Exitoso" : "Fallido" }}</td>
+                </tr>
+                }
+            </tbody>
+        </table>
+
+        @if (filteredLogs.length === 0) {
+        <div class="empty-binnacle">
+            @if (logs.length === 0) {
+            <p>No hay registros de bitácora.</p>
+            } @else {
+            <p>No se encontraron resultados con la búsqueda.</p>
+            }
+        </div>
+        }
+    </div>
+
+    <app-pagination [currentPage]="currentPage" [totalPages]="totalPages" (pageChange)="changePage($event)">
+    </app-pagination>
+</div>
