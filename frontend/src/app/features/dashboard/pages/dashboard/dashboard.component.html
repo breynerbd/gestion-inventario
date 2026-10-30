@@ -37,7 +37,9 @@
                 <a routerLink="/dashboard/suppliers" routerLinkActive="active" (click)="closeSidebar()">Proveedores</a>
                 @if (canManageUsers()) {<a routerLink="/dashboard/users" routerLinkActive="active" (click)="closeSidebar()">Usuarios</a>}
                 @if (canManageRoles()) {<a routerLink="/dashboard/roles" routerLinkActive="active" (click)="closeSidebar()">Roles</a>}
-                @if (canManagePermissions()) {<a routerLink="/dashboard/permissions" routerLinkActive="active" (click)="closeSidebar()">Permisos</a>}
+                @if (canManagePermissions()) {<a routerLink="/dashboard/permissions" routerLinkActive="active" (click)="closeSidebar()">Permisos</a>
+                    <a routerLink="/dashboard/role-permissions" routerLinkActive="active" (click)="closeSidebar()">Roles-Permisos</a>
+                    <a routerLink="/dashboard/binnacle" routerLinkActive="active" (click)="closeSidebar()">Bitacora</a>}
             </nav>
 
             <div class="sidebar-foot">

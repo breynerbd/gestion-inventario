@@ -12,6 +12,8 @@ import { PermissionsComponent } from './features/permissions/pages/permissions/p
 import { MovementsComponent } from './features/stockMovements/pages/movements/movements.component';
 import { roleAuthGuard } from './core/guards/role-auth.guard';
 import { DashboardHomeComponent } from './features/dashboard/pages/dashboard-home/dashboard-home.component';
+import { RolePermissionsComponent } from './features/rolePermission/pages/role-permission/role-permission.component';
+import { BinnacleComponent } from './features/binnacle/pages/binnacle/binnacle.component';
 
 export const routes: Routes = [
     {
@@ -56,6 +58,16 @@ export const routes: Routes = [
             {
                 path: "permissions",
                 component: PermissionsComponent,
+                canActivate: [roleAuthGuard(["ADMINISTRADOR"])]
+            },
+            {
+                path: "role-permissions",
+                component: RolePermissionsComponent,
+                canActivate: [roleAuthGuard(["ADMINISTRADOR"])]
+            },
+            {
+                path: "binnacle",
+                component: BinnacleComponent,
                 canActivate: [roleAuthGuard(["ADMINISTRADOR"])]
             },
             {
