@@ -2,6 +2,7 @@ package com.inventorymanagement.backend.presentation.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -34,7 +35,7 @@ public class SupplierController {
     private static final Logger LOGGER = LoggerFactory.getLogger(SupplierController.class);
 
     @GetMapping
-    public ResponseEntity<Page<SupplierResponseDTO>> findAll(@PageableDefault(size = 10) Pageable pageable){
+    public ResponseEntity<Page<SupplierResponseDTO>> findAll(@ParameterObject @PageableDefault(size = 10) Pageable pageable){
         LOGGER.info("Solicitud para obtener todos los proveedores");
         return ResponseEntity.ok(service.findAllSuppliers(pageable));
     }
