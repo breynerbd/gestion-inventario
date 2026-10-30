@@ -156,6 +156,8 @@ export class CategoriesComponent implements OnInit {
   }
 
   changeStatus(category: CategoryResponse): void {
+    this.errorMessage = "";
+    
     const newStatus = category.status === "ACTIVO"
       ? "INACTIVO"
       : "ACTIVO";

@@ -286,6 +286,8 @@ export class ProductsComponent implements OnInit {
   }
 
   changeStatus(product: ProductResponse): void {
+    this.errorMessage = "";
+
     const newStatus = product.status == "ACTIVO"
       ? "INACTIVO"
       : "ACTIVO";
@@ -299,7 +301,7 @@ export class ProductsComponent implements OnInit {
       },
       error: (error) => {
         console.log(error);
-        this.errorMessage = "No se pudo cambiar el estado del producto"
+        this.errorMessage = error.error?.error || "No se pudo cambiar el estado del producto"
       }
     });
   }

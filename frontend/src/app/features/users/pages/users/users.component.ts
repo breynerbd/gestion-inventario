@@ -247,6 +247,8 @@ export class UsersComponent implements OnInit {
 
 
   changeStatus(user: UserResponse): void {
+    this.errorMessage = "";
+
     const newStatus = user.status === "ACTIVO"
       ? "INACTIVO"
       : "ACTIVO";
@@ -260,7 +262,7 @@ export class UsersComponent implements OnInit {
       },
       error: (error) => {
         console.error(error);
-        this.errorMessage = "No se pudo cambiar el estado del usuario"
+        this.errorMessage = error.error?.error || "No se pudo cambiar el estado del usuario"
       }
     });
   }

@@ -225,6 +225,8 @@ export class SuppliersComponent implements OnInit {
 
 
   changeStatus(supplier: SupplierResponse): void {
+    this.errorMessage = "";
+    
     const newStatus = supplier.status === "ACTIVO"
       ? "INACTIVO"
       : "ACTIVO";

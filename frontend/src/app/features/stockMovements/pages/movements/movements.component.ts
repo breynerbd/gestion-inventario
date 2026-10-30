@@ -300,6 +300,8 @@ export class MovementsComponent implements OnInit {
   }
 
   changeStatus(movement: MovementResponse): void {
+    this.errorMessage = "";
+    
     const newStatus = movement.status === "ACTIVO"
       ? "INACTIVO"
       : "ACTIVO";
@@ -313,7 +315,7 @@ export class MovementsComponent implements OnInit {
       },
       error: (error) => {
         console.error(error);
-        this.errorMessage = "No se pudo cambiar el estado del movimiento";
+        this.errorMessage = error.error?.error || "No se pudo cambiar el estado del movimiento";
       }
     });
   }

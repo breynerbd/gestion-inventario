@@ -142,6 +142,8 @@ export class RolesComponent implements OnInit {
   }
 
   changeStatus(role: RoleResponse): void {
+    this.errorMessage = "";
+    
     const newStatus = role.status === "ACTIVO"
       ? "INACTIVO"
       : "ACTIVO";

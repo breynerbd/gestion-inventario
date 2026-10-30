@@ -88,6 +88,7 @@ export class PermissionsComponent implements OnInit {
 
   createPermission(): void {
     this.errorMessage = "";
+    this.errorMessageForm = "";
 
     this.permissionService.createPermission(this.newPermission).subscribe({
       next: () => {
@@ -97,7 +98,7 @@ export class PermissionsComponent implements OnInit {
       },
       error: (error) => {
         console.error(error);
-        this.errorMessage = "No se pudo crear el permiso";
+        this.errorMessageForm = error.error?.error || "No se pudo crear el permiso";
       }
     });
   }
@@ -116,6 +117,9 @@ export class PermissionsComponent implements OnInit {
   }
 
   updatePermission(): void {
+    this.errorMessage = "";
+    this.errorMessageForm = "";
+
     if (this.editingPermissionId === null) {
       return;
     }
@@ -138,7 +142,7 @@ export class PermissionsComponent implements OnInit {
       },
       error: (error) => {
         console.error(error);
-        this.errorMessage = "No se pudo actualizar el permiso";
+        this.errorMessageForm = error.error?.error || "No se pudo actualizar el permiso";
       }
     });
   }
@@ -175,6 +179,8 @@ export class PermissionsComponent implements OnInit {
 
 
   changeStatus(permission: PermissionResponse): void {
+    this.errorMessage = "";
+
     const newStatus = permission.status === "ACTIVO"
       ? "INACTIVO"
       : "ACTIVO";
@@ -188,7 +194,7 @@ export class PermissionsComponent implements OnInit {
       },
       error: (error) => {
         console.error(error);
-        this.errorMessage = "No se pudo cambiar el estado del permiso";
+        this.errorMessage = error.error?.error || "No se pudo cambiar el estado del permiso";
       }
     });
   }
