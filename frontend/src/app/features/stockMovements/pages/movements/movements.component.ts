@@ -188,6 +188,7 @@ export class MovementsComponent implements OnInit {
 
   createMovement(): void {
     this.errorMessage = "";
+    this.errorMessageForm = "";
 
     this.movementService.createMovement(this.newMovement).subscribe({
       next: () => {
@@ -197,7 +198,7 @@ export class MovementsComponent implements OnInit {
       },
       error: (error) => {
         console.error(error);
-        this.errorMessage = "No se pudo crear el movimiento";
+        this.errorMessageForm = error.error?.error || "No se pudo crear el movimiento";
       }
     });
   }
@@ -217,6 +218,9 @@ export class MovementsComponent implements OnInit {
   }
 
   updateMovement(): void {
+    this.errorMessage = "";
+    this.errorMessageForm = "";
+
     if (this.editingMovementId === null) {
       return;
     }
@@ -241,7 +245,7 @@ export class MovementsComponent implements OnInit {
       },
       error: (error) => {
         console.error(error);
-        this.errorMessage = "No se pudo actualizar el movimiento";
+        this.errorMessageForm = error.error?.error || "No se pudo actualizar el movimiento";
       }
     });
   }
@@ -331,6 +335,8 @@ export class MovementsComponent implements OnInit {
   cancelForm(): void {
     this.showForm = false;
     this.editingMovementId = null;
+    this.errorMessage = "";
+    this.errorMessageForm = "";
     this.resetForm();
   }
 

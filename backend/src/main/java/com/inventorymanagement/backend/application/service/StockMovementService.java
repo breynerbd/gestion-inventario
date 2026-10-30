@@ -185,7 +185,15 @@ public class StockMovementService {
         LOGGER.debug("Aplicando movimiento {} al producto {}", movement.getMovementType(), product.getProductId());
 
         switch (movement.getMovementType()) {
-            case ENTRADA, AJUSTE_POSITIVO -> product.setCurrentStock(product.getCurrentStock() + movement.getQuantity());
+            case ENTRADA, AJUSTE_POSITIVO -> {
+                int newStock = product.getCurrentStock() + movement.getQuantity();
+
+                if (product.getMaximumStock() != null && newStock > product.getMaximumStock()) {
+                    throw new IllegalArgumentException("El movimiento supera el stock máximo permitido para el producto");
+                }
+
+                product.setCurrentStock(newStock);
+            }
 
             case SALIDA, AJUSTE_NEGATIVO -> {
                 int newStock = product.getCurrentStock() - movement.getQuantity();
