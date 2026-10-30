@@ -1,5 +1,6 @@
 package com.inventorymanagement.backend.application.service;
 
+import com.inventorymanagement.backend.domain.entity.Product;
 import com.inventorymanagement.backend.domain.entity.Supplier;
 import com.inventorymanagement.backend.domain.exception.StatusUnchangedException;
 import com.inventorymanagement.backend.domain.exception.DuplicateResourceException;
@@ -169,8 +170,10 @@ public class SupplierService {
             throw new StatusUnchangedException(message);
         }
 
-        if (status == Supplier.Status.INACTIVO && productRepository.existsBySupplier_SupplierId(supplierId)) {
-            throw new IllegalStateException("No se puede inactivar un proveedor con productos asociados.");
+        if (status == Supplier.Status.INACTIVO &&
+            productRepository.existsBySupplier_SupplierIdAndStatus(supplierId, Product.Status.ACTIVO)) {
+
+            throw new IllegalStateException("No se puede inactivar un proveedor con productos activos asociados.");
         }
 
         supplier.setStatus(status);

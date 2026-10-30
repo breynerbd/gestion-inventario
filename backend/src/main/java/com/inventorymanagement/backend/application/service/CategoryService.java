@@ -8,6 +8,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import com.inventorymanagement.backend.domain.entity.Category;
+import com.inventorymanagement.backend.domain.entity.Product;
 import com.inventorymanagement.backend.domain.exception.DuplicateResourceException;
 import com.inventorymanagement.backend.domain.exception.ResourceNotFoundException;
 import com.inventorymanagement.backend.domain.exception.StatusUnchangedException;
@@ -130,8 +131,10 @@ public class CategoryService {
             throw new StatusUnchangedException(message);
         }
 
-        if (status == Category.Status.INACTIVO && productRepository.existsByCategory_CategoryId(categoryId)) {
-            throw new IllegalStateException("No se puede inactivar una categoria con productos asociados.");
+        if (status == Category.Status.INACTIVO &&
+            productRepository.existsByCategory_CategoryIdAndStatus(categoryId, Product.Status.ACTIVO)) {
+
+            throw new IllegalStateException("No se puede inactivar una categoria con productos activos asociados.");
         }
 
         category.setStatus(status);

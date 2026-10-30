@@ -1,6 +1,7 @@
 package com.inventorymanagement.backend.application.service;
 
 import com.inventorymanagement.backend.domain.entity.Role;
+import com.inventorymanagement.backend.domain.entity.User;
 import com.inventorymanagement.backend.domain.exception.StatusUnchangedException;
 import com.inventorymanagement.backend.domain.exception.DuplicateResourceException;
 import com.inventorymanagement.backend.domain.exception.ResourceNotFoundException;
@@ -119,8 +120,10 @@ public class RoleService {
             throw new StatusUnchangedException(menssage);
         }
 
-        if (status == Role.Status.INACTIVO && userRepository.existsByRole_RoleId(roleId)) {
-            throw new IllegalStateException("No se puede inactivar un rol con usuarios asociados.");
+        if (status == Role.Status.INACTIVO &&
+            userRepository.existsByRole_RoleIdAndStatus(roleId, User.Status.ACTIVO)) {
+
+            throw new IllegalStateException("No se puede inactivar un rol con usuarios activos asociados.");
         }
 
         role.setStatus(status);
