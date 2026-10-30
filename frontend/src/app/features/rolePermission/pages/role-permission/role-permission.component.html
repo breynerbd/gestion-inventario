@@ -1,0 +1,148 @@
+<div class="permissions-container">
+    <div class="permissions-header">
+        <div class="permissions-title">
+            <div>
+                <h1>Roles y Permisos</h1>
+                <p>Gestión de permisos asignados a cada rol</p>
+            </div>
+        </div>
+
+        <div class="permissions-actions">
+            <div class="permissions-filters">
+                <div class="search-container">
+                    <label for="searchPermissions">Buscar permisos</label>
+                    <input id="searchPermissions" name="searchPermissions" type="text"
+                        placeholder="Id, código o módulo." [ngModel]="searchTerm"
+                        (ngModelChange)="searchTerm = $event; onSearchChange()">
+                </div>
+
+                <button type="button" class="clear-search" (click)="searchTerm = ''; onSearchChange()">
+                    Limpiar
+                </button>
+            </div>
+
+            <div class="role-selector">
+                <label for="selectedRole">Rol</label>
+
+                <select id="selectedRole" name="selectedRole" [(ngModel)]="selectedRoleId"
+                    (ngModelChange)="onRoleChange()">
+
+                    <option [ngValue]="null">Seleccione un rol</option>
+
+                    @for (role of roles; track role.roleId) {
+                    <option [ngValue]="role.roleId">
+                        {{ role.roleName }}
+                    </option>
+                    }
+                </select>
+            </div>
+
+            <button type="button" class="new-permission-button" (click)="openForm()" [disabled]="!canAssignPermissions">
+
+                <span class="text-desktop">Asignar Permisos</span>
+                <span class="text-mobile">
+                    <ng-icon name="lucidePlus" class="icon-add"></ng-icon>
+                </span>
+            </button>
+        </div>
+    </div>
+
+    @if (errorMessage) {
+    <p class="error-message">{{ errorMessage }}</p>
+    }
+
+    @if (showForm) {
+    <div class="form-overlay">
+        <div class="permission-form-container">
+            <h2>Asignar Permisos</h2>
+
+            <p class="form-description">
+                Selecciona los permisos que tendrá el rol
+                <strong>{{ selectedRole?.roleName }}</strong>.
+            </p>
+
+            <div class="permissions-selection">
+                @for (permission of permissions; track permission.permissionId) {
+                <label class="permission-option">
+                    <input type="checkbox" [checked]="isPermissionSelected(permission.permissionId)"
+                        [disabled]="permission.status !== 'ACTIVO' && !isPermissionSelected(permission.permissionId)"
+                        (change)="togglePermission(permission.permissionId)">
+
+                    <span class="permission-option-info">
+                        <strong>{{ permission.permissionName }}</strong>
+                        <small>
+                            {{ permission.permissionCode }} -
+                            {{ permission.module }}
+                        </small>
+                        <small>
+                            Estado: {{ permission.status }}
+                        </small>
+                    </span>
+                </label>
+                }
+
+                @if (permissions.length === 0) {
+                <p class="empty-permissions">
+                    No hay permisos registrados.
+                </p>
+                }
+            </div>
+
+            <div class="form-actions">
+                <button type="button" (click)="closeForm()">
+                    Cancelar
+                </button>
+
+                <button type="button" (click)="savePermissions()" [disabled]="loading">
+                    Guardar Permisos
+                </button>
+            </div>
+        </div>
+    </div>
+    }
+
+    <div class="permissions-table-container">
+        <table class="permissions-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Código</th>
+                    <th>Nombre</th>
+                    <th>Módulo</th>
+                    <th>Descripción</th>
+                    <th>Fecha de Asignación</th>
+                    <th>Estado</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @for (permission of paginatedPermissions; track permission.permissionId) {
+                <tr>
+                    <td>{{ permission.permissionId }}</td>
+                    <td>{{ permission.permissionCode }}</td>
+                    <td>{{ permission.permissionName }}</td>
+                    <td>{{ permission.module }}</td>
+                    <td>{{ permission.description }}</td>
+                    <td>{{ permission.assignmentDate | date:"dd/MM/yyyy HH:mm" }}</td>
+                    <td>{{ permission.status }}</td>
+                </tr>
+                }
+            </tbody>
+        </table>
+
+        @if (filteredPermissions.length === 0) {
+        <div class="empty-permissions">
+            @if (selectedRoleId === null) {
+            <p>Selecciona un rol para consultar sus permisos.</p>
+            } @else if (rolePermissions.length === 0) {
+            <p>Este rol todavía no tiene permisos asignados.</p>
+            } @else {
+            <p>No se encontraron resultados con la búsqueda.</p>
+            }
+        </div>
+        }
+    </div>
+
+    <app-pagination [currentPage]="currentPage" [totalPages]="totalPages" (pageChange)="onPageChange($event)">
+    </app-pagination>
+</div>
