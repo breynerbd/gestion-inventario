@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output, ChangeDetectionStrategy } from '@angular/core';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
-import { lucideBan, lucideChevronLeft, lucideChevronRight } from '@ng-icons/lucide';
+import { lucideChevronLeft, lucideChevronRight } from '@ng-icons/lucide';
 
 @Component({
   selector: 'app-pagination',

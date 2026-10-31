@@ -59,27 +59,27 @@
 
 .products-icon {
     background-color: #eef2fdea;
-    color: #5170FF;
+    color: #3347A8;
 }
 
 .suppliers-icon {
     background-color: #eef2fdea;
-    color: #26796F;
+    color: #1F625B;
 }
 
 .stock-icon {
     background-color: #eef2fdea;
-    color: #A86A00;
+    color: #805000;
 }
 
 .investment-icon {
     background-color: #eef2fdea;
-    color: #f14646;
+    color: #A52A2A;
 }
 
 .value-icon {
     background-color: #eef2fdea;
-    color: #25804B;
+    color: #1F653B;
 }
 
 .indicator-info {
@@ -145,14 +145,14 @@
 
 .chart-header {
     display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    gap: 12px;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
     margin-bottom: 16px;
 }
 
 .chart-title {
-    width: 100%;
+    flex: 1;
     min-width: 0;
 }
 
@@ -234,27 +234,6 @@
     position: relative;
     width: 100%;
     height: 250px;
-}
-
-.chart-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 16px;
-    margin-bottom: 16px;
-}
-
-.chart-title {
-    flex: 1;
-    min-width: 0;
-}
-
-.chart-title h3 {
-    margin: 0 0 6px;
-}
-
-.chart-title p {
-    margin: 0;
 }
 
 .category-selector {
@@ -341,12 +320,12 @@
 
 .alert-warning {
     background-color: #eef2fdea;
-    color: #D97706;
+    color: #8A4B00;
 }
 
 .alert-danger {
     background-color: #eef2fdea;
-    color: #DC2626;
+    color: #A61B1B;
 }
 
 .alert-info {
@@ -505,10 +484,10 @@
     white-space: nowrap;
 }
 
-.empty-movements {
-    padding: 30px !important;
+.movements-table td.empty-movements {
+    padding: 30px;
     text-align: center;
-    color: #586F7C !important;
+    color: #2F4550;
 }
 
 @media (max-width: 1200px) {

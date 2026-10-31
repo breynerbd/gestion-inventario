@@ -81,9 +81,15 @@ export class MovementsComponent implements OnInit {
   }
 
   loadMovements(): void {
-    this.movementService.getMovements(this.currentPage, this.pageSize, this.selectedProductId,
-      this.selectedMovementType, this.startDate, this.endDate, this.selectedUserId
-    ).subscribe({
+    this.movementService.getMovements({
+      page: this.currentPage,
+        size: this.pageSize,
+        productId: this.selectedProductId,
+        movementType: this.selectedMovementType,
+        startDate: this.startDate,
+        endDate: this.endDate,
+        userId: this.selectedUserId
+    }).subscribe({
       next: (response) => {
         this.movements = response.content;
         this.totalPages = response.totalPages;
@@ -97,7 +103,7 @@ export class MovementsComponent implements OnInit {
   }
 
   loadProducts(): void {
-    this.productService.getProducts(0, 100).subscribe({
+    this.productService.getProducts({page: 0, size: 100}).subscribe({
       next: (response) => {
         this.products = response.content.filter(product => product.status === "ACTIVO");
       },

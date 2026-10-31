@@ -25,12 +25,12 @@ export class LoginComponent {
       username: this.username,
       password: this.password
     }
-    
+
     this.authService.login(request).subscribe({
       next: response => {
         this.authService.saveSession(response);
         this.errorMessage = '';
-        this.router.navigate(["/dashboard"]);
+        void this.router.navigate(["/dashboard"]);
       },
       error: error => {
         console.error(error);
@@ -46,5 +46,5 @@ export class LoginComponent {
         }
       }
     });
-  }  
+  }
 }

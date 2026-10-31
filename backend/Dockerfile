@@ -14,9 +14,13 @@ WORKDIR /app
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends curl \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    && groupadd -r spring \
+    && useradd -r -g spring spring
 
-COPY --from=build /app/app.jar app.jar
+COPY --from=build --chown=spring:spring /app/app.jar app.jar
+
+USER spring:spring
 
 EXPOSE 8080
 

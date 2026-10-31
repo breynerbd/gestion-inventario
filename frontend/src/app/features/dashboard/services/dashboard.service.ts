@@ -5,7 +5,6 @@ import { LowStockProduct } from "../models/low-stock-product";
 import { MovementSummary } from "../models/movement-summary";
 import { ProductsCount } from "../models/products-category";
 import { PageResponse } from "../../../shared/models/page-response";
-import { MovementResponse } from "../../stockMovements/models/movement-response";
 import { ProductResponse } from "../../products/models/product-response";
 
 @Injectable({
@@ -13,11 +12,11 @@ import { ProductResponse } from "../../products/models/product-response";
 })
 export class DashboardService {
 
-    private apiProductsUrl = "/api/products";
-    private apiMovementsUrl = "/api/movements"
-    private apiSuppliersUrl = "/api/suppliers"
+    private readonly apiProductsUrl = "/api/products";
+    private readonly apiMovementsUrl = "/api/movements";
+    private readonly apiSuppliersUrl = "/api/suppliers";
 
-    constructor(private http: HttpClient){
+    constructor(private readonly http: HttpClient){
     }
 
     getLowStockProducts(): Observable<LowStockProduct[]> {

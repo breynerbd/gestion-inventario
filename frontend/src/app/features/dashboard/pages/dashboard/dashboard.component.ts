@@ -24,10 +24,10 @@ export class DashboardComponent {
     this.roleName = this.authService.getRoleName() || "";
   }
 
-  toggleSidebar(): void { 
+  toggleSidebar(): void {
     this.isSidebarOpen = !this.isSidebarOpen;
-  } 
-  
+  }
+
   closeSidebar(): void {
     this.isSidebarOpen = false;
   }
@@ -46,7 +46,7 @@ export class DashboardComponent {
 
   logout(): void {
     this.authService.logout();
-    this.router.navigate(["/login"]);
+    void this.router.navigate(["/login"]);
   }
 
 }

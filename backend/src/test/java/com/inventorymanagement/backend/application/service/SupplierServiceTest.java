@@ -20,14 +20,17 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import com.inventorymanagement.backend.application.dto.supplier.SupplierCreateDTO;
 import com.inventorymanagement.backend.application.dto.supplier.SupplierResponseDTO;
 import com.inventorymanagement.backend.application.dto.supplier.SupplierUpdateDTO;
 import com.inventorymanagement.backend.application.mapper.SupplierMapper;
+import com.inventorymanagement.backend.domain.entity.Product;
 import com.inventorymanagement.backend.domain.entity.Supplier;
 import com.inventorymanagement.backend.domain.exception.ResourceNotFoundException;
 import com.inventorymanagement.backend.domain.exception.StatusUnchangedException;
+import com.inventorymanagement.backend.infrastructure.persistence.repository.ProductRepository;
 import com.inventorymanagement.backend.infrastructure.persistence.repository.SupplierRepository;
 
 @ExtendWith(MockitoExtension.class)
@@ -35,6 +38,12 @@ class SupplierServiceTest {
 
     @Mock
     private SupplierRepository repository;
+
+    @Mock
+    private ProductRepository productRepository;
+
+    @Mock
+    private JdbcTemplate jdbcTemplate;
 
     @Mock
     private SupplierMapper mapper;
@@ -135,6 +144,11 @@ class SupplierServiceTest {
         response.setSupplierCode("PROV002");
         response.setBusinessName("Alimentos Guatemala");
 
+         when(repository.existsByBusinessName("Alimentos Guatemala")).thenReturn(false);
+        when(repository.existsByPhone("23694721")).thenReturn(false);
+        when(repository.existsByEmail("proveedor2@gmail.com")).thenReturn(false);
+        when(repository.existsByDocumentNumber(null)).thenReturn(false);
+        when(jdbcTemplate.queryForObject("SELECT nextval('supplier_code_sequence')", Long.class)).thenReturn(2L);
         when(mapper.toEntity(supplierDTO)).thenReturn(supplier);
         when(repository.save(supplier)).thenReturn(saved);
         when(mapper.toResponseDTO(saved)).thenReturn(response);
@@ -192,6 +206,7 @@ class SupplierServiceTest {
         response.setStatus(Supplier.Status.INACTIVO);
 
         when(repository.findById(1L)).thenReturn(Optional.of(supplier));
+        when(productRepository.existsBySupplier_SupplierIdAndStatus(1L, Product.Status.ACTIVO)).thenReturn(false);
         when(repository.save(supplier)).thenReturn(supplier);
         when(mapper.toResponseDTO(supplier)).thenReturn(response);
 

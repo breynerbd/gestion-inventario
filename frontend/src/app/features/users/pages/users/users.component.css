@@ -512,6 +512,7 @@
 
     .form-actions {
         flex-wrap: wrap;
+        grid-column: 1 / -1;
     }
 
     .form-actions button {
@@ -523,10 +524,6 @@
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 10px;
-    }
-
-    .form-actions {
-        grid-column: 1 / -1;
     }
 }
 

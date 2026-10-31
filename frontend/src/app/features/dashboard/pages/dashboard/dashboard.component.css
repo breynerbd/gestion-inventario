@@ -326,5 +326,5 @@
 }
 
 .menu-toggle[hidden] {
-  display: none !important;
+  display: none;
 }

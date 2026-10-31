@@ -22,15 +22,20 @@ import com.inventorymanagement.backend.application.dto.role.RoleResponseDTO;
 import com.inventorymanagement.backend.application.dto.role.RoleUpdateDTO;
 import com.inventorymanagement.backend.application.mapper.RoleMapper;
 import com.inventorymanagement.backend.domain.entity.Role;
+import com.inventorymanagement.backend.domain.entity.User;
 import com.inventorymanagement.backend.domain.exception.ResourceNotFoundException;
 import com.inventorymanagement.backend.domain.exception.StatusUnchangedException;
 import com.inventorymanagement.backend.infrastructure.persistence.repository.RoleRepository;
+import com.inventorymanagement.backend.infrastructure.persistence.repository.UserRepository;
 
 @ExtendWith(MockitoExtension.class)
 class RoleServiceTest {
 
     @Mock
     private RoleRepository repository;
+
+    @Mock
+    private UserRepository userRepository;
 
     @Mock
     private RoleMapper mapper;
@@ -164,6 +169,7 @@ class RoleServiceTest {
         response.setStatus(Role.Status.INACTIVO);
 
         when(repository.findById(1L)).thenReturn(Optional.of(role));
+        when(userRepository.existsByRole_RoleIdAndStatus(1L, User.Status.ACTIVO)).thenReturn(false);
         when(repository.save(role)).thenReturn(role);
         when(mapper.toResponseDTO(role)).thenReturn(response);
 

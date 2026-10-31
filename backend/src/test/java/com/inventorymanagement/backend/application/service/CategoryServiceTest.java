@@ -21,20 +21,29 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import com.inventorymanagement.backend.application.dto.category.CategoryCreateDTO;
 import com.inventorymanagement.backend.application.dto.category.CategoryResponseDTO;
 import com.inventorymanagement.backend.application.dto.category.CategoryUpdateDTO;
 import com.inventorymanagement.backend.application.mapper.CategoryMapper;
 import com.inventorymanagement.backend.domain.entity.Category;
+import com.inventorymanagement.backend.domain.entity.Product;
 import com.inventorymanagement.backend.domain.exception.ResourceNotFoundException;
 import com.inventorymanagement.backend.domain.exception.StatusUnchangedException;
 import com.inventorymanagement.backend.infrastructure.persistence.repository.CategoryRepository;
+import com.inventorymanagement.backend.infrastructure.persistence.repository.ProductRepository;
 
 @ExtendWith(MockitoExtension.class)
 class CategoryServiceTest {
     @Mock 
     private CategoryRepository repository;
+
+    @Mock
+    private ProductRepository productRepository;
+
+    @Mock
+    private JdbcTemplate jdbcTemplate;
 
     @Mock 
     private CategoryMapper mapper;
@@ -135,6 +144,8 @@ class CategoryServiceTest {
         response.setCategoryName("Bebidas");
         response.setDescription("Productos de bebidas");
 
+        when(repository.existsByCategoryName("Bebidas")).thenReturn(false);
+        when(jdbcTemplate.queryForObject("SELECT nextval('category_code_sequence')", Long.class)).thenReturn(2L);
         when(mapper.toEntity(categoryDTO)).thenReturn(category);
         when(repository.save(category)).thenReturn(saved);
         when(mapper.toResponseDTO(saved)).thenReturn(response);
@@ -188,6 +199,7 @@ class CategoryServiceTest {
         response.setStatus(Category.Status.INACTIVO);
 
         when(repository.findById(1L)).thenReturn(Optional.of(category));
+        when(productRepository.existsByCategory_CategoryIdAndStatus(1L, Product.Status.ACTIVO)).thenReturn(false);
         when(repository.save(category)).thenReturn(category);
         when(mapper.toResponseDTO(category)).thenReturn(response);
 

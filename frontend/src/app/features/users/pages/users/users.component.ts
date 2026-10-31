@@ -82,7 +82,7 @@ export class UsersComponent implements OnInit {
   get filteredUsers(): UserResponse[] {
     const search = this.searchTerm.trim().toLowerCase();
 
-    return this.users.filter(user => 
+    return this.users.filter(user =>
       `${user.firstNames} ${user.lastNames}`.toLowerCase().includes(search) ||
       user.username.toLowerCase().includes(search) ||
       user.email.toLowerCase().includes(search)
@@ -218,7 +218,7 @@ export class UsersComponent implements OnInit {
       return;
     }
 
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailPattern = /^[\w.%+-]+@[\w.-]+\.[a-zA-Z]{2,}$/;
 
     if (!emailPattern.test(this.newUser.email.trim())) {
       this.errorMessageForm = "Ingresa un correo electrónico válido.";

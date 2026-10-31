@@ -77,7 +77,7 @@ export class SuppliersComponent implements OnInit {
   get filteredSuppliers(): SupplierResponse[] {
     const search = this.searchTerm.trim().toLowerCase();
 
-    return this.suppliers.filter(supplier => 
+    return this.suppliers.filter(supplier =>
       supplier.supplierCode.toLowerCase().includes(search) ||
       supplier.businessName.toLowerCase().includes(search) ||
       supplier.contactName.toLowerCase().includes(search) ||
@@ -204,7 +204,7 @@ export class SuppliersComponent implements OnInit {
       return;
     }
 
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailPattern = /^[\w.%+-]+@[\w.-]+\.[a-zA-Z]{2,}$/;
 
     if (!emailPattern.test(this.newSupplier.email.trim())) {
       this.errorMessageForm = "Ingresa un correo electrónico válido.";
@@ -226,7 +226,7 @@ export class SuppliersComponent implements OnInit {
 
   changeStatus(supplier: SupplierResponse): void {
     this.errorMessage = "";
-    
+
     const newStatus = supplier.status === "ACTIVO"
       ? "INACTIVO"
       : "ACTIVO";
@@ -241,7 +241,7 @@ export class SuppliersComponent implements OnInit {
       },
       error: (error) => {
         console.error(error);
-        
+
         const message = error.error?.error;
 
         if (message?.includes("productos asociados")) {

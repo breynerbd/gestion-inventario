@@ -7,6 +7,7 @@ import { PageResponse } from '../../../shared/models/page-response';
 import { ProductCreate } from '../models/product-create';
 import { ProductUpdate } from '../models/product-update';
 import { ProductStatus } from '../models/product-status';
+import { ProductFilters } from '../models/product-filters';
 
 @Injectable({
     providedIn: 'root'
@@ -17,19 +18,20 @@ export class ProductService {
 
     constructor(private readonly http: HttpClient) { }
 
-    getProducts(page: number = 0, size: number = 10, 
-        productCode: string = "", productName: string = "", categoryId?: number, 
-        supplierId?: number, status?: string, sort: string = "productCode,asc"
-    ): Observable<PageResponse<ProductResponse>> {
-        let params = new HttpParams().set("page", page.toString()).set("size", size.toString()).set("sort", sort);
+    getProducts(filters: ProductFilters = {}): Observable<PageResponse<ProductResponse>> {
+        let params = new HttpParams().set("page", (filters.page ?? 0).toString()).set("size", (filters.size ?? 10).toString())
+            .set("sort", filters.sort ?? "productCode,asc");
 
-        if(productCode?.trim()) params = params.set("productCode", productCode.trim());
-        if(productName?.trim()) params = params.set("productName", productName.trim());
-        if(categoryId) params = params.set("categoryId", categoryId);
-        if(supplierId) params = params.set("supplierId", supplierId);
-        if(status) params = params.set("status", status);
+        if (filters.productCode?.trim()) { params = params.set("productCode", filters.productCode.trim()); }
+        if (filters.productName?.trim()) { params = params.set("productName", filters.productName.trim()); }
+        if (filters.categoryId) { params = params.set("categoryId", filters.categoryId); }
+        if (filters.supplierId) { params = params.set("supplierId", filters.supplierId); }
+        if (filters.status) { params = params.set("status", filters.status); }
 
-        return this.http.get<PageResponse<ProductResponse>>(this.apiUrl, { params });
+        return this.http.get<PageResponse<ProductResponse>>(
+            this.apiUrl,
+            { params }
+        );
     }
 
     getProductById(productId: number): Observable<ProductResponse> {

@@ -130,9 +130,11 @@ export class ProductsComponent implements OnInit {
   }
 
   loadProducts(): void {
-    this.productService.getProducts(this.currentPage, this.pageSize, this.searchProductCode, this.searchProductName, 
-      this.selectedCategoryId, this.selectedSupplierId, this.selectedStatus)
-    .subscribe({
+    this.productService.getProducts({
+      page: this.currentPage, size: this.pageSize, productCode: this.searchProductCode,
+      productName: this.searchProductName, categoryId: this.selectedCategoryId, supplierId: this.selectedSupplierId,
+      status: this.selectedStatus
+    }).subscribe({
       next: (response) => {
         this.products = response.content;
         this.totalPages = response.totalPages;

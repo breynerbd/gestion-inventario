@@ -24,6 +24,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import com.inventorymanagement.backend.application.dto.product.ProductCreateDTO;
 import com.inventorymanagement.backend.application.dto.product.ProductResponseDTO;
@@ -51,6 +52,9 @@ class ProductServiceTest {
 
     @Mock 
     private ProductMapper mapper;
+
+    @Mock
+    private JdbcTemplate jdbcTemplate;
 
     @InjectMocks 
     private ProductService service;
@@ -190,6 +194,8 @@ class ProductServiceTest {
 
     @Test 
     void createProduct() {
+        when(repository.existsByProductName("Coca Cola")).thenReturn(false);
+        when(jdbcTemplate.queryForObject("SELECT nextval('product_code_sequence')", Long.class)).thenReturn(1L);
         when(categoryRepository.findById(1L)).thenReturn(Optional.of(category));
         when(supplierRepository.findById(1L)).thenReturn(Optional.of(supplier));
         when(mapper.toEntity(productDTO, category, supplier)).thenReturn(product);
@@ -246,7 +252,7 @@ class ProductServiceTest {
 
         assertEquals("No se puede asociar el producto a una categoria inactiva", exception.getMessage());
         
-        verifyNoInteractions(repository);
+        verify(repository).existsByProductName("Coca Cola");
     }
 
     @Test 
@@ -260,7 +266,7 @@ class ProductServiceTest {
 
         assertEquals("No se puede asociar el producto a un proveedor inactivo", exception.getMessage());
         
-        verifyNoInteractions(repository);
+        verify(repository).existsByProductName("Coca Cola");
     }
 
     @Test

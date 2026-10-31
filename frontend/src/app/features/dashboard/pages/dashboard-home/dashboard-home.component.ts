@@ -48,13 +48,13 @@ export class DashboardHomeComponent implements AfterViewInit, OnDestroy {
   groupBy = 'DAY';
 
   @ViewChild("stockChart")
-  private stockChartCanvas!: ElementRef<HTMLCanvasElement>;
+  private readonly stockChartCanvas!: ElementRef<HTMLCanvasElement>;
 
   @ViewChild("movementChart")
-  private movementChartCanvas!: ElementRef<HTMLCanvasElement>;
+  private readonly movementChartCanvas!: ElementRef<HTMLCanvasElement>;
 
   @ViewChild("productsCategoryChart")
-  private productsCategoryChartCanvas!: ElementRef<HTMLCanvasElement>;
+  private readonly productsCategoryChartCanvas!: ElementRef<HTMLCanvasElement>;
 
   private stockChart?: Chart;
   private movementChart?: Chart;
@@ -71,7 +71,7 @@ export class DashboardHomeComponent implements AfterViewInit, OnDestroy {
   stockLimit = 0;
   tableOption = "movements";
 
-  alertPageSize = 8;
+  readonly alertPageSize = 8;
   currentAlertPage = 1;
 
   get paginatedLowStockProducts(): LowStockProduct[] {
@@ -94,7 +94,7 @@ export class DashboardHomeComponent implements AfterViewInit, OnDestroy {
   }
 
   constructor(private readonly dashboardService: DashboardService, private readonly movementService: MovementService,
-    private router: Router, private readonly roleService: RoleAuthService, private readonly categoryService: CategoryService,
+    private readonly router: Router, private readonly roleService: RoleAuthService, private readonly categoryService: CategoryService,
     private readonly productService: ProductService, private readonly supplierService: SupplierService,
     private readonly userService: UserService
   ) { }
@@ -209,7 +209,7 @@ export class DashboardHomeComponent implements AfterViewInit, OnDestroy {
   }
 
   loadLatestMovements(): void {
-    this.movementService.getMovements(0, 5, 0, '', '', '', 0, 'modificationDate,desc').subscribe({
+    this.movementService.getMovements({page: 0, size: 5, sort: 'modificationDate,desc'}).subscribe({
       next: (response) => {
         this.latestMovements = response.content;
       },
@@ -220,7 +220,7 @@ export class DashboardHomeComponent implements AfterViewInit, OnDestroy {
   }
 
   private loadLatestProducts(): void {
-    this.productService.getProducts(0, 5, '', '', undefined, undefined, undefined, 'modificationDate,desc')
+    this.productService.getProducts({page: 0, size: 5, sort: 'modificationDate,desc'})
       .subscribe({
         next: response => this.latestProducts = response.content,
         error: error => console.error('Error al cargar los productos:', error)
@@ -281,7 +281,7 @@ export class DashboardHomeComponent implements AfterViewInit, OnDestroy {
       users: '/dashboard/users',
       suppliers: '/dashboard/suppliers'
     };
-    this.router.navigate([routes[this.tableOption]]);
+    void this.router.navigate([routes[this.tableOption]]);
   }
 
   private createStockChart(products: LowStockProduct[]): void {
@@ -468,12 +468,12 @@ export class DashboardHomeComponent implements AfterViewInit, OnDestroy {
   private loadCategoriesWithStock(): void {
     this.dashboardService.getProductsCount().subscribe({
       next: (categoriesWithProducts: ProductsCount[]) => {
-        const categoryNames = categoriesWithProducts.map(
-          category => category.categoryName
+        const categoryNames = new Set(
+          categoriesWithProducts.map(category => category.categoryName)
         );
 
         this.categories = this.categories.filter(
-          category => categoryNames.includes(category.categoryName)
+          category => categoryNames.has(category.categoryName)
         );
 
         this.selectedCategoryId = 0;

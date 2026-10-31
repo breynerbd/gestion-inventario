@@ -1,7 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
-import { PageResponse } from "../../../shared/models/page-response";
 import { RoleResponse } from "../models/role-response";
 import { RoleCreate } from "../models/role-create";
 import { RoleUpdate } from "../models/role-update";

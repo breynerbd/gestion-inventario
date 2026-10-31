@@ -39,7 +39,7 @@ export class RegisterComponent {
       next: response => {
         this.authService.saveSession(response);
         this.errorMessage = "";
-        this.router.navigate(["/dashboard"])
+        void this.router.navigate(["/dashboard"])
       },
       error: error => {
         console.log(error);

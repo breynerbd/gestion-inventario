@@ -6,6 +6,7 @@ import { MovementResponse } from "../models/movement-response";
 import { MovementCreate } from "../models/movement-create";
 import { MovementUpdate } from "../models/movement-update";
 import { MovementStatus } from "../models/movement-status";
+import { MovementFilters } from '../models/movement-filters';
 
 @Injectable({
     providedIn: 'root'
@@ -14,21 +15,23 @@ export class MovementService {
 
     private readonly apiUrl = '/api/movements'
 
-    constructor(private readonly http: HttpClient){
+    constructor(private readonly http: HttpClient) {
     }
 
-    getMovements(page: number = 0, size: number = 10, 
-            productId: number = 0, movementType: string = "", startDate: string = "",
-            endDate: string = "", userId: number = 0, sort: string = "movementId,asc"
-        ): Observable<PageResponse<MovementResponse>> {
-            let params = new HttpParams().set("page", page.toString()).set("size", size.toString()).set("sort", sort.toString());
-    
-            if(productId) params = params.set("productId", productId);
-            if(movementType.trim()) params = params.set("movementType", movementType.trim());
-            if(startDate.trim()) params = params.set("startDate", startDate.trim());
-            if(endDate.trim()) params = params.set("endDate", endDate.trim());
-            if(userId) params = params.set("userId", userId);
-        return this.http.get<PageResponse<MovementResponse>>(this.apiUrl, { params });
+    getMovements(filters: MovementFilters = {}): Observable<PageResponse<MovementResponse>> {
+        let params = new HttpParams().set("page", (filters.page ?? 0).toString()).set("size", (filters.size ?? 10).toString())
+            .set("sort", filters.sort ?? "movementId,asc");
+
+        if (filters.productId) { params = params.set("productId", filters.productId); }
+        if (filters.movementType?.trim()) { params = params.set("movementType", filters.movementType.trim()); }
+        if (filters.startDate?.trim()) { params = params.set("startDate", filters.startDate.trim()); }
+        if (filters.endDate?.trim()) { params = params.set("endDate", filters.endDate.trim()); }
+        if (filters.userId) { params = params.set("userId", filters.userId); }
+
+        return this.http.get<PageResponse<MovementResponse>>(
+            this.apiUrl,
+            { params }
+        );
     }
 
     getMovementId(movementId: number): Observable<MovementResponse> {
