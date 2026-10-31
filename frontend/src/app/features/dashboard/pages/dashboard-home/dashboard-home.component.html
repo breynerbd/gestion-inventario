@@ -241,16 +241,16 @@
         </div>
 
         <div class="movements-table-container">
-            <table class="movements-table">
+            <table class="movements-table" aria-label="Actividades recientes del inventario">
                 @switch (tableOption) {
                 @case ('movements') {
                 <thead>
                     <tr>
-                        <th>Fecha</th>
-                        <th>Producto</th>
-                        <th>Tipo</th>
-                        <th>Cantidad</th>
-                        <th>Usuario</th>
+                        <th scope="col">Fecha</th>
+                        <th scope="col">Producto</th>
+                        <th scope="col">Tipo</th>
+                        <th scope="col">Cantidad</th>
+                        <th scope="col">Usuario</th>
                     </tr>
                 </thead>
                 <tbody>
