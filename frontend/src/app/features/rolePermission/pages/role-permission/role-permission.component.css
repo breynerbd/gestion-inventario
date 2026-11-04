@@ -120,6 +120,31 @@
     cursor: not-allowed;
 }
 
+.permissions-selection ul {
+  list-style: none;
+  padding: 0;
+}
+
+.permission-button {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 7px;
+  background-color: transparent;
+  color: #586F7C;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.permission-button:hover {
+  background-color: #586F7C;
+  color: #F4F4F9;
+}
+
+.permission-button:disabled {
+  background-color: #9caeb4;
+  cursor: not-allowed;
+}
+
 .text-mobile {
     display: none;
 }
@@ -201,7 +226,7 @@
     box-sizing: border-box;
 }
 
-.permission-form-container h2 {
+.permission-form-container h2, h4 {
     margin-top: 0;
     color: #2F4550;
 }

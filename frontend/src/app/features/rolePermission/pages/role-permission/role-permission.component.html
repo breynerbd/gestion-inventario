@@ -63,13 +63,12 @@
 
             <div class="permissions-selection">
               <section>
-                <h2>Permisos disponibles</h2>
+                <h4 class="text-desktop">Asignar Permisos</h4>
                 <ul>
                   @for (permission of availablePermissions; track permission.permissionId){
                     <li>
-                      {{permission.permissionName}}
-                      <button type="button" (click)="togglePermission(permission.permissionId)">
-                        -> Asignar
+                      <button type="button" (click)="togglePermission(permission.permissionId)" class="permission-button">
+                        {{permission.permissionName}}
                       </button>
                     </li>
                   } @empty {
@@ -78,13 +77,12 @@
                 </ul>
               </section>
               <section>
-                <h2>Permisos seleccionados</h2>
+                <h4 class="text-desktop">Quitar Permisos</h4>
                 <ul>
                   @for (permission of assignedPermissions; track permission.permissionId){
                     <li>
-                      {{permission.permissionName}}
-                      <button type="button" (click)="togglePermission(permission.permissionId)">
-                        <- Quitar
+                      <button type="button" (click)="togglePermission(permission.permissionId)" class="permission-button">
+                        {{permission.permissionName}}
                       </button>
                     </li>
                   } @empty {
