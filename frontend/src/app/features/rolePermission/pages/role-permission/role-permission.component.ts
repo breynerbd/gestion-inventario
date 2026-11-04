@@ -141,6 +141,19 @@ export class RolePermissionsComponent implements OnInit {
     return this.selectedPermissionIds.includes(permissionId);
   }
 
+  get assignedPermissions(): PermissionResponse[] {
+    return this.permissions.filter(permission =>
+      this.isPermissionSelected(permission.permissionId)
+    );
+  }
+
+  get availablePermissions(): PermissionResponse[] {
+    return this.permissions.filter(permission =>
+      permission.status === "ACTIVO" &&
+      !this.isPermissionSelected(permission.permissionId)
+    );
+  }
+
   savePermissions(): void {
     if (this.selectedRoleId === null) {
       return;

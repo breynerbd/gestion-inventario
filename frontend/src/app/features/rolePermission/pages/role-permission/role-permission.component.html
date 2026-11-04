@@ -62,24 +62,36 @@
             </p>
 
             <div class="permissions-selection">
-                @for (permission of permissions; track permission.permissionId) {
-                <label class="permission-option">
-                    <input type="checkbox" [checked]="isPermissionSelected(permission.permissionId)"
-                        [disabled]="permission.status !== 'ACTIVO' && !isPermissionSelected(permission.permissionId)"
-                        (change)="togglePermission(permission.permissionId)">
-
-                    <span class="permission-option-info">
-                        <strong>{{ permission.permissionName }}</strong>
-                        <small>
-                            {{ permission.permissionCode }} -
-                            {{ permission.module }}
-                        </small>
-                        <small>
-                            Estado: {{ permission.status }}
-                        </small>
-                    </span>
-                </label>
-                }
+              <section>
+                <h2>Permisos disponibles</h2>
+                <ul>
+                  @for (permission of availablePermissions; track permission.permissionId){
+                    <li>
+                      {{permission.permissionName}}
+                      <button type="button" (click)="togglePermission(permission.permissionId)">
+                        -> Asignar
+                      </button>
+                    </li>
+                  } @empty {
+                    <li>No hay permisos disponibles para asignar.</li>
+                  }
+                </ul>
+              </section>
+              <section>
+                <h2>Permisos seleccionados</h2>
+                <ul>
+                  @for (permission of assignedPermissions; track permission.permissionId){
+                    <li>
+                      {{permission.permissionName}}
+                      <button type="button" (click)="togglePermission(permission.permissionId)">
+                        <- Quitar
+                      </button>
+                    </li>
+                  } @empty {
+                    <li>No hay permisos seleccionados.</li>
+                  }
+                </ul>
+              </section>
 
                 @if (permissions.length === 0) {
                 <p class="empty-permissions">
