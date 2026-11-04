@@ -5,6 +5,8 @@
 .env.*
 !.env.example
 
+/certs/
+
 backend/target/
 frontend/dist/
 frontend/node_modules/

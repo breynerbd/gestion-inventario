@@ -30,6 +30,7 @@ services:
       JWT_SECRET: ${JWT_SECRET}
       MANAGEMENT_OPENTELEMETRY_TRACING_EXPORT_OTLP_ENDPOINT: http://jaeger:4318/v1/traces
       MANAGEMENT_OPENTELEMETRY_TRACING_EXPORT_OTLP_TRANSPORT: http
+      SERVER_FORWARD_HEADERS_STRATEGY: native
     depends_on:
       database:
         condition: service_healthy
@@ -56,6 +57,9 @@ services:
     restart: unless-stopped
     ports:
       - "80:80"
+      - "127.0.0.1:443:8443"
+    volumes:
+      - ./certs:/etc/nginx/certs:ro
     depends_on:
       backend:
         condition: service_healthy
