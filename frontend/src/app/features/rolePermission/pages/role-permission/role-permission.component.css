@@ -298,6 +298,25 @@
     cursor: not-allowed;
 }
 
+.permission-controls button {
+    padding: 10px 16px;
+    border: none;
+    border-radius: 7px;
+    background-color: #2F4550;
+    color: #F4F4F9;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.permission-controls button:hover {
+    background-color: #586F7C;
+}
+
+.permission-controls button:disabled {
+    background-color: #9caeb4;
+    cursor: not-allowed;
+}
+
 @media (max-width: 1200px) {
     .permissions-container {
         padding: 20px;
@@ -403,6 +422,11 @@
         padding: 7px 10px;
         font-size: 9px;
     }
+
+    .permission-controls button {
+        padding: 7px 10px;
+        font-size: 9px;
+    }
 }
 
 @media (max-width: 768px) {
@@ -422,6 +446,23 @@
         overflow-x: visible;
         gap: 6px;
     }
+
+  .permission-controls {
+    display: grid;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .permission-controls input,
+  .permission-controls button {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  .permission-controls button {
+    white-space: normal;
+  }
 
     .permissions-filters {
         flex: 1 1 auto;
@@ -523,6 +564,11 @@
         padding: 7px 14px;
         font-size: 9px;
     }
+
+    .permission-controls button {
+        padding: 7px 14px;
+        font-size: 9px;
+    }
 }
 
 @media (max-width: 480px) {
@@ -578,6 +624,11 @@
     }
 
     .form-actions button {
+        padding: 7px 14px;
+        font-size: 9px;
+    }
+
+    .permission-controls button {
         padding: 7px 14px;
         font-size: 9px;
     }
