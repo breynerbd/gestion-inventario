@@ -103,17 +103,24 @@
                         [disabled]="visibleAssignedPermissions.length === 0">
                   Quitar todos los visibles →
                 </button>
-                <ul>
-                  @for (permission of visibleAssignedPermissions; track permission.permissionId){
-                    <li>
-                      <button type="button" (click)="togglePermission(permission.permissionId)" class="permission-button">
-                        {{permission.permissionName}}
-                      </button>
-                    </li>
-                  } @empty {
-                    <li>No hay permisos seleccionados.</li>
-                  }
-                </ul>
+
+                @for (group of assignedPermissionsByModule; track group[0]) {
+                  <h5>{{ group[0] }}</h5>
+
+                  <ul>
+                    @for (permission of group[1]; track permission.permissionId) {
+                      <li>
+                        <button type="button"
+                                class="permission-button"
+                                (click)="togglePermission(permission.permissionId)">
+                          {{ permission.permissionName }}
+                        </button>
+                      </li>
+                    }
+                  </ul>
+                } @empty {
+                  <p>No hay permisos disponibles que coincidan con la busqueda.</p>
+                }
               </section>
 
                 @if (permissions.length === 0) {

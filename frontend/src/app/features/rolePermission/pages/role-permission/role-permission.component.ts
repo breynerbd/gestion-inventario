@@ -179,6 +179,19 @@ export class RolePermissionsComponent implements OnInit {
     return groups;
   }
 
+  get assignedPermissionsByModule() : Map<string, PermissionResponse[]> {
+
+    const groups = new Map<string, PermissionResponse[]>();
+
+    for(const permission of this.visibleAssignedPermissions) {
+      const group = groups.get(permission.module) ?? [];
+      group.push(permission);
+      groups.set(permission.module, group);
+    }
+
+    return groups;
+  }
+
   savePermissions(): void {
     if (this.selectedRoleId === null) {
       return;
