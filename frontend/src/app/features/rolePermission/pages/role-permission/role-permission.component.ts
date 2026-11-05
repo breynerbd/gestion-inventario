@@ -162,6 +162,10 @@ export class RolePermissionsComponent implements OnInit {
     return  this.filterPermissions(this.availablePermissions, this.availableSearch)
   }
 
+  get visibleAssignedPermissions(): PermissionResponse[] {
+    return this.filterPermissions(this.assignedPermissions, this.assignedSearch);
+  }
+
   get availablePermissionsByModule() : Map<string, PermissionResponse[]> {
 
     const groups = new Map<string, PermissionResponse[]>();

@@ -65,6 +65,15 @@
               <section>
                 <h4 class="text-desktop">Permisos disponibles</h4>
 
+                <input type="search" [(ngModel)]="availableSearch"
+                       aria-label="Buscar permisos disponibles"
+                       placeholder="Buscar disponibles">
+                <button type="button"
+                        (click)="moveVisiblePermissions(visibleAvailablePermissions)"
+                        [disabled]="visibleAvailablePermissions.length === 0">
+                  Otorgar todos los visibles →
+                </button>
+
                 @for (group of availablePermissionsByModule; track group[0]) {
                   <h5>{{ group[0] }}</h5>
 
@@ -85,8 +94,17 @@
               </section>
               <section>
                 <h4 class="text-desktop">Quitar Permisos</h4>
+                <input type="search" [(ngModel)]="assignedSearch"
+                       aria-label="Buscar permisos disponibles"
+                       placeholder="Buscar disponibles">
+
+                <button type="button"
+                        (click)="moveVisiblePermissions(visibleAssignedPermissions)"
+                        [disabled]="visibleAssignedPermissions.length === 0">
+                  Quitar todos los visibles →
+                </button>
                 <ul>
-                  @for (permission of assignedPermissions; track permission.permissionId){
+                  @for (permission of visibleAssignedPermissions; track permission.permissionId){
                     <li>
                       <button type="button" (click)="togglePermission(permission.permissionId)" class="permission-button">
                         {{permission.permissionName}}
