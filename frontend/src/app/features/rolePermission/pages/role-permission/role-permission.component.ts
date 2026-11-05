@@ -42,6 +42,10 @@ export class RolePermissionsComponent implements OnInit {
 
   errorMessage = "";
 
+  availableSearch = '';
+  assignedSearch = '';
+
+
   constructor(private readonly roleService: RoleService, private readonly permissionService: PermissionService,
     private readonly rolePermissionService: RolePermissionService, private readonly changeDetectorRef: ChangeDetectorRef
   ) {
@@ -154,6 +158,23 @@ export class RolePermissionsComponent implements OnInit {
     );
   }
 
+  get visibleAvailablePermissions(): PermissionResponse[] {
+    return  this.filterPermissions(this.availablePermissions, this.availableSearch)
+  }
+
+  get availablePermissionsByModule() : Map<string, PermissionResponse[]> {
+
+    const groups = new Map<string, PermissionResponse[]>();
+
+    for(const permission of this.visibleAvailablePermissions) {
+      const group = groups.get(permission.module) ?? [];
+      group.push(permission);
+      groups.set(permission.module, group);
+    }
+
+    return groups;
+  }
+
   savePermissions(): void {
     if (this.selectedRoleId === null) {
       return;
@@ -192,6 +213,22 @@ export class RolePermissionsComponent implements OnInit {
       permission.permissionName.toLowerCase().includes(search) ||
       permission.module.toLowerCase().includes(search)
     );
+  }
+
+  private filterPermissions(permissions: PermissionResponse[], search: string) : PermissionResponse[] {
+
+    const query = search.trim().toLowerCase();
+
+    return permissions.filter(permissions =>
+      permissions.permissionId.toString().includes(query) ||
+      permissions.permissionCode.toLowerCase().includes(query)
+    )
+  }
+
+  moveVisiblePermissions(permissions : PermissionResponse[]) : void {
+    permissions.forEach(permission => {
+      this.togglePermission(permission.permissionId);
+    })
   }
 
   get paginatedPermissions(): RolePermissionResponse[] {

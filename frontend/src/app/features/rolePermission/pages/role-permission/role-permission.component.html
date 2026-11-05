@@ -63,18 +63,25 @@
 
             <div class="permissions-selection">
               <section>
-                <h4 class="text-desktop">Asignar Permisos</h4>
-                <ul>
-                  @for (permission of availablePermissions; track permission.permissionId){
-                    <li>
-                      <button type="button" (click)="togglePermission(permission.permissionId)" class="permission-button">
-                        {{permission.permissionName}}
-                      </button>
-                    </li>
-                  } @empty {
-                    <li>No hay permisos disponibles para asignar.</li>
-                  }
-                </ul>
+                <h4 class="text-desktop">Permisos disponibles</h4>
+
+                @for (group of availablePermissionsByModule; track group[0]) {
+                  <h5>{{ group[0] }}</h5>
+
+                  <ul>
+                    @for (permission of group[1]; track permission.permissionId) {
+                      <li>
+                        <button type="button"
+                                class="permission-button"
+                                (click)="togglePermission(permission.permissionId)">
+                          {{ permission.permissionName }}
+                        </button>
+                      </li>
+                    }
+                  </ul>
+                } @empty {
+                  <p>No hay permisos disponibles que coincidan con la busqueda.</p>
+                }
               </section>
               <section>
                 <h4 class="text-desktop">Quitar Permisos</h4>
