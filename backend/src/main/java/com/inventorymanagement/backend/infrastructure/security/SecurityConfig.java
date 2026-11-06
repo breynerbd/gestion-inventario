@@ -129,6 +129,8 @@ public class SecurityConfig {
                     SUPERVISOR
                 )
 
+                .requestMatchers(GET, "/api/products")
+                .hasAuthority("PRODUCTOS_LEER")
                 .requestMatchers(GET, PRODUCTS_PATH)
                 .hasAnyRole(
                     ADMINISTRADOR,

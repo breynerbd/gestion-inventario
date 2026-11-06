@@ -50,3 +50,7 @@ databaseChangeLog:
     - include:
         file: 013_code_sequences.yaml
         relativeToChangelogFile: true
+
+    - include:
+        file: 014_operation_permission.yaml
+        relativeToChangelogFile: true

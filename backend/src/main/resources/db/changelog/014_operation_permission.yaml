@@ -1,0 +1,47 @@
+databaseChangeLog:
+  - changeSet:
+      id: 014-create-operation-permissions
+      author: herli
+      changes:
+        - createTable:
+            tableName: operation_permissions
+            columns:
+              - column:
+                  name: operation_code
+                  type: VARCHAR(60)
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: operation_permissions_pkey
+                    nullable: false
+
+              - column:
+                  name: permission_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+
+        - addForeignKeyConstraint:
+            baseTableName: operation_permissions
+            baseColumnNames: permission_id
+            referencedTableName: permissions
+            referencedColumnNames: permission_id
+            constraintName: fk_operation_permissions_permissions
+
+  - changeSet:
+      id: 014-seed-operation-permissions
+      author: breyner
+      changes:
+        - sql:
+            sql: |
+              INSERT INTO operation_permissions (operation_code, permission_id)
+              VALUES
+                ('LISTAR_PRODUCTOS',
+                  (SELECT permission_id FROM permissions
+                   WHERE permission_code = 'PRODUCTOS_LEER')),
+                ('LISTAR_MOVIMIENTOS',
+                  (SELECT permission_id FROM permissions
+                   WHERE permission_code = 'MOVIMIENTOS_LEER'));
+      rollback:
+        - delete:
+            tableName: operation_permissions
+            where: "operation_code IN ('LISTAR_PRODUCTOS', 'LISTAR_MOVIMIENTOS')"
