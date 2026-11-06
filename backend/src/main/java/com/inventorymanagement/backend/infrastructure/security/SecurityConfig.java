@@ -154,6 +154,8 @@ public class SecurityConfig {
                     SUPERVISOR
                 )
 
+                .requestMatchers(GET, "/api/movements")
+                .hasAuthority("MOVIMIENTOS_LEER")
                 .requestMatchers(GET, MOVEMENTS_PATH)
                 .hasAnyRole(
                     ADMINISTRADOR,

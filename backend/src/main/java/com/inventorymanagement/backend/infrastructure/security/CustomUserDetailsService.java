@@ -13,11 +13,17 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+
+import com.inventorymanagement.backend.application.service.RolePermissionService;
+import com.inventorymanagement.backend.domain.entity.Permission;
+
 @RequiredArgsConstructor 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
     private final UserRepository usuarioRepository;
+    private final RolePermissionService rolePermissionService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CustomUserDetailsService.class);
 
@@ -32,14 +38,23 @@ public class CustomUserDetailsService implements UserDetailsService {
                 return new UsernameNotFoundException("El usuario con correo " + email + " no existe");
             });
 
+        var role = user.getRole();
+        var authorities = new ArrayList<SimpleGrantedAuthority>();
+
+        authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getRoleName()));
+
+        for(var permission : rolePermissionService.findAllRolePermissions(role.getRoleId())) {
+
+            if (permission.getStatus() == Permission.Status.ACTIVO) {
+                authorities.add(new SimpleGrantedAuthority(permission.getPermissionCode()));
+            }
+
+        }
+
         return org.springframework.security.core.userdetails.User.builder()
             .username(user.getEmail())
             .password(user.getPassword())
-            .authorities(
-                new SimpleGrantedAuthority(
-                    "ROLE_" + user.getRole().getRoleName()
-                )
-            )
+                .authorities(authorities)
             .build();
     }
 }
