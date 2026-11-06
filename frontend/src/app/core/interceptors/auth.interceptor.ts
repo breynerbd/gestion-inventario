@@ -32,6 +32,11 @@ export const authInterceptor: HttpInterceptorFn = (request, next) => {
             }
 
             return authService.refreshToken(refreshToken).pipe(
+
+                catchError((refreshError) => {
+                  authService.logout();
+                  return throwError(() => refreshError);
+                }),
                 switchMap((response) => {
                     authService.saveSession(response);
 
@@ -42,10 +47,6 @@ export const authInterceptor: HttpInterceptorFn = (request, next) => {
                     });
 
                     return next(newRequest);
-                }),
-                catchError((refreshError) => {
-                    authService.logout();
-                    return throwError(() => refreshError);
                 })
             );
         })
