@@ -1,0 +1,19 @@
+databaseChangeLog:
+  - changeSet:
+      id: 015-seed-catalog-operation-permissions
+      author: herli
+      changes:
+        - sql:
+            sql: |
+              INSERT INTO operation_permissions (operation_code, permission_id)
+              VALUES
+                ('LISTAR_CATEGORIAS',
+                  (SELECT permission_id FROM permissions
+                   WHERE permission_code = 'CATEGORIAS_LEER')),
+                ('LISTAR_PROVEEDORES',
+                  (SELECT permission_id FROM permissions
+                   WHERE permission_code = 'PROVEEDORES_LEER'));
+      rollback:
+        - delete:
+            tableName: operation_permissions
+            where: "operation_code IN ('LISTAR_CATEGORIAS', 'LISTAR_PROVEEDORES')"

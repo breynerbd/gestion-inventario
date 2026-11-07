@@ -54,3 +54,7 @@ databaseChangeLog:
     - include:
         file: 014_operation_permission.yaml
         relativeToChangelogFile: true
+
+    - include:
+          file: 015_catalog_operation_permissions.yaml
+          relativeToChangelogFile: true
