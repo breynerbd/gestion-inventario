@@ -43,12 +43,12 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getRoleName()));
 
-        for(var permission : rolePermissionService.findAllRolePermissions(role.getRoleId())) {
-
+        for (var permission : rolePermissionService.findAllRolePermissions(role.getRoleId())) {
             if (permission.getStatus() == Permission.Status.ACTIVO) {
-                authorities.add(new SimpleGrantedAuthority(permission.getPermissionCode()));
+                authorities.add(
+                        new SimpleGrantedAuthority("PERMISSION_" + permission.getPermissionCode())
+                );
             }
-
         }
 
         return org.springframework.security.core.userdetails.User.builder()

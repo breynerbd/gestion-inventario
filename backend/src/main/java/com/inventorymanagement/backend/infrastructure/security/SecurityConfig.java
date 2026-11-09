@@ -5,6 +5,14 @@ import static org.springframework.http.HttpMethod.PATCH;
 import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.http.HttpMethod.PUT;
 
+import com.inventorymanagement.backend.domain.entity.OperationPermission;
+import com.inventorymanagement.backend.domain.entity.Permission;
+import com.inventorymanagement.backend.infrastructure.persistence.repository.OperationPermissionRepository;
+
+import org.springframework.security.authorization.AuthorizationDecision;
+import org.springframework.security.authorization.AuthorizationManager;
+import org.springframework.security.web.access.intercept.RequestAuthorizationContext;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -30,9 +38,32 @@ public class SecurityConfig {
     private static final String SUPPLIERS_PATH = "/api/suppliers/**";
     private static final String PRODUCTS_PATH = "/api/products/**";
     private static final String MOVEMENTS_PATH = "/api/movements/**";
+    private final OperationPermissionRepository operationPermissionRepository;
 
-    public SecurityConfig(JwtFilter jwtFilter) {
+    private AuthorizationManager<RequestAuthorizationContext> requiresOperation(
+            String operationCode) {
+        return (authentication, context) -> {
+            var user = authentication.get();
+
+            boolean allowed = user != null && user.isAuthenticated()
+                    && operationPermissionRepository.findById(operationCode)
+                    .map(OperationPermission::getPermission)
+                    .filter(permission ->
+                            permission.getStatus() == Permission.Status.ACTIVO)
+                    .map(permission ->
+                            "PERMISSION_" + permission.getPermissionCode())
+                    .map(required -> user.getAuthorities().stream()
+                            .anyMatch(authority ->
+                                    required.equals(authority.getAuthority())))
+                    .orElse(false);
+
+            return new AuthorizationDecision(allowed);
+        };
+    }
+
+    public SecurityConfig(JwtFilter jwtFilter,OperationPermissionRepository operationPermissionRepository) {
         this.jwtFilter = jwtFilter;
+        this.operationPermissionRepository = operationPermissionRepository;
     }
 
     @Bean
@@ -79,6 +110,9 @@ public class SecurityConfig {
                 .requestMatchers("/api/permissions/**")
                 .hasRole(ADMINISTRADOR)
 
+                .requestMatchers(GET, "/api/categories")
+                .access(requiresOperation("LISTAR_CATEGORIAS"))
+
                 .requestMatchers(GET, CATEGORIES_PATH)
                 .hasAnyRole(
                     ADMINISTRADOR,
@@ -103,6 +137,9 @@ public class SecurityConfig {
                     ADMINISTRADOR,
                     SUPERVISOR
                 )
+
+                .requestMatchers(GET, "/api/suppliers")
+                .access(requiresOperation("LISTAR_PROVEEDORES"))
 
                 .requestMatchers(GET, SUPPLIERS_PATH)
                 .hasAnyRole(
@@ -130,7 +167,7 @@ public class SecurityConfig {
                 )
 
                 .requestMatchers(GET, "/api/products")
-                .hasAuthority("PRODUCTOS_LEER")
+                .access(requiresOperation("LISTAR_PRODUCTOS"))
                 .requestMatchers(GET, PRODUCTS_PATH)
                 .hasAnyRole(
                     ADMINISTRADOR,
@@ -157,7 +194,7 @@ public class SecurityConfig {
                 )
 
                 .requestMatchers(GET, "/api/movements")
-                .hasAuthority("MOVIMIENTOS_LEER")
+                .access(requiresOperation("LISTAR_MOVIMIENTOS"))
                 .requestMatchers(GET, MOVEMENTS_PATH)
                 .hasAnyRole(
                     ADMINISTRADOR,
