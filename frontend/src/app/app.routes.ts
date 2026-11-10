@@ -51,9 +51,9 @@ export const routes: Routes = [
                 data: { operation: "LISTAR_PROVEEDORES" }
             },
             {
-                path: "roles",
-                component: RolesComponent,
-                canActivate: [roleAuthGuard(["ADMINISTRADOR"])]
+              path: "roles",
+              component: RolesComponent,
+              data: { operation: "LISTAR_ROLES" }
             },
             {
               path: "users",
@@ -66,9 +66,9 @@ export const routes: Routes = [
                 canActivate: [roleAuthGuard(["ADMINISTRADOR"])]
             },
             {
-                path: "role-permissions",
-                component: RolePermissionsComponent,
-                canActivate: [roleAuthGuard(["ADMINISTRADOR"])]
+              path: "role-permissions",
+              component: RolePermissionsComponent,
+              data: { operation: "ASIGNAR_PERMISOS" }
             },
             {
                 path: "binnacle",

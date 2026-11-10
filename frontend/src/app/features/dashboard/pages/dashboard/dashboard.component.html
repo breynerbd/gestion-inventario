@@ -30,7 +30,20 @@
 
         <aside class="sidebar" [class.sidebar-open]="isSidebarOpen">
             <nav class="menu">
+                @if (canAccess('VER_REPORTES')) {
                 <a routerLink="/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="closeSidebar()">Panel Principal</a>
+                }
+                @if (canAccess('LISTAR_USUARIOS')) {
+                  <a routerLink="/dashboard/users"
+                     routerLinkActive="active"
+                     (click)="closeSidebar()">Usuarios</a>
+                }
+
+                @if (canAccess('LISTAR_ROLES')) {
+                  <a routerLink="/dashboard/roles"
+                     routerLinkActive="active"
+                     (click)="closeSidebar()">Roles</a>
+                }
                 @if (canAccess('LISTAR_PRODUCTOS')) {
                     <a routerLink="/dashboard/products"
                        routerLinkActive="active"
@@ -54,11 +67,14 @@
                        routerLinkActive="active"
                        (click)="closeSidebar()">Proveedores</a>
                 }
-                @if (canAccess('LISTAR_USUARIOS')) {<a routerLink="/dashboard/users" routerLinkActive="active" (click)="closeSidebar()">Usuarios</a>}
-                @if (canManageRoles()) {<a routerLink="/dashboard/roles" routerLinkActive="active" (click)="closeSidebar()">Roles</a>}
-                @if (canManagePermissions()) {<a routerLink="/dashboard/permissions" routerLinkActive="active" (click)="closeSidebar()">Permisos</a>
-                    <a routerLink="/dashboard/role-permissions" routerLinkActive="active" (click)="closeSidebar()">Roles-Permisos</a>
-                    <a routerLink="/dashboard/binnacle" routerLinkActive="active" (click)="closeSidebar()">Bitacora</a>}
+                @if (canManagePermissions()) {
+                  <a routerLink="/dashboard/permissions" routerLinkActive="active"(click)="closeSidebar()">Permisos</a>
+                  <a routerLink="/dashboard/binnacle" routerLinkActive="active" (click)="closeSidebar()">Bitácora</a>
+                }
+
+                @if (canAccess('ASIGNAR_PERMISOS')) {
+                  <a routerLink="/dashboard/role-permissions" routerLinkActive="active" (click)="closeSidebar()">Roles-Permisos</a>
+                }
             </nav>
 
             <div class="sidebar-foot">
