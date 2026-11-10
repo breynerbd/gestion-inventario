@@ -17,8 +17,8 @@
 
                     <button type="button" class="clear-search" (click)="onSearchChange('')">Limpiar</button>
                 </div>
-                
-                @if(canManageCategories()) {
+
+                @if (canAccess('CREAR_CATEGORIA')) {
                 <button type="button" class="new-category-button" (click)="openForm()">
                     <span class="text-desktop">Nueva Categoría</span>
                     <span class="text-mobile">
@@ -119,18 +119,22 @@
                     <td>{{ category.status }}</td>
                     @if(canManageCategories()) {
                     <td>
-                        <button type="button" class="icon-action-btn" (click)="editCategory(category)" title="Editar">
-                            <ng-icon name="lucidePencil" class="action-icon"></ng-icon>
-                        </button>
+                        @if (canAccess('EDITAR_CATEGORIA')) {
+                          <button type="button" class="icon-action-btn" (click)="editCategory(category)" title="Editar">
+                              <ng-icon name="lucidePencil" class="action-icon"></ng-icon>
+                          </button>
+                        }
+                        @if (canAccess('INACTIVAR_CATEGORIA')) {
 
-                        <button type="button" class="icon-action-btn" (click)="changeStatus(category)"
-                            [title]="category.status === 'ACTIVO' ? 'Desactivar' : 'Activar'">
-                            @if (category.status === 'ACTIVO') {
-                            <ng-icon name="lucideBan" class="action-icon"></ng-icon>
-                            } @else {
-                            <ng-icon name="lucideCircleCheck" class="action-icon"></ng-icon>
-                            }
-                        </button>
+                          <button type="button" class="icon-action-btn" (click)="changeStatus(category)"
+                              [title]="category.status === 'ACTIVO' ? 'Desactivar' : 'Activar'">
+                              @if (category.status === 'ACTIVO') {
+                              <ng-icon name="lucideBan" class="action-icon"></ng-icon>
+                              } @else {
+                              <ng-icon name="lucideCircleCheck" class="action-icon"></ng-icon>
+                              }
+                          </button>
+                        }
                     </td>
                     }
                 </tr>

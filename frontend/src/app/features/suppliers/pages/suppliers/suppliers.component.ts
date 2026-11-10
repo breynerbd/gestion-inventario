@@ -56,8 +56,13 @@ export class SuppliersComponent implements OnInit {
     this.loadSuppliers();
   }
 
+  canAccess(operation: string): boolean {
+    return this.roleAuthService.canAccess(operation);
+  }
+
   canManageSuppliers(): boolean {
-    return this.roleAuthService.createSupplier();
+    return this.canAccess('EDITAR_PROVEEDOR') ||
+      this.canAccess('INACTIVAR_PROVEEDOR');
   }
 
   loadSuppliers(): void {

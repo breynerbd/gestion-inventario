@@ -64,7 +64,7 @@
                 Limpiar
             </button>
 
-            @if(canManageProducts()){
+            @if (canAccess('CREAR_PRODUCTO')) {
             <button type="button" class="new-product-button" (click)="openForm()">
                 <span class="text-desktop">Nuevo Producto</span>
                 <span class="text-mobile">
@@ -83,7 +83,7 @@
         </button>
         <dialog class="product-form-container" open aria-modal="true" aria-labelledby="product-form-title" (click)="onFormDialogClick($event)"
             (keydown.escape)="cancelForm()">
-            
+
             <h2>
                 @if (editingProductId === null) {
                     Nuevo Producto
@@ -214,7 +214,7 @@
                     <label for="minimumStock">Stock mínimo</label>
                     <input id="minimumStock" type="number" name="minimumStock" [(ngModel)]="newProduct.minimumStock"
                         min="0" step="1" #minimumStock="ngModel" required>
-                    
+
                     @if (minimumStock.invalid && minimumStock.touched) {
                         @if (minimumStock.errors?.["required"]) {
                             <small class="validation-message">El stock mínimo es obligatorio.</small>
@@ -294,10 +294,13 @@
                     <td>{{ product.status }}</td>
                     @if(canManageProducts()) {
                     <td>
+                      @if (canAccess('EDITAR_PRODUCTO')) {
+
                         <button type="button" class="icon-action-btn" (click)="$event.stopPropagation(); editProduct(product)" title="Editar">
                             <ng-icon name="lucidePencil" class="action-icon"></ng-icon>
                         </button>
-
+                      }
+                      @if (canAccess('INACTIVAR_PRODUCTO')) {
                         <button type="button" class="icon-action-btn" (click)="$event.stopPropagation(); changeStatus(product)"
                             [title]="product.status === 'ACTIVO' ? 'Desactivar' : 'Activar'">
                             @if (product.status === 'ACTIVO') {
@@ -306,6 +309,7 @@
                             <ng-icon name="lucideCircleCheck" class="action-icon"></ng-icon>
                             }
                         </button>
+                      }
                     </td>
                     }
                 </tr>

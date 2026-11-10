@@ -40,8 +40,13 @@ export class CategoriesComponent implements OnInit {
 
   }
 
+  canAccess(operation: string): boolean {
+    return this.roleAuthService.canAccess(operation);
+  }
+
   canManageCategories(): boolean {
-    return this.roleAuthService.createCategory();
+    return this.canAccess('EDITAR_CATEGORIA') ||
+      this.canAccess('INACTIVAR_CATEGORIA');
   }
 
   ngOnInit(): void {
@@ -76,7 +81,7 @@ export class CategoriesComponent implements OnInit {
   get filteredCategories(): CategoryResponse[] {
     const search = this.searchTerm.trim().toLowerCase();
 
-    return this.categories.filter(categorie => 
+    return this.categories.filter(categorie =>
       categorie.categoryCode.toLowerCase().includes(search) ||
       categorie.categoryName.toLowerCase().includes(search)
     );
@@ -157,7 +162,7 @@ export class CategoriesComponent implements OnInit {
 
   changeStatus(category: CategoryResponse): void {
     this.errorMessage = "";
-    
+
     const newStatus = category.status === "ACTIVO"
       ? "INACTIVO"
       : "ACTIVO";
@@ -172,7 +177,7 @@ export class CategoriesComponent implements OnInit {
       },
       error: (error) => {
         console.error(error);
-        
+
         const message = error.error?.error;
 
         if (message?.includes("productos asociados")) {

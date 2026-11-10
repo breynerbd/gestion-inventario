@@ -67,4 +67,7 @@ export class RoleAuthService {
     getRoleName(): string | null {
         return this.authService.getRoleName();
     }
+    canAccess(operation: string): boolean {
+      return this.authService.hasOperation(operation);
+    }
 }

@@ -46,7 +46,7 @@
                 <input id="endDate" type="date" [(ngModel)]="endDate" (change)="applyFilters()">
             </div>
 
-            @if(isAdmin()) {
+            @if (canListUsers()) {
             <div class="filter-group">
                 <label for="selectedUserId">Usuario</label>
                 <select id="selectedUserId" [(ngModel)]="selectedUserId" (change)="applyFilters()">
@@ -215,7 +215,7 @@
                     <th>Usuario</th>
                     <th>Fecha</th>
                     <th>Estado</th>
-                    @if(canEditMovements()) {
+                    @if (canManageMovements()) {
                     <th>Acciones</th>
                     }
                 </tr>
@@ -233,12 +233,15 @@
                     <td>{{ movement.username }}</td>
                     <td>{{ movement.movementDate | date:"dd/MM/yyyy HH:mm" }}</td>
                     <td>{{ movement.status }}</td>
-                    @if(canEditMovements()) {
+                    @if (canManageMovements()) {
                     <td>
+                      @if (canEditMovements()) {
+
                         <button type="button" class="icon-action-btn" (click)="$event.stopPropagation(); editMovement(movement)" title="Editar">
                             <ng-icon name="lucidePencil" class="action-icon"></ng-icon>
                         </button>
-
+                      }
+                      @if (canInactivateMovements()) {
                         <button type="button" class="icon-action-btn" (click)="$event.stopPropagation(); changeStatus(movement)"
                             [title]="movement.status === 'ACTIVO' ? 'Desactivar' : 'Activar'">
                             @if (movement.status === 'ACTIVO') {
@@ -247,6 +250,7 @@
                             <ng-icon name="lucideCircleCheck" class="action-icon"></ng-icon>
                             }
                         </button>
+                      }
                     </td>
                     }
                 </tr>

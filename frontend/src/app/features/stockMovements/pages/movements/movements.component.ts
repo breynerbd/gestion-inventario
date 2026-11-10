@@ -69,16 +69,24 @@ export class MovementsComponent implements OnInit {
     this.loadUsers();
   }
 
-  isAdmin(): boolean {
-    return this.roleAuthService.isAdmin();
+  canListUsers(): boolean {
+    return this.authService.hasOperation('LISTAR_USUARIOS');
   }
 
   canCreateMovements(): boolean {
-    return this.roleAuthService.createMovement();
+    return this.authService.hasOperation('CREAR_MOVIMIENTO');
   }
 
   canEditMovements(): boolean {
-    return this.roleAuthService.editMovement();
+    return this.authService.hasOperation('EDITAR_MOVIMIENTO');
+  }
+
+  canInactivateMovements(): boolean {
+    return this.authService.hasOperation('INACTIVAR_MOVIMIENTO');
+  }
+
+  canManageMovements(): boolean {
+    return this.canEditMovements() || this.canInactivateMovements();
   }
 
   loadMovements(): void {
@@ -129,7 +137,9 @@ export class MovementsComponent implements OnInit {
   }
 
   loadUsers(): void {
-    if(!this.isAdmin()) {
+    if (!this.canListUsers()) {
+      this.users = [];
+      this.selectedUserId = 0;
       return;
     }
 

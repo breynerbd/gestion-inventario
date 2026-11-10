@@ -4,12 +4,15 @@
             <h1>Roles</h1>
             <p>Gestión de roles del sistema</p>
         </div>
+      @if (canAccess('CREAR_ROL')) {
+
         <button type="button" (click)="openForm()">
             <span class="text-desktop">Nuevo Rol</span>
             <span class="text-mobile">
                 <ng-icon name="lucidePlus" class="icon-add"></ng-icon>
             </span>
         </button>
+      }
     </div>
 
     @if (errorMessage) {
@@ -92,10 +95,13 @@
                     <td>{{ role.modificationDate | date:"dd/MM/yyyy HH:mm" }}</td>
                     <td>{{ role.status }}</td>
                     <td>
+                      @if (canAccess('EDITAR_ROL')) {
+
                         <button type="button" class="icon-action-btn" (click)="editRole(role)" title="Editar">
                             <ng-icon name="lucidePencil" class="action-icon"></ng-icon>
                         </button>
-
+                      }
+                      @if (canAccess('INACTIVAR_ROL')) {
                         <button type="button" class="icon-action-btn" (click)="changeStatus(role)"
                             [title]="role.status === 'ACTIVO' ? 'Desactivar' : 'Activar'">
                             @if (role.status === 'ACTIVO') {
@@ -104,6 +110,7 @@
                             <ng-icon name="lucideCircleCheck" class="action-icon"></ng-icon>
                             }
                         </button>
+                      }
                     </td>
                 </tr>
                 }

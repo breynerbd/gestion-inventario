@@ -119,8 +119,13 @@ export class ProductsComponent implements OnInit {
   ) {
   }
 
+  canAccess(operation: string): boolean {
+    return this.roleAuthService.canAccess(operation);
+  }
+
   canManageProducts(): boolean {
-    return this.roleAuthService.createProduct();
+    return this.canAccess('EDITAR_PRODUCTO') ||
+      this.canAccess('INACTIVAR_PRODUCTO');
   }
 
   ngOnInit(): void {
@@ -251,7 +256,7 @@ export class ProductsComponent implements OnInit {
   saveProduct(): void {
     this.errorMessageForm = "";
 
-    if (!this.newProduct.productName.trim() || this.newProduct.categoryId === 0 || 
+    if (!this.newProduct.productName.trim() || this.newProduct.categoryId === 0 ||
         this.newProduct.supplierId === 0 || this.newProduct.unitOfMeasure === ""
     ) {
         this.errorMessageForm = "Completa todos los campos obligatorios.";

@@ -18,7 +18,7 @@
                     <button type="button" class="clear-search" (click)="onSearchChange('')">Limpiar</button>
                 </div>
 
-                @if(canManageSuppliers()) {
+                @if (canAccess('CREAR_PROVEEDOR')) {
                 <button type="button" class="new-supplier-button" (click)="openForm()">
                     <span class="text-desktop">Nuevo Proveedor</span>
                     <span class="text-mobile">
@@ -87,7 +87,7 @@
                     <input id="businessName" type="text" name="businessName" [(ngModel)]="newSupplier.businessName"
                         #businessName="ngModel" maxlength="150" required>
 
-                    
+
                     @if (businessName.invalid && businessName.touched) {
                         @if (businessName.errors?.["required"]) {
                             <small class="validation-message">La razón social es obligatoria.</small>
@@ -208,10 +208,13 @@
                     <td>{{ supplier.status }}</td>
                     @if(canManageSuppliers()) {
                     <td>
+                      @if (canAccess('EDITAR_PROVEEDOR')) {
+
                         <button type="button" class="icon-action-btn" (click)="$event.stopPropagation(); editSupplier(supplier)" title="Editar">
                             <ng-icon name="lucidePencil" class="action-icon"></ng-icon>
                         </button>
-
+                      }
+                      @if (canAccess('INACTIVAR_PROVEEDOR')) {
                         <button type="button" class="icon-action-btn" (click)="$event.stopPropagation(); changeStatus(supplier)"
                             [title]="supplier.status === 'ACTIVO' ? 'Desactivar' : 'Activar'">
                             @if (supplier.status === 'ACTIVO') {
@@ -220,6 +223,7 @@
                             <ng-icon name="lucideCircleCheck" class="action-icon"></ng-icon>
                             }
                         </button>
+                      }
                     </td>
                     }
                 </tr>

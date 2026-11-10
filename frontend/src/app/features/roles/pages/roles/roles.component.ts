@@ -7,6 +7,7 @@ import { RoleUpdate } from '../../models/role-update';
 import { PaginationComponent } from '../../../../shared/components/pagination/pagination.component';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { lucideBan, lucideCircleCheck, lucidePencil, lucidePlus } from '@ng-icons/lucide';
+import { AuthService } from '../../../auth/services/auth.service';
 import { DatePipe } from '@angular/common';
 
 @Component({
@@ -34,7 +35,8 @@ export class RolesComponent implements OnInit {
     description: ""
   };
 
-  constructor(private readonly roleService: RoleService) {
+  constructor(private readonly roleService: RoleService,
+              private readonly authService: AuthService) {
   }
 
   ngOnInit(): void {
@@ -143,7 +145,7 @@ export class RolesComponent implements OnInit {
 
   changeStatus(role: RoleResponse): void {
     this.errorMessage = "";
-    
+
     const newStatus = role.status === "ACTIVO"
       ? "INACTIVO"
       : "ACTIVO";
@@ -191,5 +193,9 @@ export class RolesComponent implements OnInit {
       roleName: "",
       description: ""
     };
+  }
+
+  canAccess(operation: string): boolean {
+    return this.authService.hasOperation(operation);
   }
 }
