@@ -1,0 +1,44 @@
+databaseChangeLog:
+  - changeSet:
+      id: 017-seed-module-operation-permissions
+      author: herli
+      changes:
+        - sql:
+            sql: |
+              INSERT INTO operation_permissions (operation_code, permission_id)
+              SELECT mapping.operation_code,
+                (SELECT permission_id
+                 FROM permissions
+                 WHERE permission_code = mapping.permission_code)
+              FROM (VALUES
+                ('CREAR_CATEGORIA', 'CATEGORIAS_CREAR'),
+                ('EDITAR_CATEGORIA', 'CATEGORIAS_EDITAR'),
+                ('INACTIVAR_CATEGORIA', 'CATEGORIAS_INACTIVAR'),
+                ('CREAR_PROVEEDOR', 'PROVEEDORES_CREAR'),
+                ('EDITAR_PROVEEDOR', 'PROVEEDORES_EDITAR'),
+                ('INACTIVAR_PROVEEDOR', 'PROVEEDORES_INACTIVAR'),
+                ('CREAR_PRODUCTO', 'PRODUCTOS_CREAR'),
+                ('EDITAR_PRODUCTO', 'PRODUCTOS_EDITAR'),
+                ('INACTIVAR_PRODUCTO', 'PRODUCTOS_INACTIVAR'),
+                ('CREAR_MOVIMIENTO', 'MOVIMIENTOS_CREAR'),
+                ('EDITAR_MOVIMIENTO', 'MOVIMIENTOS_EDITAR'),
+                ('INACTIVAR_MOVIMIENTO', 'MOVIMIENTOS_INACTIVAR'),
+                ('LISTAR_ROLES', 'ROLES_LEER'),
+                ('CREAR_ROL', 'ROLES_CREAR'),
+                ('EDITAR_ROL', 'ROLES_EDITAR'),
+                ('INACTIVAR_ROL', 'ROLES_INACTIVAR'),
+                ('ASIGNAR_PERMISOS', 'ROLES_ASIGNAR_PERMISOS'),
+                ('VER_REPORTES', 'REPORTES_LEER')
+              ) AS mapping(operation_code, permission_code);
+      rollback:
+        - delete:
+            tableName: operation_permissions
+            where: >
+              operation_code IN (
+                'CREAR_CATEGORIA', 'EDITAR_CATEGORIA', 'INACTIVAR_CATEGORIA',
+                'CREAR_PROVEEDOR', 'EDITAR_PROVEEDOR', 'INACTIVAR_PROVEEDOR',
+                'CREAR_PRODUCTO', 'EDITAR_PRODUCTO', 'INACTIVAR_PRODUCTO',
+                'CREAR_MOVIMIENTO', 'EDITAR_MOVIMIENTO', 'INACTIVAR_MOVIMIENTO',
+                'LISTAR_ROLES', 'CREAR_ROL', 'EDITAR_ROL', 'INACTIVAR_ROL',
+                'ASIGNAR_PERMISOS', 'VER_REPORTES'
+              )

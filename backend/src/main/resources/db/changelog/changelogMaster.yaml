@@ -62,3 +62,7 @@ databaseChangeLog:
     - include:
           file: 016_user_operation_permissions.yaml
           relativeToChangelogFile: true
+
+    - include:
+            file: 017_module_operation_permissions.yaml
+            relativeToChangelogFile: true
