@@ -16,6 +16,7 @@ import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { lucideBan, lucideCircleCheck, lucidePencil, lucidePlus, lucideChevronLeft, lucideChevronRight } from '@ng-icons/lucide';
 import { DetailModalComponent } from "../../../../shared/components/detail-modal/detail-modal.component";
 import { DetailField } from "../../../../shared/models/detail-field";
+import { AuthService } from '../../../auth/services/auth.service';
 
 @Component({
   selector: "app-movements",
@@ -58,7 +59,7 @@ export class MovementsComponent implements OnInit {
   };
 
   constructor(private readonly movementService: MovementService, private readonly productService: ProductService,
-    private readonly userService: UserService, private readonly roleAuthService: RoleAuthService
+    private readonly userService: UserService, private readonly roleAuthService: RoleAuthService,private readonly authService: AuthService
   ) {
   }
 
@@ -103,6 +104,11 @@ export class MovementsComponent implements OnInit {
   }
 
   loadProducts(): void {
+    if (!this.canListProducts()) {
+      this.products = [];
+      this.selectedProductId = 0;
+      return;
+    }
     this.productService.getProducts({page: 0, size: 100}).subscribe({
       next: (response) => {
         this.products = response.content.filter(product => product.status === "ACTIVO");
@@ -274,7 +280,7 @@ export class MovementsComponent implements OnInit {
 
     if ((this.newMovement.movementType === "SALIDA" ||
         this.newMovement.movementType === "AJUSTE_NEGATIVO") &&
-        this.newMovement.quantity > this.getSelectedProductStock()) 
+        this.newMovement.quantity > this.getSelectedProductStock())
     {
         this.errorMessageForm = "La cantidad no puede superar el stock disponible.";
         return;
@@ -307,7 +313,7 @@ export class MovementsComponent implements OnInit {
 
   changeStatus(movement: MovementResponse): void {
     this.errorMessage = "";
-    
+
     const newStatus = movement.status === "ACTIVO"
       ? "INACTIVO"
       : "ACTIVO";
@@ -356,5 +362,9 @@ export class MovementsComponent implements OnInit {
       referenceDocument: "",
       reason: ""
     };
+  }
+
+  canListProducts(): boolean {
+    return this.authService.hasOperation('LISTAR_PRODUCTOS');
   }
 }

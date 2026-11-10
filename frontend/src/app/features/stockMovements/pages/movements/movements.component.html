@@ -7,19 +7,22 @@
         </div>
 
         <div class="movements-actions">
+          @if (canListProducts()) {
             <div class="filter-group">
-                <label for="selectedProductId">Producto</label>
-                <select id="selectedProductId" [(ngModel)]="selectedProductId" (change)="applyFilters()">
+              <label for="selectedProductId">Producto</label>
+              <select id="selectedProductId" [(ngModel)]="selectedProductId" (change)="applyFilters()">
 
-                    <option [ngValue]="0">Todos</option>
+                <option [ngValue]="0">Todos</option>
 
-                    @for (product of products; track product.productId) {
-                    <option [ngValue]="product.productId">
-                        {{ product.productName }}
-                    </option>
-                    }
-                </select>
+                @for (product of products; track product.productId) {
+                  <option [ngValue]="product.productId">
+                    {{ product.productName }}
+                  </option>
+                }
+              </select>
             </div>
+          }
+
 
             <div class="filter-group">
                 <label for="selectedMovementType">Tipo</label>
@@ -139,7 +142,7 @@
 
                     <input id="quantity" name="quantity" type="number" [(ngModel)]="newMovement.quantity" min="1"
                         step="1" #quantity="ngModel" required>
-                    
+
                     @if (quantity.invalid && quantity.touched) {
                         @if (quantity.errors?.["required"]) {
                             <small class="validation-message">La cantidad es obligatoria.</small>
@@ -174,7 +177,7 @@
                     <label for="reason">Motivo</label>
 
                     <textarea id="reason" name="reason" [(ngModel)]="newMovement.reason" rows="3" maxlength="250" #reason="ngModel" required></textarea>
-                    
+
                     @if (reason.invalid && reason.touched) {
                         @if (reason.errors?.["required"]) {
                             <small class="validation-message">El motivo es obligatorio.</small>
