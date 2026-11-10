@@ -44,6 +44,10 @@ export class DashboardComponent {
     return this.roleService.managePermissions();
   }
 
+  canAccess(operation: string): boolean {
+    return this.authService.hasOperation(operation);
+  }
+
   logout(): void {
     this.authService.logout();
     void this.router.navigate(["/login"]);

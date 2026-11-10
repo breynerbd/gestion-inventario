@@ -31,10 +31,29 @@
         <aside class="sidebar" [class.sidebar-open]="isSidebarOpen">
             <nav class="menu">
                 <a routerLink="/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="closeSidebar()">Panel Principal</a>
-                <a routerLink="/dashboard/products" routerLinkActive="active" (click)="closeSidebar()">Productos</a>
-                <a routerLink="/dashboard/movements" routerLinkActive="active" (click)="closeSidebar()">Movimientos</a>
-                <a routerLink="/dashboard/categories" routerLinkActive="active" (click)="closeSidebar()">Categorias</a>
-                <a routerLink="/dashboard/suppliers" routerLinkActive="active" (click)="closeSidebar()">Proveedores</a>
+                @if (canAccess('LISTAR_PRODUCTOS')) {
+                    <a routerLink="/dashboard/products"
+                       routerLinkActive="active"
+                       (click)="closeSidebar()">Productos</a>
+                }
+
+                @if (canAccess('LISTAR_MOVIMIENTOS')) {
+                    <a routerLink="/dashboard/movements"
+                       routerLinkActive="active"
+                       (click)="closeSidebar()">Movimientos</a>
+                }
+
+                @if (canAccess('LISTAR_CATEGORIAS')) {
+                    <a routerLink="/dashboard/categories"
+                       routerLinkActive="active"
+                       (click)="closeSidebar()">Categorías</a>
+                }
+
+                @if (canAccess('LISTAR_PROVEEDORES')) {
+                    <a routerLink="/dashboard/suppliers"
+                       routerLinkActive="active"
+                       (click)="closeSidebar()">Proveedores</a>
+                }
                 @if (canManageUsers()) {<a routerLink="/dashboard/users" routerLinkActive="active" (click)="closeSidebar()">Usuarios</a>}
                 @if (canManageRoles()) {<a routerLink="/dashboard/roles" routerLinkActive="active" (click)="closeSidebar()">Roles</a>}
                 @if (canManagePermissions()) {<a routerLink="/dashboard/permissions" routerLinkActive="active" (click)="closeSidebar()">Permisos</a>

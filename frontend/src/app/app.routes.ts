@@ -14,6 +14,7 @@ import { roleAuthGuard } from './core/guards/role-auth.guard';
 import { DashboardHomeComponent } from './features/dashboard/pages/dashboard-home/dashboard-home.component';
 import { RolePermissionsComponent } from './features/rolePermission/pages/role-permission/role-permission.component';
 import { BinnacleComponent } from './features/binnacle/pages/binnacle/binnacle.component';
+import { operationGuard } from './core/guards/operation.guard';
 
 export const routes: Routes = [
     {
@@ -28,6 +29,7 @@ export const routes: Routes = [
         path: "dashboard",
         component: DashboardComponent,
         canActivate: [authGuard],
+        canActivateChild: [operationGuard],
         children: [
             {
                 path: "",
@@ -35,15 +37,18 @@ export const routes: Routes = [
             },
             {
                 path: "products",
-                component: ProductsComponent
+                component: ProductsComponent,
+                data: { operation: "LISTAR_PRODUCTOS" }
             },
             {
-                path: "categories",
-                component: CategoriesComponent
+              path: "categories",
+              component: CategoriesComponent,
+              data: { operation: "LISTAR_CATEGORIAS" }
             },
             {
                 path: "suppliers",
-                component: SuppliersComponent
+                component: SuppliersComponent,
+                data: { operation: "LISTAR_PROVEEDORES" }
             },
             {
                 path: "roles",
@@ -72,7 +77,8 @@ export const routes: Routes = [
             },
             {
                 path: "movements",
-                component: MovementsComponent
+                component: MovementsComponent,
+                data: { operation: "LISTAR_MOVIMIENTOS" }
             }
         ]
     },
