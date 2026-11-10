@@ -1,0 +1,25 @@
+databaseChangeLog:
+  - changeSet:
+      id: 016-seed-user-operation-permissions
+      author: herli
+      changes:
+        - sql:
+            sql: |
+              INSERT INTO operation_permissions (operation_code, permission_id)
+              VALUES
+                ('LISTAR_USUARIOS',
+                  (SELECT permission_id FROM permissions
+                   WHERE permission_code = 'USUARIOS_LEER')),
+                ('CREAR_USUARIO',
+                  (SELECT permission_id FROM permissions
+                   WHERE permission_code = 'USUARIOS_CREAR')),
+                ('EDITAR_USUARIO',
+                  (SELECT permission_id FROM permissions
+                   WHERE permission_code = 'USUARIOS_EDITAR')),
+                ('INACTIVAR_USUARIO',
+                  (SELECT permission_id FROM permissions
+                   WHERE permission_code = 'USUARIOS_INACTIVAR'));
+      rollback:
+        - delete:
+            tableName: operation_permissions
+            where: "operation_code IN ('LISTAR_USUARIOS', 'CREAR_USUARIO', 'EDITAR_USUARIO', 'INACTIVAR_USUARIO')"
