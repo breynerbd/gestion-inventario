@@ -56,9 +56,9 @@ export const routes: Routes = [
                 canActivate: [roleAuthGuard(["ADMINISTRADOR"])]
             },
             {
-                path: "users",
-                component: UsersComponent,
-                canActivate: [roleAuthGuard(["ADMINISTRADOR"])]
+              path: "users",
+              component: UsersComponent,
+              data: { operation: "LISTAR_USUARIOS" }
             },
             {
                 path: "permissions",

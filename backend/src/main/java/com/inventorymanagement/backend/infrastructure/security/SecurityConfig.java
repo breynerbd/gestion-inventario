@@ -26,6 +26,8 @@ import java.util.List;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.security.authorization.AuthorizationManagers;
+import org.springframework.security.authorization.AuthorityAuthorizationManager;
 
 @Configuration
 public class SecurityConfig {
@@ -103,9 +105,25 @@ public class SecurityConfig {
                 .requestMatchers("/api/auth/**")
                 .permitAll()
 
-                .requestMatchers("/api/users/**")
-                .hasRole(ADMINISTRADOR)
 
+                .requestMatchers(GET, "/api/users/**")
+                .access(requiresOperation("LISTAR_USUARIOS"))
+
+                .requestMatchers(POST, "/api/users")
+                .access(requiresOperation("CREAR_USUARIO"))
+
+                .requestMatchers(PUT, "/api/users/{userId}")
+                .access(requiresOperation("EDITAR_USUARIO"))
+
+                .requestMatchers(PATCH, "/api/users/{userId}/status")
+                .access(requiresOperation("INACTIVAR_USUARIO"))
+
+                .requestMatchers(GET, "/api/roles")
+                .access(AuthorizationManagers.anyOf(
+                        AuthorityAuthorizationManager.hasRole(ADMINISTRADOR),
+                        requiresOperation("CREAR_USUARIO"),
+                        requiresOperation("EDITAR_USUARIO")
+                ))
                 .requestMatchers("/api/roles/**")
                 .hasRole(ADMINISTRADOR)
 

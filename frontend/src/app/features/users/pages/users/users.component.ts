@@ -12,6 +12,7 @@ import { lucideBan, lucideCircleCheck, lucidePencil, lucidePlus } from '@ng-icon
 import { DetailField } from '../../../../shared/models/detail-field';
 import { DetailModalComponent } from '../../../../shared/components/detail-modal/detail-modal.component';
 import { DatePipe } from '@angular/common';
+import { AuthService } from '../../../auth/services/auth.service';
 
 @Component({
   selector: 'app-users',
@@ -47,7 +48,8 @@ export class UsersComponent implements OnInit {
     roleId: 0
   }
 
-  constructor(private readonly userService: UserService, private readonly roleService: RoleService) {
+  constructor(private readonly userService: UserService, private readonly roleService: RoleService,
+              private readonly authService: AuthService) {
   }
 
   ngOnInit(): void {
@@ -68,6 +70,11 @@ export class UsersComponent implements OnInit {
   }
 
   loadRoles(): void {
+    if (!this.canAccess('CREAR_USUARIO') &&
+      !this.canAccess('EDITAR_USUARIO')) {
+      this.roles = [];
+      return;
+    }
     this.roleService.getRoles().subscribe({
       next: (response) => {
         this.roles = response.filter(role => role.status === "ACTIVO");
@@ -299,5 +306,9 @@ export class UsersComponent implements OnInit {
       phone: "",
       roleId: 0
     };
+  }
+
+  canAccess(operation: string): boolean {
+    return this.authService.hasOperation(operation);
   }
 }
