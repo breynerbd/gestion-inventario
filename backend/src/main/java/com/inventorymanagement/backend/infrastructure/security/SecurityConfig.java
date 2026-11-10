@@ -120,119 +120,103 @@ public class SecurityConfig {
 
                 .requestMatchers(GET, "/api/roles")
                 .access(AuthorizationManagers.anyOf(
-                        AuthorityAuthorizationManager.hasRole(ADMINISTRADOR),
+                        requiresOperation("LISTAR_ROLES"),
                         requiresOperation("CREAR_USUARIO"),
-                        requiresOperation("EDITAR_USUARIO")
+                        requiresOperation("EDITAR_USUARIO"),
+                        requiresOperation("ASIGNAR_PERMISOS")
                 ))
-                .requestMatchers("/api/roles/**")
-                .hasRole(ADMINISTRADOR)
+
+                .requestMatchers(GET, "/api/roles/{roleId:[0-9]+}")
+                .access(requiresOperation("LISTAR_ROLES"))
+
+                .requestMatchers(POST, "/api/roles")
+                .access(requiresOperation("CREAR_ROL"))
+
+                .requestMatchers(PUT, "/api/roles/{roleId:[0-9]+}")
+                .access(requiresOperation("EDITAR_ROL"))
+
+                .requestMatchers(PATCH, "/api/roles/{roleId}/status")
+                .access(requiresOperation("INACTIVAR_ROL"))
+
+                .requestMatchers(GET, "/api/roles/{roleId}/permissions")
+                .access(requiresOperation("ASIGNAR_PERMISOS"))
+
+                .requestMatchers(PUT, "/api/roles/{roleId}/permissions")
+                .access(requiresOperation("ASIGNAR_PERMISOS"))
+
+                .requestMatchers(GET, "/api/permissions")
+                .access(AuthorizationManagers.anyOf(
+                        AuthorityAuthorizationManager.hasRole(ADMINISTRADOR),
+                        requiresOperation("ASIGNAR_PERMISOS")
+                ))
 
                 .requestMatchers("/api/permissions/**")
                 .hasRole(ADMINISTRADOR)
 
-                .requestMatchers(GET, "/api/categories")
+                .requestMatchers(GET, "/api/categories", "/api/categories/{categoryId:[0-9]+}")
                 .access(requiresOperation("LISTAR_CATEGORIAS"))
 
-                .requestMatchers(GET, CATEGORIES_PATH)
-                .hasAnyRole(
-                    ADMINISTRADOR,
-                    SUPERVISOR,
-                    OPERADOR
-                )
+                .requestMatchers(POST, "/api/categories")
+                .access(requiresOperation("CREAR_CATEGORIA"))
 
-                .requestMatchers(POST, CATEGORIES_PATH)
-                .hasAnyRole(
-                    ADMINISTRADOR,
-                    SUPERVISOR
-                )
+                .requestMatchers(PUT, "/api/categories/{categoryId}")
+                .access(requiresOperation("EDITAR_CATEGORIA"))
 
-                .requestMatchers(PUT, CATEGORIES_PATH)
-                .hasAnyRole(
-                    ADMINISTRADOR,
-                    SUPERVISOR
-                )
+                .requestMatchers(PATCH, "/api/categories/{categoryId}/status")
+                .access(requiresOperation("INACTIVAR_CATEGORIA"))
 
-                .requestMatchers(PATCH, CATEGORIES_PATH)
-                .hasAnyRole(
-                    ADMINISTRADOR,
-                    SUPERVISOR
-                )
+                .requestMatchers(GET, "/api/suppliers/active-suppliers")
+                .access(requiresOperation("VER_REPORTES"))
 
-                .requestMatchers(GET, "/api/suppliers")
+                .requestMatchers(GET, "/api/suppliers", "/api/suppliers/{supplierId:[0-9]+}")
                 .access(requiresOperation("LISTAR_PROVEEDORES"))
 
-                .requestMatchers(GET, SUPPLIERS_PATH)
-                .hasAnyRole(
-                    ADMINISTRADOR,
-                    SUPERVISOR,
-                    OPERADOR
-                )
+                .requestMatchers(POST, "/api/suppliers")
+                .access(requiresOperation("CREAR_PROVEEDOR"))
 
-                .requestMatchers(POST, SUPPLIERS_PATH)
-                .hasAnyRole(
-                    ADMINISTRADOR,
-                    SUPERVISOR
-                )
+                .requestMatchers(PUT, "/api/suppliers/{supplierId}")
+                .access(requiresOperation("EDITAR_PROVEEDOR"))
 
-                .requestMatchers(PUT, SUPPLIERS_PATH)
-                .hasAnyRole(
-                    ADMINISTRADOR,
-                    SUPERVISOR
-                )
+                .requestMatchers(PATCH, "/api/suppliers/{supplierId}/status")
+                .access(requiresOperation("INACTIVAR_PROVEEDOR"))
 
-                .requestMatchers(PATCH, SUPPLIERS_PATH)
-                .hasAnyRole(
-                    ADMINISTRADOR,
-                    SUPERVISOR
-                )
+                .requestMatchers(GET,
+                        "/api/products/low-stock",
+                        "/api/products/products-category",
+                        "/api/products/active-products",
+                        "/api/products/inventory-value",
+                        "/api/products/inventory-investment")
+                .access(requiresOperation("VER_REPORTES"))
 
-                .requestMatchers(GET, "/api/products")
+                .requestMatchers(GET, "/api/products", "/api/products/{productId:[0-9]+}")
                 .access(requiresOperation("LISTAR_PRODUCTOS"))
-                .requestMatchers(GET, PRODUCTS_PATH)
-                .hasAnyRole(
-                    ADMINISTRADOR,
-                    SUPERVISOR,
-                    OPERADOR
-                )
 
-                .requestMatchers(POST, PRODUCTS_PATH)
-                .hasAnyRole(
-                    ADMINISTRADOR,
-                    SUPERVISOR
-                )
+                .requestMatchers(POST, "/api/products")
+                .access(requiresOperation("CREAR_PRODUCTO"))
 
-                .requestMatchers(PUT, PRODUCTS_PATH)
-                .hasAnyRole(
-                    ADMINISTRADOR,
-                    SUPERVISOR
-                )
+                .requestMatchers(PUT, "/api/products/{productId}")
+                .access(requiresOperation("EDITAR_PRODUCTO"))
 
-                .requestMatchers(PATCH, PRODUCTS_PATH)
-                .hasAnyRole(
-                    ADMINISTRADOR,
-                    SUPERVISOR
-                )
+                .requestMatchers(PATCH, "/api/products/{productId}/status")
+                .access(requiresOperation("INACTIVAR_PRODUCTO"))
 
-                .requestMatchers(GET, "/api/movements")
+                .requestMatchers(GET,
+                        "/api/movements/summary",
+                        "/api/movements/movements-value",
+                        "/api/movements/products-movement")
+                .access(requiresOperation("VER_REPORTES"))
+
+                .requestMatchers(GET, "/api/movements", "/api/movements/{movementId:[0-9]+}")
                 .access(requiresOperation("LISTAR_MOVIMIENTOS"))
-                .requestMatchers(GET, MOVEMENTS_PATH)
-                .hasAnyRole(
-                    ADMINISTRADOR,
-                    SUPERVISOR,
-                    OPERADOR
-                )
 
-                .requestMatchers(POST, MOVEMENTS_PATH)
-                .hasAnyRole(
-                    ADMINISTRADOR,
-                    OPERADOR
-                )
+                .requestMatchers(POST, "/api/movements")
+                .access(requiresOperation("CREAR_MOVIMIENTO"))
 
-                .requestMatchers(PUT, MOVEMENTS_PATH)
-                .hasRole(ADMINISTRADOR)
+                .requestMatchers(PUT, "/api/movements/{movementId}")
+                .access(requiresOperation("EDITAR_MOVIMIENTO"))
 
-                .requestMatchers(PATCH, MOVEMENTS_PATH)
-                .hasRole(ADMINISTRADOR)
+                .requestMatchers(PATCH, "/api/movements/{movementId}/status")
+                .access(requiresOperation("INACTIVAR_MOVIMIENTO"))
 
                 .anyRequest()
                 .authenticated()
