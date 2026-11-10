@@ -18,6 +18,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import java.util.List;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.GetMapping;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -45,5 +48,11 @@ public class AuthController {
     public ResponseEntity<LoginResponseDTO> refresh(@Valid @RequestBody RefreshTokenRequestDTO request) {
         LOGGER.info("Solicitud para renovar token");
         return ResponseEntity.ok(service.refreshToken(request));
+    }
+
+    @GetMapping("/operations")
+    public ResponseEntity<List<String>> getOperations(
+            Authentication authentication) {
+        return ResponseEntity.ok(service.getAllowedOperations(authentication));
     }
 }

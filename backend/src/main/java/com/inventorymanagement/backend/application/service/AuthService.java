@@ -15,6 +15,15 @@ import com.inventorymanagement.backend.domain.exception.InactiveUserException;
 import com.inventorymanagement.backend.infrastructure.persistence.repository.RoleRepository;
 import com.inventorymanagement.backend.infrastructure.persistence.repository.UserRepository;
 import com.inventorymanagement.backend.infrastructure.security.JwtService;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+
+import com.inventorymanagement.backend.domain.entity.OperationPermission;
+import com.inventorymanagement.backend.domain.entity.Permission;
+import com.inventorymanagement.backend.infrastructure.persistence.repository.OperationPermissionRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -38,6 +47,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final BinnacleService binnacleService;
+    private final OperationPermissionRepository operationPermissionRepository;
 
     private void validateExistingData(RegisterRequestDTO registerRequest) {
         LOGGER.debug("Vilidando datos existentes para el registro");
@@ -240,4 +250,20 @@ public class AuthService {
 
         return response;
     }
+
+    public List<String> getAllowedOperations(Authentication authentication) {
+        var authorities = authentication.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toSet());
+
+        return operationPermissionRepository.findAll().stream()
+                .filter(operation ->
+                        operation.getPermission().getStatus() == Permission.Status.ACTIVO)
+                .filter(operation -> authorities.contains(
+                        "PERMISSION_" + operation.getPermission().getPermissionCode()))
+                .map(OperationPermission::getOperationCode)
+                .sorted()
+                .toList();
+    }
+
 }
