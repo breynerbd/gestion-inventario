@@ -1,4 +1,5 @@
-<div class="dashboard-home">
+@if (canViewReports()) {
+  <div class="dashboard-home">
 
     <div class="page-header">
         <div>
@@ -395,3 +396,6 @@
     </section>
 
 </div>
+} @else {
+  <p>Selecciona una opción del menú para continuar.</p>
+}

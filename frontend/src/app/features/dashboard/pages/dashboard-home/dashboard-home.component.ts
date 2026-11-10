@@ -21,6 +21,7 @@ import { SupplierResponse } from '../../../suppliers/models/supplier-response';
 import { ProductService } from '../../../products/services/product.service';
 import { SupplierService } from '../../../suppliers/service/supplier.service';
 import { UserService } from '../../../users/services/user.service';
+import { AuthService } from '../../../auth/services/auth.service';
 
 Chart.register(...registerables);
 
@@ -96,10 +97,14 @@ export class DashboardHomeComponent implements AfterViewInit, OnDestroy {
   constructor(private readonly dashboardService: DashboardService, private readonly movementService: MovementService,
     private readonly router: Router, private readonly roleService: RoleAuthService, private readonly categoryService: CategoryService,
     private readonly productService: ProductService, private readonly supplierService: SupplierService,
-    private readonly userService: UserService
+    private readonly userService: UserService,
+    private readonly authService: AuthService
   ) { }
 
   ngAfterViewInit(): void {
+    if (!this.canViewReports()) {
+      return;
+    }
     this.loadLowStockProducts();
     this.loadMovementSummary();
 
@@ -619,5 +624,8 @@ export class DashboardHomeComponent implements AfterViewInit, OnDestroy {
         }
       }
     });
+  }
+  canViewReports(): boolean {
+    return this.authService.hasOperation('VER_REPORTES');
   }
 }
