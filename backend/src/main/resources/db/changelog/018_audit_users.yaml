@@ -1,0 +1,101 @@
+databaseChangeLog:
+  - changeSet:
+      id: 018-supplier-audit-users
+      author: herli
+      changes:
+        - addColumn:
+            tableName: suppliers
+            columns:
+              - column:
+                  name: created_by
+                  type: BIGINT
+              - column:
+                  name: modified_by
+                  type: BIGINT
+
+        - addForeignKeyConstraint:
+            baseTableName: suppliers
+            baseColumnNames: created_by
+            referencedTableName: users
+            referencedColumnNames: user_id
+            constraintName: fk_suppliers_created_by
+
+        - addForeignKeyConstraint:
+            baseTableName: suppliers
+            baseColumnNames: modified_by
+            referencedTableName: users
+            referencedColumnNames: user_id
+            constraintName: fk_suppliers_modified_by
+
+  - changeSet:
+      id: 018-product-audit-users
+      author: herli
+      changes:
+        - addColumn:
+            tableName: products
+            columns:
+              - column:
+                  name: created_by
+                  type: BIGINT
+              - column:
+                  name: modified_by
+                  type: BIGINT
+
+        - addForeignKeyConstraint:
+            baseTableName: products
+            baseColumnNames: created_by
+            referencedTableName: users
+            referencedColumnNames: user_id
+            constraintName: fk_products_created_by
+
+        - addForeignKeyConstraint:
+            baseTableName: products
+            baseColumnNames: modified_by
+            referencedTableName: users
+            referencedColumnNames: user_id
+            constraintName: fk_products_modified_by
+
+  - changeSet:
+      id: 018-stock-movement-audit-users
+      author: herli
+      changes:
+        - addColumn:
+            tableName: stock_movements
+            columns:
+              - column:
+                  name: modified_by
+                  type: BIGINT
+
+        - addForeignKeyConstraint:
+            baseTableName: stock_movements
+            baseColumnNames: modified_by
+            referencedTableName: users
+            referencedColumnNames: user_id
+            constraintName: fk_stock_movements_modified_by
+  - changeSet:
+      id: 018-category-audit-users
+      author: herli
+      changes:
+        - addColumn:
+            tableName: categories
+            columns:
+              - column:
+                  name: created_by
+                  type: BIGINT
+              - column:
+                  name: modified_by
+                  type: BIGINT
+
+        - addForeignKeyConstraint:
+            baseTableName: categories
+            baseColumnNames: created_by
+            referencedTableName: users
+            referencedColumnNames: user_id
+            constraintName: fk_categories_created_by
+
+        - addForeignKeyConstraint:
+            baseTableName: categories
+            baseColumnNames: modified_by
+            referencedTableName: users
+            referencedColumnNames: user_id
+            constraintName: fk_categories_modified_by
