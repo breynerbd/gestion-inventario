@@ -54,6 +54,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         return org.springframework.security.core.userdetails.User.builder()
             .username(user.getEmail())
             .password(user.getPassword())
+            .disabled(user.getStatus() == User.Status.INACTIVO)
                 .authorities(authorities)
             .build();
     }

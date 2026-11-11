@@ -3,10 +3,18 @@ import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
 
 import { AuthService } from '../../features/auth/services/auth.service';
 import { catchError, switchMap, throwError } from 'rxjs';
+import {Router} from '@angular/router';
 
 export const authInterceptor: HttpInterceptorFn = (request, next) => {
     const authService = inject(AuthService);
     const accessToken = authService.getAccessToken();
+
+    const router = inject(Router);
+
+    const endSession = () => {
+      authService.logout();
+      void router.navigate(['/login'], { replaceUrl: true });
+    };
 
     if(!accessToken) {
         return next(request);
@@ -27,14 +35,14 @@ export const authInterceptor: HttpInterceptorFn = (request, next) => {
             const refreshToken = localStorage.getItem("refreshToken");
 
             if(!refreshToken) {
-                authService.logout();
+                endSession()
                 return throwError(() => error);
             }
 
             return authService.refreshToken(refreshToken).pipe(
 
                 catchError((refreshError) => {
-                  authService.logout();
+                  endSession()
                   return throwError(() => refreshError);
                 }),
                 switchMap((response) => {
