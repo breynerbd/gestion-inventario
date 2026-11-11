@@ -18,6 +18,7 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import jakarta.persistence.FetchType;
 
 @Entity
 @Table(name = "stock_movements")
@@ -75,6 +76,10 @@ public class StockMovement {
 
     @Column(name = "modification_date", nullable = false)
     private LocalDateTime modificationDate;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "modified_by")
+    private User modifiedBy;
 
     @PrePersist
     protected void onCreate() {
