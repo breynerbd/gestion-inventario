@@ -39,6 +39,7 @@ public class StockMovementService {
     private final ProductRepository productRepository;
     private final UserRepository userRepository;
     private final StockMovementMapper mapper;
+    private final CurrentUserService currentUserService;
     private static final String MOVEMENT_NOT_FOUND = "El movimiento ";
     private static final String NOT_EXIST = " no existe";
 
@@ -205,6 +206,7 @@ public class StockMovementService {
                 product.setCurrentStock(newStock);
             }
         }
+        product.setModifiedBy(currentUserService.getCurrentUser());
     }
 
     private void revertMovement(StockMovement movement, Product product) {
@@ -223,6 +225,7 @@ public class StockMovementService {
 
             case SALIDA, AJUSTE_NEGATIVO -> product.setCurrentStock(product.getCurrentStock() + movement.getQuantity());
         }
+        product.setModifiedBy(currentUserService.getCurrentUser());
     }
 
     public BigDecimal getMovementsValue(Long userId) {
@@ -268,6 +271,8 @@ public class StockMovementService {
         validateActiveEntities(product, user);
 
         StockMovement movement = mapper.toEntity(movementDto, product, user);
+
+        movement.setModifiedBy(user);
 
         applyMovement(movement, product);
 
@@ -323,6 +328,7 @@ public class StockMovementService {
         }
 
         mapper.updateEntity(movementDto, movement, newProduct);
+        movement.setModifiedBy(currentUserService.getCurrentUser());
 
         StockMovement updatedMovement = movementRepository.save(movement);
 
@@ -360,6 +366,8 @@ public class StockMovementService {
         }
 
         movement.setStatus(status);
+
+        movement.setModifiedBy(currentUserService.getCurrentUser());
 
         productRepository.save(product);
 

@@ -39,6 +39,7 @@ public class ProductService {
     private static final String PRODUCT_NOT_FOUND = "El producto ";
     private static final String NOT_EXIST = " no existe";
     private static final String LOGGER_NOT_FOUND = "No se encontro el producto: {}";
+    private final CurrentUserService currentUserService;
     private static final Logger LOGGER = LoggerFactory.getLogger(ProductService.class);
     private final JdbcTemplate jdbcTemplate;
 
@@ -197,6 +198,9 @@ public class ProductService {
 
         Product product = mapper.toEntity(productDto, category, supplier);
         product.setProductCode(generateProductCode());
+        var currentUser = currentUserService.getCurrentUser();
+        product.setCreatedBy(currentUser);
+        product.setModifiedBy(currentUser);
          
         Product savedProduct = repository.save(product); 
 
@@ -238,6 +242,7 @@ public class ProductService {
         validateActiveEntities(category, supplier);
 
         mapper.updateEntity(productDto, product, category, supplier);
+        product.setModifiedBy(currentUserService.getCurrentUser());
         
         Product updatedProduct = repository.save(product); 
 
@@ -265,6 +270,7 @@ public class ProductService {
         }
 
         product.setStatus(status);
+        product.setModifiedBy(currentUserService.getCurrentUser());
 
         Product updatedProduct = repository.save(product);
 

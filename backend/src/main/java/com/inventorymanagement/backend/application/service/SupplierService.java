@@ -30,6 +30,7 @@ public class SupplierService {
     private final SupplierMapper mapper;
     private static final String SUPPLIER_NOT_FOUND = "El proveedor ";
     private static final String NOT_EXIST = " no existe";
+    private final CurrentUserService currentUserService;
     private final JdbcTemplate jdbcTemplate;
     
     private static final String LOGGER_NOT_FOUND = "No se encontro el proveedor: {}";
@@ -124,6 +125,9 @@ public class SupplierService {
 
         Supplier supplier = mapper.toEntity(supplierDto);
         supplier.setSupplierCode(generateProductCode());
+        var currentUser = currentUserService.getCurrentUser();
+        supplier.setCreatedBy(currentUser);
+        supplier.setModifiedBy(currentUser);
         
         Supplier savedSupplier = repository.save(supplier); 
 
@@ -144,6 +148,7 @@ public class SupplierService {
             });
 
         mapper.updateEntity(supplierDto, supplier);
+        supplier.setModifiedBy(currentUserService.getCurrentUser());
 
         Supplier updatedSupplier = repository.save(supplier);
 
@@ -177,6 +182,7 @@ public class SupplierService {
         }
 
         supplier.setStatus(status);
+        supplier.setModifiedBy(currentUserService.getCurrentUser());
 
         Supplier updatedSupplier = repository.save(supplier);
 

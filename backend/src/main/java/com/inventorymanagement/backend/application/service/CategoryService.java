@@ -32,6 +32,7 @@ public class CategoryService {
     private static final String CATEGORY_NOT_FOUND = "La categoria ";
     private static final String CATEGORY_NOT_EXIST = " no existe";
     private static final String LOGGER_NOT_FOUND = "No se encontro la categoria: {}";
+    private final CurrentUserService currentUserService;
     private static final Logger LOGGER = LoggerFactory.getLogger(CategoryService.class);
     private final JdbcTemplate jdbcTemplate;
 
@@ -87,6 +88,10 @@ public class CategoryService {
         Category category = mapper.toEntity(categoryDTO);
         category.setCategoryCode(generateProductCode());
 
+        var currentUser = currentUserService.getCurrentUser();
+        category.setCreatedBy(currentUser);
+        category.setModifiedBy(currentUser);
+
         Category savedCategory = repository.save(category); 
         LOGGER.info("Se creo la categoria con id: {}", savedCategory.getCategoryId());
 
@@ -105,6 +110,8 @@ public class CategoryService {
             );
 
         mapper.updateEntity(categoryDTO, category);
+
+        category.setModifiedBy(currentUserService.getCurrentUser());
 
         Category updatedCategory = repository.save(category);
 
@@ -138,6 +145,8 @@ public class CategoryService {
         }
 
         category.setStatus(status);
+
+        category.setModifiedBy(currentUserService.getCurrentUser());
 
         Category categoryActualizada = repository.save(category);
 
