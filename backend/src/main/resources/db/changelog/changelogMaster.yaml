@@ -70,3 +70,7 @@ databaseChangeLog:
     - include:
           file: 018_audit_users.yaml
           relativeToChangelogFile: true
+
+    - include:
+          file: 019_audit_logs.yaml
+          relativeToChangelogFile: true
