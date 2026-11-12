@@ -13,6 +13,7 @@ import com.inventorymanagement.backend.application.mapper.StockMovementMapper;
 import com.inventorymanagement.backend.infrastructure.persistence.repository.StockMovementRepository;
 import com.inventorymanagement.backend.infrastructure.persistence.repository.ProductRepository;
 import com.inventorymanagement.backend.infrastructure.persistence.repository.UserRepository;
+import com.inventorymanagement.backend.domain.entity.AuditLog;
 
 import lombok.RequiredArgsConstructor;
 
@@ -45,6 +46,7 @@ public class StockMovementService {
 
     private static final String LOGGER_NOT_FOUND = "No se encontro el movimiento: {}";
     private static final Logger LOGGER = LoggerFactory.getLogger(StockMovementService.class);
+    private final AuditLogService auditLogService;
 
     private void validateReason(StockMovement.MovementType movementType, String reason) {
         LOGGER.debug("Validando motivo del movimiento");
@@ -278,7 +280,11 @@ public class StockMovementService {
 
         productRepository.save(product);
 
+        auditLogService.register(AuditLog.Module.PRODUCTOS, product.getProductId(), AuditLog.Action.EDITAR);
+
         StockMovement savedMovement = movementRepository.save(movement);
+
+        auditLogService.register(AuditLog.Module.MOVIMIENTOS_STOCK, savedMovement.getMovementId(), AuditLog.Action.CREAR);
 
         LOGGER.info("Se registro el movimiento con id: {}", savedMovement.getMovementId());
 
@@ -317,13 +323,16 @@ public class StockMovementService {
                 applyMovement(movementNew, previousProduct);
 
                 productRepository.save(previousProduct);
+                auditLogService.register(AuditLog.Module.PRODUCTOS, previousProduct.getProductId(), AuditLog.Action.EDITAR);
 
             } else {
 
                 applyMovement(movementNew, newProduct);
 
                 productRepository.save(previousProduct);
+                auditLogService.register(AuditLog.Module.PRODUCTOS, previousProduct.getProductId(), AuditLog.Action.EDITAR);
                 productRepository.save(newProduct);
+                auditLogService.register(AuditLog.Module.PRODUCTOS, newProduct.getProductId(), AuditLog.Action.EDITAR);
             }
         }
 
@@ -331,6 +340,7 @@ public class StockMovementService {
         movement.setModifiedBy(currentUserService.getCurrentUser());
 
         StockMovement updatedMovement = movementRepository.save(movement);
+        auditLogService.register(AuditLog.Module.MOVIMIENTOS_STOCK, updatedMovement.getMovementId(), AuditLog.Action.EDITAR);
 
         LOGGER.info("El movimiento {} se ha actualizado", movementId);
 
@@ -371,7 +381,14 @@ public class StockMovementService {
 
         productRepository.save(product);
 
+        auditLogService.register(AuditLog.Module.PRODUCTOS, product.getProductId(), AuditLog.Action.EDITAR);
+
         StockMovement updatedMovement = movementRepository.save(movement);
+
+        auditLogService.register(AuditLog.Module.MOVIMIENTOS_STOCK, updatedMovement.getMovementId(),
+                status == StockMovement.Status.ACTIVO
+                        ? AuditLog.Action.ACTIVAR
+                        : AuditLog.Action.INACTIVAR);
 
         LOGGER.info("El estado del movimiento {} se ha cambiado a {}", movementId, status);
 

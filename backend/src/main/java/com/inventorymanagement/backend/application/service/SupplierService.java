@@ -11,6 +11,8 @@ import com.inventorymanagement.backend.application.dto.supplier.SupplierUpdateDT
 import com.inventorymanagement.backend.application.mapper.SupplierMapper;
 import com.inventorymanagement.backend.infrastructure.persistence.repository.ProductRepository;
 import com.inventorymanagement.backend.infrastructure.persistence.repository.SupplierRepository;
+import com.inventorymanagement.backend.domain.entity.AuditLog;
+import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 
@@ -32,6 +34,7 @@ public class SupplierService {
     private static final String NOT_EXIST = " no existe";
     private final CurrentUserService currentUserService;
     private final JdbcTemplate jdbcTemplate;
+    private final AuditLogService auditLogService;
     
     private static final String LOGGER_NOT_FOUND = "No se encontro el proveedor: {}";
     private static final Logger LOGGER = LoggerFactory.getLogger(SupplierService.class);
@@ -118,6 +121,7 @@ public class SupplierService {
         return repository.countSupplierByStatus(Supplier.Status.ACTIVO);
     }
 
+    @Transactional
     public SupplierResponseDTO createSupplier(SupplierCreateDTO supplierDto) {
         LOGGER.debug("Creando un proveedor");
 
@@ -129,13 +133,15 @@ public class SupplierService {
         supplier.setCreatedBy(currentUser);
         supplier.setModifiedBy(currentUser);
         
-        Supplier savedSupplier = repository.save(supplier); 
+        Supplier savedSupplier = repository.save(supplier);
+        auditLogService.register(AuditLog.Module.PROVEEDORES, savedSupplier.getSupplierId(), AuditLog.Action.CREAR);
 
         LOGGER.info("Se creo el proveedor con id: {}", savedSupplier.getSupplierId());
         
         return mapper.toResponseDTO(savedSupplier);
     }
 
+    @Transactional
     public SupplierResponseDTO updateSupplier(Long supplierId, SupplierUpdateDTO supplierDto) {
         LOGGER.debug("Actualizando proveedor: {}", supplierId);
 
@@ -151,12 +157,14 @@ public class SupplierService {
         supplier.setModifiedBy(currentUserService.getCurrentUser());
 
         Supplier updatedSupplier = repository.save(supplier);
+        auditLogService.register(AuditLog.Module.PROVEEDORES, updatedSupplier.getSupplierId(), AuditLog.Action.EDITAR);
 
         LOGGER.info("El proveedor {} se ha actualizado", supplierId);
 
         return mapper.toResponseDTO(updatedSupplier);
     }
 
+    @Transactional
     public SupplierResponseDTO changeStatus(Long supplierId, Supplier.Status status) {
         LOGGER.debug("Cambiando estado del proveedor {} a {}", supplierId, status);
 
@@ -185,6 +193,11 @@ public class SupplierService {
         supplier.setModifiedBy(currentUserService.getCurrentUser());
 
         Supplier updatedSupplier = repository.save(supplier);
+
+        auditLogService.register(AuditLog.Module.PROVEEDORES, updatedSupplier.getSupplierId(),
+                status == Supplier.Status.ACTIVO
+                        ? AuditLog.Action.ACTIVAR
+                        : AuditLog.Action.INACTIVAR);
 
         LOGGER.info("El estado del proveedor {} se ha cambiado a {}", supplierId, status);
 
