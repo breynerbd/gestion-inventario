@@ -18,6 +18,8 @@ import com.inventorymanagement.backend.application.dto.category.CategoryUpdateDT
 import com.inventorymanagement.backend.application.mapper.CategoryMapper;
 import com.inventorymanagement.backend.infrastructure.persistence.repository.CategoryRepository;
 import com.inventorymanagement.backend.infrastructure.persistence.repository.ProductRepository;
+import com.inventorymanagement.backend.domain.entity.AuditLog;
+import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 
@@ -35,6 +37,7 @@ public class CategoryService {
     private final CurrentUserService currentUserService;
     private static final Logger LOGGER = LoggerFactory.getLogger(CategoryService.class);
     private final JdbcTemplate jdbcTemplate;
+    private final AuditLogService auditLogService;
 
     private String generateProductCode() {
         Long number = jdbcTemplate.queryForObject(
@@ -80,6 +83,7 @@ public class CategoryService {
         return mapper.toResponseDTO(category);
     }
 
+    @Transactional
     public CategoryResponseDTO createCategory(CategoryCreateDTO categoryDTO){
         LOGGER.debug("Creando una categoria");
 
@@ -92,12 +96,14 @@ public class CategoryService {
         category.setCreatedBy(currentUser);
         category.setModifiedBy(currentUser);
 
-        Category savedCategory = repository.save(category); 
+        Category savedCategory = repository.save(category);
+        auditLogService.register( AuditLog.Module.CATEGORIAS, savedCategory.getCategoryId(), AuditLog.Action.CREAR);
         LOGGER.info("Se creo la categoria con id: {}", savedCategory.getCategoryId());
 
         return mapper.toResponseDTO(savedCategory);
     }
 
+    @Transactional
     public CategoryResponseDTO updateCategory(Long categoryId, CategoryUpdateDTO categoryDTO){
         LOGGER.debug("Actualizando categoria: {}", categoryId);
 
@@ -114,12 +120,14 @@ public class CategoryService {
         category.setModifiedBy(currentUserService.getCurrentUser());
 
         Category updatedCategory = repository.save(category);
+        auditLogService.register(AuditLog.Module.CATEGORIAS, updatedCategory.getCategoryId(), AuditLog.Action.EDITAR);
 
         LOGGER.info("La categoria {} se ha actualizado", categoryId);
 
         return mapper.toResponseDTO(updatedCategory);
     }
 
+    @Transactional
     public CategoryResponseDTO changeStatus(Long categoryId,Category.Status status) {
         LOGGER.debug("Cambiando estado de la categoria {} a {}", categoryId, status);
 
@@ -149,6 +157,10 @@ public class CategoryService {
         category.setModifiedBy(currentUserService.getCurrentUser());
 
         Category categoryActualizada = repository.save(category);
+        auditLogService.register(AuditLog.Module.CATEGORIAS, categoryActualizada.getCategoryId(),
+                status == Category.Status.ACTIVO
+                        ? AuditLog.Action.ACTIVAR
+                        : AuditLog.Action.INACTIVAR);
 
         LOGGER.info("El estado de la categoria {} se ha cambiado a {}", categoryId, status);
 
