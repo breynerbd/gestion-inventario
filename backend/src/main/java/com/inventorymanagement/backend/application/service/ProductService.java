@@ -14,6 +14,8 @@ import com.inventorymanagement.backend.application.mapper.ProductMapper;
 import com.inventorymanagement.backend.infrastructure.persistence.repository.CategoryRepository;
 import com.inventorymanagement.backend.infrastructure.persistence.repository.ProductRepository;
 import com.inventorymanagement.backend.infrastructure.persistence.repository.SupplierRepository;
+import com.inventorymanagement.backend.domain.entity.AuditLog;
+import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 
@@ -42,6 +44,7 @@ public class ProductService {
     private final CurrentUserService currentUserService;
     private static final Logger LOGGER = LoggerFactory.getLogger(ProductService.class);
     private final JdbcTemplate jdbcTemplate;
+    private final AuditLogService auditLogService;
 
     private void validateActiveEntities(Category category, Supplier proveedor) {
         LOGGER.debug("Validando categoria y proveedor activos");
@@ -170,6 +173,7 @@ public class ProductService {
         return repository.calculateInventoryInvestment();
     }
 
+    @Transactional
     public ProductResponseDTO createProduct(ProductCreateDTO productDto) {
         LOGGER.debug("Creando Producto");
 
@@ -202,13 +206,15 @@ public class ProductService {
         product.setCreatedBy(currentUser);
         product.setModifiedBy(currentUser);
          
-        Product savedProduct = repository.save(product); 
+        Product savedProduct = repository.save(product);
+        auditLogService.register(AuditLog.Module.PRODUCTOS, savedProduct.getProductId(), AuditLog.Action.CREAR);
 
         LOGGER.info("Se creo el producto: {}", savedProduct.getProductId());
          
         return mapper.toResponseDTO(savedProduct);
     }
 
+    @Transactional
     public ProductResponseDTO updateProduct(Long productId, ProductUpdateDTO productDto) {
         LOGGER.debug("Actualizando producto: {}", productId);
 
@@ -244,13 +250,15 @@ public class ProductService {
         mapper.updateEntity(productDto, product, category, supplier);
         product.setModifiedBy(currentUserService.getCurrentUser());
         
-        Product updatedProduct = repository.save(product); 
+        Product updatedProduct = repository.save(product);
+        auditLogService.register(AuditLog.Module.PRODUCTOS, updatedProduct.getProductId(), AuditLog.Action.EDITAR);
 
         LOGGER.info("El producto {} se ha actualizado", productId);
         
         return mapper.toResponseDTO(updatedProduct);
     }
 
+    @Transactional
     public ProductResponseDTO changeStatus(Long productId, Product.Status status) {
         LOGGER.debug("Cambiando estado del producto {} a {}", productId, status);
 
@@ -273,6 +281,10 @@ public class ProductService {
         product.setModifiedBy(currentUserService.getCurrentUser());
 
         Product updatedProduct = repository.save(product);
+        auditLogService.register(AuditLog.Module.PRODUCTOS, updatedProduct.getProductId(),
+                status == Product.Status.ACTIVO
+                        ? AuditLog.Action.ACTIVAR
+                        : AuditLog.Action.INACTIVAR);
 
         LOGGER.info("El estado del producto {} se ha cambiado a {}", productId, status);
 
