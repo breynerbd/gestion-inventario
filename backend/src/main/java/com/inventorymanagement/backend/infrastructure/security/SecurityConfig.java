@@ -218,6 +218,9 @@ public class SecurityConfig {
                 .requestMatchers(PATCH, "/api/movements/{movementId}/status")
                 .access(requiresOperation("INACTIVAR_MOVIMIENTO"))
 
+                .requestMatchers(GET, "/api/binnacle", "/api/binnacle/**")
+                .hasRole(ADMINISTRADOR)
+
                 .anyRequest()
                 .authenticated()
             )
