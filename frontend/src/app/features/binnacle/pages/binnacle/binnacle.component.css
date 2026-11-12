@@ -7,7 +7,7 @@
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    height: calc(100vh - 90px);
+    min-height: calc(100vh - 90px);
     padding-bottom: 25px;
 }
 
@@ -95,7 +95,9 @@
     overflow-y: auto;
     background-color: #F4F4F9;
     border-radius: 15px;
-    flex: 1;
+    flex: 0 0 auto;
+    max-height: 420px;
+    overflow-x: auto;
 }
 
 .binnacle-table {
@@ -136,6 +138,15 @@
     margin-bottom: 20px;
     color: #dc2626;
     flex-shrink: 0;
+}
+
+.audit-section {
+  margin-top: 30px;
+  min-width: 0;
+}
+
+.audit-section h2 {
+  color: #2F4550;
 }
 
 @media (max-width: 1200px) {

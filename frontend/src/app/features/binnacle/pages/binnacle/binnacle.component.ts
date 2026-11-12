@@ -6,6 +6,7 @@ import { DatePipe } from "@angular/common";
 import { BinnacleResponse } from "../../models/binnacle-response";
 import { BinnacleService } from "../../services/binnacle.service";
 import { PaginationComponent } from "../../../../shared/components/pagination/pagination.component";
+import { AuditLogResponse } from "../../models/audit-log-response";
 
 @Component({
   selector: "app-binnacle",
@@ -18,6 +19,12 @@ export class BinnacleComponent implements OnInit {
 
   logs: BinnacleResponse[] = [];
 
+  changes: AuditLogResponse[] = [];
+  changesErrorMessage = "";
+  changesLoading = false;
+  changesCurrentPage = 1;
+  changesTotalPages = 0;
+
   errorMessage = "";
   searchTerm = "";
   selectedResult = "";
@@ -29,6 +36,7 @@ export class BinnacleComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadLogs();
+    this.loadChanges();
   }
 
   loadLogs(): void {
@@ -83,6 +91,31 @@ export class BinnacleComponent implements OnInit {
   changePage(page: number): void {
     if (page >= 1 && page <= this.totalPages) {
       this.currentPage = page;
+    }
+  }
+
+  loadChanges(page: number =1): void {
+    this.changesLoading = true;
+    this.changesErrorMessage = "";
+
+    this.binnacleService.getChanges(page - 1, this.pageSize).subscribe({
+      next: response => {
+        this.changes = response.content;
+        this.changesCurrentPage = response.number + 1;
+        this.changesTotalPages = response.totalPages;
+        this.changesLoading = false;
+      },
+      error: () => {
+        this.changes = [];
+        this.changesErrorMessage = "No se ha podido cargar el historial de cambios";
+        this.changesLoading = false;
+      }
+    })
+  }
+
+  changeChangesPage(page: number): void {
+    if(!this.changesLoading && page >= 1 && page <= this.changesTotalPages){
+      this.loadChanges(page)
     }
   }
 }

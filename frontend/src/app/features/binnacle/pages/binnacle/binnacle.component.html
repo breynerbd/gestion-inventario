@@ -72,4 +72,51 @@
 
     <app-pagination [currentPage]="currentPage" [totalPages]="totalPages" (pageChange)="changePage($event)">
     </app-pagination>
+  <section class="audit-section">
+      <h2>Historial de cambios</h2>
+      @if(changesLoading) {
+        <p role="status">Cargando...</p>
+      } @else if(changesErrorMessage) {
+        <p class="error-message">{{changesErrorMessage}}</p>
+      } @else {
+        <div class="binnacle-table-container">
+          <table class="binnacle-table" aria-label="Historial de cambios">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Usuario</th>
+                <th>Modulo</th>
+                <th>Registro</th>
+                <th>Accion</th>
+                <th>Fecha y hora</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (change of changes; track change.auditId) {
+                <tr>
+                  <td>{{change.auditId}}</td>
+                  <td>{{change.username}}</td>
+                  <td>{{change.module}}</td>
+                  <td>{{change.recordId}}</td>
+                  <td>{{change.action}}</td>
+                  <td>{{change.occurredAt | date:"dd/MM/yyyy HH:mm:ss"}}</td>
+                </tr>
+              } @empty {
+                <tr>
+                  <td colspan="6">No hay cambios registrados</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    @if (changesTotalPages > 0) {
+      <app-pagination
+        [currentPage]="changesCurrentPage"
+        [totalPages]="changesTotalPages"
+        (pageChange)="changeChangesPage($event)">
+
+      </app-pagination>
+    }
+  </section>
 </div>
