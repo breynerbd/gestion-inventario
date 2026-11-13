@@ -19,25 +19,64 @@ import java.time.format.DateTimeFormatter;
 @Component
 public class MovementPdfGenerator {
 
-    public byte[] generate(List<StockMovementResponseDTO> movements){
-        try (PDDocument document = new PDDocument(); ByteArrayOutputStream output = new ByteArrayOutputStream()) {
-            PDPage page = new PDPage(PDRectangle.A4);
-            document.addPage(page);
+    public byte[] generate(List<StockMovementResponseDTO> movements) {
+        var dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
-            try (PDPageContentStream content = new PDPageContentStream(document, page)){
-                content.beginText();
-                content.setFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA_BOLD), 16);
-                content.newLineAtOffset(40, 800);
-                content.showText("Stockify - Movimientos de inventario");
-                content.endText();
+        try (PDDocument document = new PDDocument();
+             ByteArrayOutputStream output = new ByteArrayOutputStream()) {
+
+            List<String> lines = new ArrayList<>();
+
+            for (StockMovementResponseDTO movement : movements) {
+                lines.addAll(wrapText("ID: " + movement.getMovementId() + " | Producto: " + movement.getProductName(), 510, 10));
+
+                lines.addAll(wrapText("Tipo: " + movement.getMovementType() + " | Cantidad: " + movement.getQuantity()
+                                + " | Estado: " + movement.getStatus(), 510, 10));
+
+                lines.addAll(wrapText("Usuario: " + movement.getUsername() + " | Fecha: "
+                                + movement.getMovementDate().format(dateFormat), 510, 10));
+
+                lines.add("");
+            }
+
+            if (movements.isEmpty()) {
+                lines.add("No hay movimientos con los filtros aplicados.");
+            }
+
+            int index = 0;
+            int pageNumber = 0;
+
+            while (index < lines.size()) {
+                PDPage page = new PDPage(PDRectangle.A4);
+                document.addPage(page);
+                pageNumber++;
+
+                try (PDPageContentStream content =
+                             new PDPageContentStream(document, page)) {
+
+                    drawText(content, "Stockify - Movimientos de inventario", 40, 800, 16, true);
+
+                    drawText(content, "Total: " + movements.size(), 40, 775, 10, false);
+
+                    drawText(content, "Pagina " + pageNumber, 40, 30, 9, false);
+
+                    float y = 745;
+
+                    while (index < lines.size() && y >= 60) {
+                        drawText(content, lines.get(index), 40, y, 10, false);
+                        y -= 14;
+                        index++;
+                    }
+                }
             }
 
             document.save(output);
-
             return output.toByteArray();
 
-        }catch(IOException exception) {
-            throw new UncheckedIOException("No se ha podido generar el pdf de movimientos", exception);
+        } catch (IOException exception) {
+            throw new UncheckedIOException(
+                    "No se pudo generar el PDF de movimientos",
+                    exception);
         }
     }
 
