@@ -38,6 +38,7 @@ export class MovementsComponent implements OnInit {
   editingMovementId: number | null = null;
   errorMessage = "";
   errorMessageForm = "";
+  exportingPdf = false;
 
   currentPage: number = 0;
   pageSize: number = 10;
@@ -376,5 +377,40 @@ export class MovementsComponent implements OnInit {
 
   canListProducts(): boolean {
     return this.authService.hasOperation('LISTAR_PRODUCTOS');
+  }
+
+  canExportMovements(): boolean {
+    return this.authService.hasOperation("LISTAR_MOVIMIENTOS");
+  }
+
+  exportPdf(): void {
+    if (this.exportingPdf || !this.canExportMovements()) {
+      return;
+    }
+
+    this.exportingPdf = true;
+    this.errorMessage = "";
+
+    this.movementService.exportPdf({productId: this.selectedProductId, movementType: this.selectedMovementType,
+      startDate: this.startDate, endDate: this.endDate, userId: this.selectedUserId
+    }).subscribe({
+      next: pdf => {
+        const url = URL.createObjectURL(pdf);
+        const link = document.createElement("a");
+
+        link.href = url;
+        link.download = "movimientos.pdf";
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+        this.exportingPdf = false;
+      },
+      error: () => {
+        this.errorMessage = "No se pudo exportar el PDF";
+        this.exportingPdf = false;
+      }
+    });
   }
 }

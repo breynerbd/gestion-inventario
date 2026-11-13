@@ -66,6 +66,16 @@
                 Limpiar
             </button>
 
+            @if (canExportMovements()) {
+              <button
+                type="button"
+                class="clear-filters-button"
+                (click)="exportPdf()"
+                [disabled]="exportingPdf">
+                {{ exportingPdf ? "Exportando..." : "Exportar PDF" }}
+              </button>
+            }
+
             @if(canCreateMovements()) {
             <button type="button" class="new-movement-button" (click)="openForm()">
                 <span class="text-desktop">Nuevo Movimiento</span>

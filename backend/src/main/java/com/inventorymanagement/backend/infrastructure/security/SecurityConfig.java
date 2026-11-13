@@ -221,6 +221,9 @@ public class SecurityConfig {
                 .requestMatchers(GET, "/api/binnacle", "/api/binnacle/**")
                 .hasRole(ADMINISTRADOR)
 
+                .requestMatchers(GET, "/api/movements/export/pdf")
+                .access(requiresOperation("LISTAR_MOVIMIENTOS"))
+
                 .anyRequest()
                 .authenticated()
             )

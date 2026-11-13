@@ -7,10 +7,13 @@ import com.inventorymanagement.backend.application.dto.movement.StockMovementRes
 import com.inventorymanagement.backend.application.dto.movement.StockMovementUpdateDTO;
 import com.inventorymanagement.backend.application.service.StockMovementService;
 import com.inventorymanagement.backend.domain.entity.StockMovement;
+import com.inventorymanagement.backend.infrastructure.report.MovementPdfGenerator;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springdoc.core.annotations.ParameterObject;
@@ -34,6 +37,7 @@ import java.util.List;
 public class StockMovementController {
 
     private final StockMovementService service;
+    private final MovementPdfGenerator pdfGenerator;
     private static final Logger LOGGER = LoggerFactory.getLogger(StockMovementController.class);
 
     @GetMapping
@@ -116,5 +120,34 @@ public class StockMovementController {
     public ResponseEntity<StockMovementResponseDTO> changeStatus(@PathVariable Long movementId, @Valid @RequestBody StockMovementStatusDTO statusDto) {
         LOGGER.info("Solicitud para cambiar el estado del movimiento con id {}", movementId);
         return ResponseEntity.ok(service.changeStatus(movementId, statusDto.getStatus()));
+    }
+
+    @GetMapping(value = "/export/pdf", produces = MediaType.APPLICATION_PDF_VALUE)
+    public ResponseEntity<byte[]> exportPdf(@RequestParam(required = false) Long productId,
+            @RequestParam(required = false) StockMovement.MovementType movementType,
+            @RequestParam(required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam(required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+            @RequestParam(required = false) Long userId,
+            Authentication authentication) {
+
+        if (authentication.getAuthorities().stream()
+                .anyMatch(authority ->
+                        authority.getAuthority().equals("ROLE_OPERADOR"))) {
+            userId = service.findUserIdByEmail(authentication.getName());
+        }
+
+        List<StockMovementResponseDTO> movements = service.findMovementsForExport(
+                        productId, movementType, startDate, endDate, userId);
+
+        byte[] pdf = pdfGenerator.generate(movements);
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_PDF)
+                .header(
+                        HttpHeaders.CONTENT_DISPOSITION,
+                        "attachment; filename=\"movimientos.pdf\"")
+                .body(pdf);
     }
 }

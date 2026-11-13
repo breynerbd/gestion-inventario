@@ -69,4 +69,29 @@ export class MovementService {
             status
         );
     }
+
+    exportPdf(filters: MovementFilters = {}): Observable<Blob> {
+      let params = new HttpParams();
+
+      if (filters.productId) {
+        params = params.set("productId", filters.productId);
+      }
+      if (filters.movementType?.trim()) {
+        params = params.set("movementType", filters.movementType.trim());
+      }
+      if (filters.startDate?.trim()) {
+        params = params.set("startDate", filters.startDate.trim());
+      }
+      if (filters.endDate?.trim()) {
+        params = params.set("endDate", filters.endDate.trim());
+      }
+      if (filters.userId) {
+        params = params.set("userId", filters.userId);
+      }
+
+      return this.http.get(`${this.apiUrl}/export/pdf`, {
+        params,
+        responseType: "blob"
+      });
+    }
 }

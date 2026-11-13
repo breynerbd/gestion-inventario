@@ -14,6 +14,7 @@ import com.inventorymanagement.backend.infrastructure.persistence.repository.Sto
 import com.inventorymanagement.backend.infrastructure.persistence.repository.ProductRepository;
 import com.inventorymanagement.backend.infrastructure.persistence.repository.UserRepository;
 import com.inventorymanagement.backend.domain.entity.AuditLog;
+import org.springframework.data.domain.Sort;
 
 import lombok.RequiredArgsConstructor;
 
@@ -393,5 +394,14 @@ public class StockMovementService {
         LOGGER.info("El estado del movimiento {} se ha cambiado a {}", movementId, status);
 
         return mapper.toResponseDTO(updatedMovement);
+    }
+
+    @Transactional(readOnly = true)
+    public List<StockMovementResponseDTO> findMovementsForExport(Long productId, StockMovement.MovementType movementType,
+                                                                  LocalDate startDate, LocalDate endDate, Long userId){
+
+        Pageable unpaged = Pageable.unpaged(Sort.by(Sort.Direction.ASC, "movementId"));
+
+        return findAllMovements(productId,movementType,startDate,endDate,userId,unpaged).getContent();
     }
 }
