@@ -30,7 +30,7 @@ export class BinnacleComponent implements OnInit {
   selectedResult = "";
 
   currentPage = 1;
-  pageSize = 12;
+  pageSize = 3;
 
   constructor(private readonly binnacleService: BinnacleService) { }
 
