@@ -73,6 +73,24 @@ public class JwtFilter extends OncePerRequestFilter {
                     token,
                     userDetails.getUsername())) {
 
+                boolean authenticationRoute = switch (request.getServletPath()) {
+                    case "/api/auth/login",
+                         "/api/auth/register",
+                         "/api/auth/refresh",
+                         "/api/auth/operations",
+                         "/api/auth/change-password" -> true;
+                    default -> false;
+                };
+
+                if (!userDetails.isCredentialsNonExpired() && !authenticationRoute) {
+                    response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                    response.setContentType("application/json");
+                    response.setCharacterEncoding("UTF-8");
+                    response.getWriter().write(
+                            "{\"code\":\"PASSWORD_CHANGE_REQUIRED\"," + "\"error\":\"Debes cambiar tu contraseña antes de continuar\"}");
+                    return;
+                }
+
                 UsernamePasswordAuthenticationToken authentication =
                         new UsernamePasswordAuthenticationToken(
                                 userDetails,

@@ -15,11 +15,14 @@ import com.inventorymanagement.backend.domain.exception.InactiveUserException;
 import com.inventorymanagement.backend.infrastructure.persistence.repository.RoleRepository;
 import com.inventorymanagement.backend.infrastructure.persistence.repository.UserRepository;
 import com.inventorymanagement.backend.infrastructure.security.JwtService;
+import com.inventorymanagement.backend.application.dto.auth.ChangePasswordRequestDTO;
+
 import java.util.List;
 import java.util.stream.Collectors;
-
+import java.nio.charset.StandardCharsets;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.inventorymanagement.backend.domain.entity.OperationPermission;
 import com.inventorymanagement.backend.domain.entity.Permission;
@@ -121,6 +124,7 @@ public class AuthService {
         response.setTokenType(TOKEN_TYPE);
         response.setUserId(savedUser.getUserId());
         response.setUsername(savedUser.getUsername());
+        response.setMustChangePassword(savedUser.getMustChangePassword());
 
         if (savedUser.getRole() != null) {
             response.setRoleName(savedUser.getRole().getRoleName());
@@ -186,6 +190,7 @@ public class AuthService {
         response.setRefreshToken(refreshToken);
         response.setTokenType(TOKEN_TYPE);
         response.setUserId(user.getUserId());
+        response.setMustChangePassword(user.getMustChangePassword());
         response.setUsername(user.getUsername());
 
         if (user.getRole() != null) {
@@ -238,6 +243,7 @@ public class AuthService {
         response.setAccessToken(newAccessToken);
         response.setRefreshToken(newRefreshToken);
         response.setTokenType(TOKEN_TYPE);
+        response.setMustChangePassword(user.getMustChangePassword());
         response.setUserId(user.getUserId());
         response.setUsername(user.getUsername());
 
@@ -264,6 +270,36 @@ public class AuthService {
                 .map(OperationPermission::getOperationCode)
                 .sorted()
                 .toList();
+    }
+
+    @Transactional
+    public void changePassword(ChangePasswordRequestDTO request, String email) {
+
+        User user = userRepository.findByEmail(email).orElseThrow(() ->
+                new ResourceNotFoundException("El usuario autenticado no existe"));
+
+        validateUserStatus(user);
+
+        if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
+            throw new IllegalArgumentException("La contraseña actual no es correcta");
+        }
+
+        if (!request.getNewPassword().equals(request.getConfirmPassword())) {
+            throw new IllegalArgumentException("La nueva contraseña y su confirmación no coinciden");
+        }
+
+        if (request.getNewPassword().getBytes(StandardCharsets.UTF_8).length > 72) {
+            throw new IllegalArgumentException("La nueva contraseña supera el tamaño permitido");
+        }
+
+        if (passwordEncoder.matches(request.getNewPassword(), user.getPassword())) {
+            throw new IllegalArgumentException("La nueva contraseña debe ser diferente de la actual");
+        }
+
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        user.setMustChangePassword(false);
+
+        userRepository.save(user);
     }
 
 }

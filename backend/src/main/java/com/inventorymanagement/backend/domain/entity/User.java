@@ -74,6 +74,9 @@ public class User {
     @Column(name = "modification_date", nullable = false)
     private LocalDateTime modificationDate;
 
+    @Column(name = "must_change_password", nullable = false)
+    private Boolean mustChangePassword = true;
+
     @PrePersist 
     protected void onCreate() {
         LocalDateTime now = LocalDateTime.now(ZONE_ID);

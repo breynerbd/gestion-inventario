@@ -102,6 +102,9 @@ public class SecurityConfig {
                 .requestMatchers(GET, "/api/auth/operations")
                 .authenticated()
 
+                .requestMatchers(POST, "/api/auth/change-password")
+                .authenticated()
+
                 .requestMatchers("/api/auth/**")
                 .permitAll()
 

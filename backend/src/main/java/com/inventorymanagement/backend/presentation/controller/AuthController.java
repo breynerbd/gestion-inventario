@@ -5,6 +5,7 @@ import com.inventorymanagement.backend.application.dto.auth.LoginResponseDTO;
 import com.inventorymanagement.backend.application.dto.auth.RefreshTokenRequestDTO;
 import com.inventorymanagement.backend.application.dto.auth.RegisterRequestDTO;
 import com.inventorymanagement.backend.application.service.AuthService;
+import com.inventorymanagement.backend.application.dto.auth.ChangePasswordRequestDTO;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -54,5 +55,14 @@ public class AuthController {
     public ResponseEntity<List<String>> getOperations(
             Authentication authentication) {
         return ResponseEntity.ok(service.getAllowedOperations(authentication));
+    }
+
+    @PostMapping("/change-password")
+    public ResponseEntity<Void> changePassword(@Valid @RequestBody ChangePasswordRequestDTO request,
+            Authentication authentication) {
+
+        service.changePassword(request, authentication.getName());
+
+        return ResponseEntity.noContent().build();
     }
 }

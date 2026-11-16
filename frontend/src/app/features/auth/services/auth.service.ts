@@ -47,6 +47,7 @@ export class AuthService {
     localStorage.setItem("refreshToken", response.refreshToken)
     localStorage.setItem("username", response.username)
     localStorage.setItem("roleName", response.roleName)
+    localStorage.setItem("mustChangePassword", String(response.mustChangePassword));
   }
 
   getAccessToken = (): string | null => localStorage.getItem('accessToken');
@@ -72,8 +73,12 @@ export class AuthService {
 
   logout(): void {
     this.operations.set([]);
-    ['accessToken', 'refreshToken', 'username', 'roleName'].forEach(key => {
+    ['accessToken', 'refreshToken', 'username', 'roleName', 'mustChangePassword'].forEach(key => {
       localStorage.removeItem(key);
     });
+  }
+
+  mustChangePassword(): boolean {
+    return localStorage.getItem("mustChangePassword") === "true";
   }
 }

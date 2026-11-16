@@ -55,6 +55,7 @@ public class CustomUserDetailsService implements UserDetailsService {
             .username(user.getEmail())
             .password(user.getPassword())
             .disabled(user.getStatus() == User.Status.INACTIVO)
+            .credentialsExpired(Boolean.TRUE.equals(user.getMustChangePassword()))
                 .authorities(authorities)
             .build();
     }

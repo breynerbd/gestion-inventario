@@ -5,4 +5,5 @@ export interface LoginResponse {
     userId: number;
     username: string;
     roleName: string;
+    mustChangePassword: boolean;
 }
