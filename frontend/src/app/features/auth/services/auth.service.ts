@@ -5,6 +5,7 @@ import { LoginRequest } from '../models/login-request';
 import { LoginResponse } from '../models/login-response';
 import { RegisterRequest } from '../models/register-request';
 import { RefreshTokenRequest } from '../models/refresh-token-request';
+import { ChangePasswordRequest } from '../models/change-password-request';
 
 @Injectable({
   providedIn: 'root'
@@ -80,5 +81,12 @@ export class AuthService {
 
   mustChangePassword(): boolean {
     return localStorage.getItem("mustChangePassword") === "true";
+  }
+
+  changePassword(request: ChangePasswordRequest): Observable<void> {
+    return this.http.post<void>(
+      `${this.apiUrl}/change-password`,
+      request
+    );
   }
 }
