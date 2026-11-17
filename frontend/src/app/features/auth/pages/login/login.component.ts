@@ -1,7 +1,7 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
-import { Router, RouterLink } from '@angular/router';
+import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { LoginRequest } from '../../models/login-request';
 
 @Component({
@@ -15,9 +15,13 @@ export class LoginComponent {
   username = "";
   password = "";
   errorMessage = "";
+  successMessage = '';
 
-  constructor(private readonly authService: AuthService, private readonly router: Router){
-
+  constructor(private readonly authService: AuthService, private readonly router: Router, route: ActivatedRoute){
+    if (route.snapshot.queryParamMap.get('passwordChanged') === 'true') {
+      this.successMessage =
+        'Contraseña actualizada. Inicia sesión con tu nueva contraseña.';
+    }
   }
 
   login(): void {
@@ -30,7 +34,8 @@ export class LoginComponent {
       next: response => {
         this.authService.saveSession(response);
         this.errorMessage = '';
-        void this.router.navigate(["/dashboard"]);
+        const destination = response.mustChangePassword ? '/change-password' : '/dashboard';
+        void this.router.navigate([destination], { replaceUrl: true });
       },
       error: error => {
         console.error(error);

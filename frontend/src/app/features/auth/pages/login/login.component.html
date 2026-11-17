@@ -1,11 +1,17 @@
 <div class="login-container">
     <div class="login-card">
-        
+
         <h1>Gestion De Inventario</h1>
         <p class="subtitle">Inicia sesión para continuar</p>
 
+        @if (successMessage) {
+          <p class="success-message" role="status">
+            {{ successMessage }}
+          </p>
+        }
+
         <form (ngSubmit)="login()">
-            
+
             <div class="form-group">
                 <label for="username">Usuario</label>
 
