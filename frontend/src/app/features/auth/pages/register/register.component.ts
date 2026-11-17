@@ -39,7 +39,8 @@ export class RegisterComponent {
       next: response => {
         this.authService.saveSession(response);
         this.errorMessage = "";
-        void this.router.navigate(["/dashboard"])
+        const destination = response.mustChangePassword ? '/change-password' : '/dashboard';
+        void this.router.navigate([destination], { replaceUrl: true });
       },
       error: error => {
         console.log(error);

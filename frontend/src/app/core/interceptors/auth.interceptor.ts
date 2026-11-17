@@ -27,7 +27,20 @@ export const authInterceptor: HttpInterceptorFn = (request, next) => {
     });
 
     return next(authenticatedRequest).pipe(
+
         catchError((error: HttpErrorResponse) => {
+            if (error.status === 403
+              && error.error?.code === 'PASSWORD_CHANGE_REQUIRED') {
+
+              localStorage.setItem('mustChangePassword', 'true');
+
+              void router.navigate(['/change-password'], {
+                replaceUrl: true
+              });
+
+              return throwError(() => error);
+            }
+
             if((error.status !== 401 && error.status !== 403) || request.url.includes("/refresh")) {
                 return throwError(() => error);
             }

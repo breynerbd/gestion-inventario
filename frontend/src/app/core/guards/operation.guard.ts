@@ -8,6 +8,10 @@ export const operationGuard: CanActivateChildFn = route => {
   const router = inject(Router);
   const requiredOperation = route.data['operation'] as string | undefined;
 
+  if (authService.mustChangePassword()) {
+    return router.createUrlTree(['/change-password']);
+  }
+
   return authService.loadOperations().pipe(
     map(operations => {
       if (!requiredOperation || operations.includes(requiredOperation)) {

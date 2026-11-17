@@ -13,6 +13,7 @@ import { MovementsComponent } from './features/stockMovements/pages/movements/mo
 import { roleAuthGuard } from './core/guards/role-auth.guard';
 import { DashboardHomeComponent } from './features/dashboard/pages/dashboard-home/dashboard-home.component';
 import { RolePermissionsComponent } from './features/rolePermission/pages/role-permission/role-permission.component';
+import { ChangePasswordComponent } from './features/auth/pages/change-password/change-password.component';
 import { BinnacleComponent } from './features/binnacle/pages/binnacle/binnacle.component';
 import { operationGuard } from './core/guards/operation.guard';
 
@@ -24,6 +25,11 @@ export const routes: Routes = [
     {
         path: "register",
         component: RegisterComponent
+    },
+    {
+      path: "change-password",
+      component: ChangePasswordComponent,
+      canActivate: [authGuard]
     },
     {
         path: "dashboard",
